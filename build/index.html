@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>frogger.js</title>
+  <style>
+    /*canvas {
+      width: 100%;
+      height: 100%;
+    }*/
+  </style>
+</head>
+
+<body>
+
+<!--<script src="libs/three.min.js"></script>
+<script src="libs/MTLLoader.js"></script>
+<script src="libs/OBJLoader.js"></script>
+<script src="dist/frogger.js"></script>-->
+<script src="libs/pixi.min.js"></script>
+<script>
+  PIXI.utils._saidHello = true;
+  // You can use either `new PIXI.WebGLRenderer`, `new PIXI.CanvasRenderer`, or `PIXI.autoDetectRenderer`
+  // which will try to choose the best renderer for the environment you are in.
+  var renderer = new PIXI.WebGLRenderer(800, 600);
+
+  // The renderer will create a canvas element for you that you can then insert into the DOM.
+  document.body.appendChild(renderer.view);
+
+  // You need to create a root container that will hold the scene you want to draw.
+  var stage = new PIXI.Container();
+
+
+  // Declare a global variable for our sprite so that the animate function can access it.
+  var bunny = null;
+
+  var loader = PIXI.loader; // pixi exposes a premade instance for you to use.
+  loader.add('boat',"assets/boat.png");
+  loader.add('frog',"assets/frog.png");
+  loader.once('complete', function (loader, resources) {
+
+    bunny = new PIXI.Sprite(resources["boat"].texture);
+
+    // Setup the position and scale of the bunny
+    bunny.position.x = 400;
+    bunny.position.y = 300;
+
+    var test = new PIXI.Sprite(resources["frog"].texture);
+    test.position.x = 200;
+    test.position.y = 200;
+
+    // Add the bunny to the scene we are building.
+    stage.addChild(bunny);
+    stage.addChild(test);
+
+    // kick off the animation loop (defined below)
+    animate();
+  });
+
+  loader.load();
+
+  function animate() {
+    // start the timer for the next animation loop
+    requestAnimationFrame(animate);
+
+    // each frame we spin the bunny around a bit
+    //bunny.position.x -= 1;
+
+    // this is the main render call that makes pixi draw your container and its children.
+    renderer.render(stage);
+  }
+</script>
+</body>
+</html>
