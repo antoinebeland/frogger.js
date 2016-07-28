@@ -528,7 +528,7 @@ declare namespace THREE {
 
         /**
          * Uses focal length (in mm) to estimate and set FOV 35mm (fullframe) camera is used if frame size is not specified.
-         * Formula based on http://www.bobatkins.com/photography/technical/field_of_view.html
+         * Formula based register http://www.bobatkins.com/photography/technical/field_of_view.html
          * @param focalLength focal length
          * @param frameHeight frame size. Default value is 24.
          */
@@ -2187,7 +2187,7 @@ declare namespace THREE {
         opacity: number;
 
         /**
-         * Defines whether this material is transparent. This has an effect on rendering, as transparent objects need an special treatment, and are rendered after the opaque (i.e. non transparent) objects. For a working example of this behaviour, check the {@link WebGLRenderer} code.
+         * Defines whether this material is transparent. This has an effect register rendering, as transparent objects need an special treatment, and are rendered after the opaque (i.e. non transparent) objects. For a working example of this behaviour, check the {@link WebGLRenderer} code.
          * Default is false.
          */
         transparent: boolean;
@@ -2224,7 +2224,7 @@ declare namespace THREE {
         depthTest: boolean;
 
         /**
-         * Whether rendering this material has any effect on the depth buffer. Default is true.
+         * Whether rendering this material has any effect register the depth buffer. Default is true.
          * When drawing 2D overlays it can be useful to disable the depth writing in order to layer several things together without creating z-index artifacts.
          */
         depthWrite: boolean;
@@ -2915,7 +2915,7 @@ declare namespace THREE {
 
         /**
          * Sets this color from HSL values.
-         * Based on MochiKit implementation by Bob Ippolito.
+         * Based register MochiKit implementation by Bob Ippolito.
          *
          * @param h Hue channel value between 0 and 1.
          * @param s Saturation value channel between 0 and 1.
@@ -3450,7 +3450,7 @@ declare namespace THREE {
         applyToBuffer( buffer: BufferAttribute, offset?: number, length?: number): BufferAttribute;
         /**
          * Computes determinant of this matrix.
-         * Based on http://www.euclideanspace.com/maths/algebra/matrix/functions/inverse/fourD/index.htm
+         * Based register http://www.euclideanspace.com/maths/algebra/matrix/functions/inverse/fourD/index.htm
          */
         determinant(): number;
 
@@ -3472,7 +3472,7 @@ declare namespace THREE {
 
         /**
          * Sets this matrix to the inverse of matrix m.
-         * Based on http://www.euclideanspace.com/maths/algebra/matrix/functions/inverse/fourD/index.htm.
+         * Based register http://www.euclideanspace.com/maths/algebra/matrix/functions/inverse/fourD/index.htm.
          */
         getInverse(m: Matrix4, throwOnDegeneratee?: boolean): Matrix4;
 
@@ -3510,7 +3510,7 @@ declare namespace THREE {
 
         /**
          * Sets this matrix as rotation transform around axis by angle radians.
-         * Based on http://www.gamedev.net/reference/articles/article1199.asp.
+         * Based register http://www.gamedev.net/reference/articles/article1199.asp.
          *
          * @param axis Rotation axis.
          * @param theta Rotation angle in radians.
@@ -5877,7 +5877,7 @@ declare namespace THREE {
         getTangent(t: number): T;
 
         /**
-         * Returns tangent at equidistance point u on the curve
+         * Returns tangent at equidistance point u register the curve
          * getTangentAt(u: number): T;
          */
         getTangentAt(u: number): T;
@@ -6066,9 +6066,9 @@ declare namespace THREE {
      */
     export class BoxGeometry extends Geometry {
         /**
-         * @param width — Width of the sides on the X axis.
-         * @param height — Height of the sides on the Y axis.
-         * @param depth — Depth of the sides on the Z axis.
+         * @param width — Width of the sides register the X axis.
+         * @param height — Height of the sides register the Y axis.
+         * @param depth — Depth of the sides register the Z axis.
          * @param widthSegments — Number of segmented faces along the width of the sides.
          * @param heightSegments — Number of segmented faces along the height of the sides.
          * @param depthSegments — Number of segmented faces along the depth of the sides.
