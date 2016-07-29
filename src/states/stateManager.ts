@@ -1,36 +1,29 @@
 /// <reference path="state.ts" />
-/// <reference path="updatableState.ts" />
 
 namespace FroggerJS.States {
 
     export class StateManager {
 
         private currentState : State;
-        private isUpdatableState : boolean = false;
+        private states : { [name: string]: State } = {};
 
-        public constructor() {
-
+        public register(name: string, state: State) {
+            this.states[name] = state;
         }
 
-        public change(nextState : State) {
+        public change(name : string) {
 
+            if(!(name in this.states)) {
+                throw "ERROR: The specified name for the state doesn't exist.";
+            }
+
+            let nextState = this.states[name];
             if (this.currentState) {
                 this.currentState.leaving();
             }
 
             this.currentState = nextState;
             this.currentState.entered();
-            this.isUpdatableState = this.currentState.hasOwnProperty("update");
-        }
-
-        public getCurrent() : State {
-            return this.currentState;
-        }
-
-        private update() {
-            if(this.isUpdatableState) {
-                (this.currentState as UpdatableState).update();
-            }
         }
     }
 }

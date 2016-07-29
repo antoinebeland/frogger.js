@@ -36,19 +36,19 @@ namespace Utils {
             switch (logLevel) {
 
                 case LogLevel.Debug:
-                    console.log("Debug: " + message);
+                    console.log("[DEBUG] " + message);
                     break;
 
                 case LogLevel.Info:
-                    console.info("Info: " + message);
+                    console.info("[INFO] " + message);
                     break;
 
                 case LogLevel.Warning:
-                    console.warn("Warning: " + message);
+                    console.warn("[WARNING] " + message);
                     break;
 
                 case LogLevel.Error:
-                    console.error("Error:" + message);
+                    console.error("[ERROR] " + message);
             }
         }
     }
