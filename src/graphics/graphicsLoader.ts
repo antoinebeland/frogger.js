@@ -22,27 +22,26 @@ namespace FroggerJS.Graphics {
             });
         }
 
-        public register(element: string|string[]) {
+        public register(element: string|string[]): void {
 
             if(element instanceof Array) {
                 for(let i = 0; i < element.length; ++i) {
                     this.registerSingleElement(element[i]);
                 }
-            }
-            else {
+            } else {
                 this.registerSingleElement(element);
             }
         }
 
-        public get() {
-
+        public get(name: string): PIXI.Texture {
+            return this.loader.resources[name].texture;
         }
 
-        public load() {
+        public load(): void {
             this.loader.load();
         }
 
-        private registerSingleElement(name: string) {
+        private registerSingleElement(name: string): void {
             this.loader.add(name, `${this.baseResourcesPath}/${name}.png`);
         }
     }

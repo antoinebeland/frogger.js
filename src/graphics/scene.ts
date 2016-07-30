@@ -20,11 +20,11 @@ namespace FroggerJS.Graphics {
         }
 
         public addChild(sprite: Sprite) {
-
+            this.stage.addChild(sprite.getSprite());
         }
 
         public removeChild(sprite: Sprite) {
-
+            this.stage.removeChild(sprite.getSprite());
         }
         
         public render() {

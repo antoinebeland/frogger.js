@@ -7,11 +7,11 @@ namespace FroggerJS.States {
         private currentState : State;
         private states : { [name: string]: State } = {};
 
-        public register(name: string, state: State) {
+        public register(name: string, state: State): void {
             this.states[name] = state;
         }
 
-        public change(name : string) {
+        public change(name: string): void {
 
             if(!(name in this.states)) {
                 throw "ERROR: The specified name for the state doesn't exist.";

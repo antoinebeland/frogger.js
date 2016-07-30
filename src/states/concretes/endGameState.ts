@@ -12,11 +12,11 @@ namespace FroggerJS.States {
         }
 
         public entered(): void {
-            Logger.logMessage("Entered in EndGameState.");
+            Logger.logMessage("Entered in 'End Game State'.");
         }
 
         public leaving(): void {
-            Logger.logMessage("Leaving in EndGameState.");
+            Logger.logMessage("Leaving the 'End Game State'.");
         }
     }
 }

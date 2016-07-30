@@ -8,12 +8,12 @@ namespace FroggerJS.States {
         /**
          * Occurred when the application enters in the current state.
          */
-        entered() : void;
+        entered(): void;
 
         /**
          * Occurred when the application leaves the current state.
          */
-        leaving() : void;
+        leaving(): void;
     }
 }
 

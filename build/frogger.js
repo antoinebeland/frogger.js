@@ -42,7 +42,8 @@ var FroggerJS;
                     this.registerSingleElement(element);
                 }
             };
-            GraphicsLoader.prototype.get = function () {
+            GraphicsLoader.prototype.get = function (name) {
+                return this.loader.resources[name].texture;
             };
             GraphicsLoader.prototype.load = function () {
                 this.loader.load();
@@ -68,8 +69,10 @@ var FroggerJS;
                 this.stage = new PIXI.Container();
             }
             Scene.prototype.addChild = function (sprite) {
+                this.stage.addChild(sprite.getSprite());
             };
             Scene.prototype.removeChild = function (sprite) {
+                this.stage.removeChild(sprite.getSprite());
             };
             Scene.prototype.render = function () {
                 var self = this;
@@ -87,50 +90,19 @@ var FroggerJS;
 })(FroggerJS || (FroggerJS = {}));
 var FroggerJS;
 (function (FroggerJS) {
-    var States;
-    (function (States) {
-        var StateManager = (function () {
-            function StateManager() {
-                this.states = {};
+    var Graphics;
+    (function (Graphics) {
+        var Sprite = (function () {
+            function Sprite(texture) {
+                this.sprite = new PIXI.Sprite(texture);
             }
-            StateManager.prototype.register = function (name, state) {
-                this.states[name] = state;
+            Sprite.prototype.getSprite = function () {
+                return this.sprite;
             };
-            StateManager.prototype.change = function (name) {
-                if (!(name in this.states)) {
-                    throw "ERROR: The specified name for the state doesn't exist.";
-                }
-                var nextState = this.states[name];
-                if (this.currentState) {
-                    this.currentState.leaving();
-                }
-                this.currentState = nextState;
-                this.currentState.entered();
-            };
-            return StateManager;
+            return Sprite;
         }());
-        States.StateManager = StateManager;
-    })(States = FroggerJS.States || (FroggerJS.States = {}));
-})(FroggerJS || (FroggerJS = {}));
-var FroggerJS;
-(function (FroggerJS) {
-    var States;
-    (function (States) {
-        var MainMenuState = (function () {
-            function MainMenuState(stateManager) {
-                this.stateManager = stateManager;
-            }
-            MainMenuState.prototype.entered = function () {
-            };
-            MainMenuState.prototype.leaving = function () {
-            };
-            MainMenuState.prototype.startGame = function () {
-                this.stateManager.change("level1");
-            };
-            return MainMenuState;
-        }());
-        States.MainMenuState = MainMenuState;
-    })(States = FroggerJS.States || (FroggerJS.States = {}));
+        Graphics.Sprite = Sprite;
+    })(Graphics = FroggerJS.Graphics || (FroggerJS.Graphics = {}));
 })(FroggerJS || (FroggerJS = {}));
 var Utils;
 (function (Utils) {
@@ -170,29 +142,121 @@ var Utils;
 })(Utils || (Utils = {}));
 var FroggerJS;
 (function (FroggerJS) {
+    var Game;
+    (function (Game) {
+        var Event = Utils.Event;
+        var Logger = Utils.Logger;
+        var Sprite = FroggerJS.Graphics.Sprite;
+        var GameManager = (function () {
+            function GameManager(graphicsLoader, scene) {
+                this.onGameOver = new Event();
+                this.onNextLevel = new Event();
+                this.scene = scene;
+                this.graphicsLoader = graphicsLoader;
+            }
+            GameManager.prototype.loadLevel = function (levelConfiguration) {
+                Logger.logMessage("Initialize level " + levelConfiguration["level"] + "...");
+                var test = new Sprite(this.graphicsLoader.get("frog"));
+                this.scene.addChild(test);
+                this.scene.onRender.register(this.update);
+            };
+            GameManager.prototype.clearLevel = function () {
+                this.scene.onRender.unregister(this.update);
+            };
+            GameManager.prototype.update = function () {
+            };
+            return GameManager;
+        }());
+        Game.GameManager = GameManager;
+    })(Game = FroggerJS.Game || (FroggerJS.Game = {}));
+})(FroggerJS || (FroggerJS = {}));
+var FroggerJS;
+(function (FroggerJS) {
+    var States;
+    (function (States) {
+        var StateManager = (function () {
+            function StateManager() {
+                this.states = {};
+            }
+            StateManager.prototype.register = function (name, state) {
+                this.states[name] = state;
+            };
+            StateManager.prototype.change = function (name) {
+                if (!(name in this.states)) {
+                    throw "ERROR: The specified name for the state doesn't exist.";
+                }
+                var nextState = this.states[name];
+                if (this.currentState) {
+                    this.currentState.leaving();
+                }
+                this.currentState = nextState;
+                this.currentState.entered();
+            };
+            return StateManager;
+        }());
+        States.StateManager = StateManager;
+    })(States = FroggerJS.States || (FroggerJS.States = {}));
+})(FroggerJS || (FroggerJS = {}));
+var FroggerJS;
+(function (FroggerJS) {
+    var States;
+    (function (States) {
+        var Logger = Utils.Logger;
+        var MainMenuState = (function () {
+            function MainMenuState(stateManager) {
+                this.stateManager = stateManager;
+                var self = this;
+                this.startGame = function () {
+                    self.stateManager.change("level1");
+                };
+            }
+            MainMenuState.prototype.entered = function () {
+                Logger.logMessage("Entered in 'Main Menu State'.");
+                document.querySelector("#button").addEventListener('click', this.startGame);
+            };
+            MainMenuState.prototype.leaving = function () {
+                document.querySelector("#button").removeEventListener('click', this.startGame);
+                Logger.logMessage("Leaving the 'Main Menu State'.");
+            };
+            return MainMenuState;
+        }());
+        States.MainMenuState = MainMenuState;
+    })(States = FroggerJS.States || (FroggerJS.States = {}));
+})(FroggerJS || (FroggerJS = {}));
+var FroggerJS;
+(function (FroggerJS) {
     var States;
     (function (States) {
         var Logger = Utils.Logger;
         var GameLevelState = (function () {
-            function GameLevelState(scene, levelConfiguration, stateManager) {
-                this.currentLevel = 0;
-                this.scene = scene;
+            function GameLevelState(gameLevelManager, levelConfiguration, stateManager) {
+                this.gameLevelManager = gameLevelManager;
+                this.levelConfiguration = levelConfiguration;
+                this.stateManager = stateManager;
             }
             GameLevelState.prototype.entered = function () {
-                Logger.logMessage("Entered in GameLevelState.");
-                this.scene.onRender.register(this.update);
+                Logger.logMessage("Entered in 'Game Level " + this.levelConfiguration["level"] + " State'.");
+                this.gameLevelManager.onGameOver.register(this.gameOverOccurred);
+                this.gameLevelManager.onNextLevel.register(this.nextLevelOccurred);
+                this.gameLevelManager.loadLevel(this.levelConfiguration);
             };
             GameLevelState.prototype.leaving = function () {
-                this.scene.onRender.unregister(this.update);
-                Logger.logMessage("Leaving in GameLevelState.");
-            };
-            GameLevelState.prototype.update = function () {
+                this.gameLevelManager.onGameOver.unregister(this.gameOverOccurred);
+                this.gameLevelManager.onNextLevel.unregister(this.nextLevelOccurred);
+                this.gameLevelManager.clearLevel();
+                Logger.logMessage("Leaving the 'Game Level " + this.levelConfiguration["level"] + " State'.");
             };
             GameLevelState.prototype.gameOverOccurred = function () {
                 this.stateManager.change("endGame");
             };
             GameLevelState.prototype.nextLevelOccurred = function () {
-                this.stateManager.change("level");
+                var nextLevel = this.levelConfiguration["level"] + 1;
+                if (this.levelConfiguration["levelsCount"] >= nextLevel) {
+                    this.stateManager.change("endGame");
+                }
+                else {
+                    this.stateManager.change("level" + nextLevel);
+                }
             };
             return GameLevelState;
         }());
@@ -208,10 +272,10 @@ var FroggerJS;
             function EndGameState() {
             }
             EndGameState.prototype.entered = function () {
-                Logger.logMessage("Entered in EndGameState.");
+                Logger.logMessage("Entered in 'End Game State'.");
             };
             EndGameState.prototype.leaving = function () {
-                Logger.logMessage("Leaving in EndGameState.");
+                Logger.logMessage("Leaving the 'End Game State'.");
             };
             return EndGameState;
         }());
@@ -220,14 +284,15 @@ var FroggerJS;
 })(FroggerJS || (FroggerJS = {}));
 var FroggerJS;
 (function (FroggerJS) {
-    var Logger = Utils.Logger;
-    var LogLevel = Utils.LogLevel;
     var GraphicsLoader = FroggerJS.Graphics.GraphicsLoader;
     var Scene = FroggerJS.Graphics.Scene;
+    var GameLevelManager = FroggerJS.Game.GameManager;
     var StateManager = FroggerJS.States.StateManager;
     var MainMenuState = FroggerJS.States.MainMenuState;
     var GameLevelState = FroggerJS.States.GameLevelState;
     var EndGameState = FroggerJS.States.EndGameState;
+    var Logger = Utils.Logger;
+    var LogLevel = Utils.LogLevel;
     var App = (function () {
         function App() {
         }
@@ -240,15 +305,14 @@ var FroggerJS;
             loader.register(App.resources);
             loader.onLoadingCompleted.register(function () {
                 Logger.logMessage("Resources loaded.", LogLevel.Info);
-                Logger.logMessage("Initialize scene...", LogLevel.Info);
                 var scene = new Scene(800, 600);
+                var gameLevelManager = new GameLevelManager(loader, scene);
                 var stateManager = new StateManager();
                 stateManager.register("mainMenu", new MainMenuState(stateManager));
-                stateManager.register("level1", new GameLevelState(scene, {}, stateManager));
-                stateManager.register("level2", new GameLevelState(scene, {}, stateManager));
+                stateManager.register("level1", new GameLevelState(gameLevelManager, { level: 1, levelsCount: 2 }, stateManager));
+                stateManager.register("level2", new GameLevelState(gameLevelManager, { level: 2, levelsCount: 2 }, stateManager));
                 stateManager.register("endGame", new EndGameState());
-                stateManager.change("level1");
-                Logger.logMessage("Scene initialized.", LogLevel.Info);
+                stateManager.change("mainMenu");
                 scene.render();
             });
             loader.load();
@@ -262,28 +326,4 @@ var FroggerJS;
     FroggerJS.App = App;
 })(FroggerJS || (FroggerJS = {}));
 FroggerJS.App.initialize();
-var FroggerJS;
-(function (FroggerJS) {
-    var Game;
-    (function (Game) {
-        var GameManager = (function () {
-            function GameManager(gameConfiguration) {
-            }
-            return GameManager;
-        }());
-        Game.GameManager = GameManager;
-    })(Game = FroggerJS.Game || (FroggerJS.Game = {}));
-})(FroggerJS || (FroggerJS = {}));
-var FroggerJS;
-(function (FroggerJS) {
-    var Graphics;
-    (function (Graphics) {
-        var Sprite = (function () {
-            function Sprite() {
-            }
-            return Sprite;
-        }());
-        Graphics.Sprite = Sprite;
-    })(Graphics = FroggerJS.Graphics || (FroggerJS.Graphics = {}));
-})(FroggerJS || (FroggerJS = {}));
 //# sourceMappingURL=frogger.js.map

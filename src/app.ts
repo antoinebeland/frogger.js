@@ -1,5 +1,6 @@
 /// <reference path="./graphics/graphicsLoader.ts" />
 /// <reference path="./graphics/scene.ts" />
+/// <reference path="./game/gameManager.ts" />
 /// <reference path="./states/stateManager.ts" />
 /// <reference path="./states/concretes/mainMenuState.ts" />
 /// <reference path="./states/concretes/gameLevelState.ts" />
@@ -8,15 +9,15 @@
 
 namespace FroggerJS {
 
-    import Logger = Utils.Logger;
-    import LogLevel = Utils.LogLevel;
     import GraphicsLoader = FroggerJS.Graphics.GraphicsLoader;
     import Scene = FroggerJS.Graphics.Scene;
+    import GameLevelManager = FroggerJS.Game.GameManager;
     import StateManager = FroggerJS.States.StateManager;
-    import InGameState = FroggerJS.States.GameLevelState;
     import MainMenuState = FroggerJS.States.MainMenuState;
     import GameLevelState = FroggerJS.States.GameLevelState;
     import EndGameState = FroggerJS.States.EndGameState;
+    import Logger = Utils.Logger;
+    import LogLevel = Utils.LogLevel;
 
     declare var PIXI: any;
 
@@ -42,19 +43,17 @@ namespace FroggerJS {
 
                 Logger.logMessage("Resources loaded.", LogLevel.Info);
 
-                Logger.logMessage("Initialize scene...", LogLevel.Info);
                 let scene = new Scene(800, 600);
+                let gameLevelManager = new GameLevelManager(loader, scene);
 
                 let stateManager = new StateManager();
                 stateManager.register("mainMenu", new MainMenuState(stateManager));
-                stateManager.register("level1", new GameLevelState(scene, {}, stateManager));
-                stateManager.register("level2", new GameLevelState(scene, {}, stateManager));
+                stateManager.register("level1", new GameLevelState(gameLevelManager, {level: 1, levelsCount: 2}, stateManager));
+                stateManager.register("level2", new GameLevelState(gameLevelManager, {level: 2, levelsCount: 2}, stateManager));
                 stateManager.register("endGame", new EndGameState());
                 
-                stateManager.change("level1");
-                
-                
-                Logger.logMessage("Scene initialized.", LogLevel.Info);
+                stateManager.change("mainMenu");
+
                 scene.render();
             });
             loader.load();

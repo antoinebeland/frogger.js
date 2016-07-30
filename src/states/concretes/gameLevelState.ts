@@ -1,35 +1,42 @@
 /// <reference path="../state.ts" />
 /// <reference path="../stateManager.ts" />
+/// <reference path="../../game/gameManager.ts" />
 /// <reference path="../../utils/logger.ts" />
 
 namespace FroggerJS.States {
 
-    import Scene = FroggerJS.Graphics.Scene;
+    import GameLevelManager = FroggerJS.Game.GameManager;
     import Logger = Utils.Logger;
 
-        export class GameLevelState implements State {
+    export class GameLevelState implements State {
 
-        private scene : Scene;
+        private gameLevelManager : GameLevelManager;
         private stateManager: StateManager;
         private levelConfiguration: any;
-        private currentLevel: number = 0;
 
-        public constructor(scene : Scene, levelConfiguration: any, stateManager: StateManager) {
-            this.scene = scene;
+        public constructor(gameLevelManager : GameLevelManager, levelConfiguration: any, stateManager: StateManager) {
+
+            this.gameLevelManager = gameLevelManager;
+            this.levelConfiguration = levelConfiguration;
+            this.stateManager = stateManager;
         }
 
         public entered(): void {
-            Logger.logMessage("Entered in GameLevelState.");
-            this.scene.onRender.register(this.update);
+
+            Logger.logMessage(`Entered in 'Game Level ${this.levelConfiguration["level"]} State'.`);
+
+            this.gameLevelManager.onGameOver.register(this.gameOverOccurred);
+            this.gameLevelManager.onNextLevel.register(this.nextLevelOccurred);
+            this.gameLevelManager.loadLevel(this.levelConfiguration);
         }
 
         public leaving(): void {
-            this.scene.onRender.unregister(this.update);
-            Logger.logMessage("Leaving in GameLevelState.");
-        }
 
-        private update(): void {
-            //Logger.logMessage("test");
+            this.gameLevelManager.onGameOver.unregister(this.gameOverOccurred);
+            this.gameLevelManager.onNextLevel.unregister(this.nextLevelOccurred);
+            this.gameLevelManager.clearLevel();
+
+            Logger.logMessage(`Leaving the 'Game Level ${this.levelConfiguration["level"]} State'.`);
         }
 
         private gameOverOccurred(): void {
@@ -37,7 +44,13 @@ namespace FroggerJS.States {
         }
 
         private nextLevelOccurred(): void {
-            this.stateManager.change("level");
+
+            let nextLevel = this.levelConfiguration["level"] + 1;
+            if (this.levelConfiguration["levelsCount"] >= nextLevel) {
+                this.stateManager.change("endGame");
+            } else {
+                this.stateManager.change(`level${nextLevel}`);
+            }
         }
     }
 }
