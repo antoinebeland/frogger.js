@@ -22,8 +22,8 @@ var FroggerJS;
     var Graphics;
     (function (Graphics) {
         var Event = Utils.Event;
-        var GraphicsLoader = (function () {
-            function GraphicsLoader(baseResourcesPath) {
+        var ImageLoader = (function () {
+            function ImageLoader(baseResourcesPath) {
                 this.onLoadingCompleted = new Event();
                 this.loader = PIXI.loader;
                 this.baseResourcesPath = baseResourcesPath;
@@ -32,7 +32,7 @@ var FroggerJS;
                     self.onLoadingCompleted.invoke();
                 });
             }
-            GraphicsLoader.prototype.register = function (element) {
+            ImageLoader.prototype.register = function (element) {
                 if (element instanceof Array) {
                     for (var i = 0; i < element.length; ++i) {
                         this.registerSingleElement(element[i]);
@@ -42,18 +42,21 @@ var FroggerJS;
                     this.registerSingleElement(element);
                 }
             };
-            GraphicsLoader.prototype.get = function (name) {
+            ImageLoader.prototype.get = function (name) {
+                if (!this.loader.resources[name]) {
+                    throw "ERROR: The \"" + name + "\" doesn't exist in the resources.";
+                }
                 return this.loader.resources[name].texture;
             };
-            GraphicsLoader.prototype.load = function () {
+            ImageLoader.prototype.load = function () {
                 this.loader.load();
             };
-            GraphicsLoader.prototype.registerSingleElement = function (name) {
+            ImageLoader.prototype.registerSingleElement = function (name) {
                 this.loader.add(name, this.baseResourcesPath + "/" + name + ".png");
             };
-            return GraphicsLoader;
+            return ImageLoader;
         }());
-        Graphics.GraphicsLoader = GraphicsLoader;
+        Graphics.ImageLoader = ImageLoader;
     })(Graphics = FroggerJS.Graphics || (FroggerJS.Graphics = {}));
 })(FroggerJS || (FroggerJS = {}));
 var FroggerJS;
@@ -64,15 +67,28 @@ var FroggerJS;
         var Scene = (function () {
             function Scene(width, height) {
                 this.onRender = new Event();
+                this.width = width;
+                this.height = height;
                 this.renderer = new PIXI.WebGLRenderer(width, height);
                 document.body.appendChild(this.renderer.view);
                 this.stage = new PIXI.Container();
             }
-            Scene.prototype.addChild = function (sprite) {
-                this.stage.addChild(sprite.getSprite());
+            Scene.prototype.addChild = function (object) {
+                if (object instanceof PIXI.Sprite) {
+                    this.stage.addChild(object);
+                }
+                else {
+                    this.stage.addChild(object.getSprite());
+                }
             };
             Scene.prototype.removeChild = function (sprite) {
-                this.stage.removeChild(sprite.getSprite());
+                this.stage.removeChild(sprite);
+            };
+            Scene.prototype.getWidth = function () {
+                return this.width;
+            };
+            Scene.prototype.getHeight = function () {
+                return this.height;
             };
             Scene.prototype.render = function () {
                 var self = this;
@@ -90,19 +106,45 @@ var FroggerJS;
 })(FroggerJS || (FroggerJS = {}));
 var FroggerJS;
 (function (FroggerJS) {
-    var Graphics;
-    (function (Graphics) {
-        var Sprite = (function () {
-            function Sprite(texture) {
-                this.sprite = new PIXI.Sprite(texture);
-            }
-            Sprite.prototype.getSprite = function () {
-                return this.sprite;
-            };
-            return Sprite;
-        }());
-        Graphics.Sprite = Sprite;
-    })(Graphics = FroggerJS.Graphics || (FroggerJS.Graphics = {}));
+    var Game;
+    (function (Game) {
+        var Objects;
+        (function (Objects) {
+            var Frog = (function () {
+                function Frog(imageLoader) {
+                    this.keyUpTexture = imageLoader.get("frog");
+                    this.keyDownTexture = imageLoader.get("frog-2");
+                    this.sprite = new PIXI.Sprite(this.keyUpTexture);
+                    var self = this;
+                    this.onKeyPressedDown = function (event) {
+                        self.sprite.texture = self.keyDownTexture;
+                    };
+                    this.onKeyPressedUp = function (event) {
+                        self.sprite.texture = self.keyUpTexture;
+                        switch (event.keyCode) {
+                            case 37:
+                                self.sprite.position.x -= 75;
+                                break;
+                            case 38:
+                                self.sprite.position.y -= 75;
+                                break;
+                            case 39:
+                                self.sprite.position.x += 75;
+                                break;
+                            case 40:
+                                self.sprite.position.y += 75;
+                                break;
+                        }
+                    };
+                }
+                Frog.prototype.getSprite = function () {
+                    return this.sprite;
+                };
+                return Frog;
+            }());
+            Objects.Frog = Frog;
+        })(Objects = Game.Objects || (Game.Objects = {}));
+    })(Game = FroggerJS.Game || (FroggerJS.Game = {}));
 })(FroggerJS || (FroggerJS = {}));
 var Utils;
 (function (Utils) {
@@ -144,23 +186,43 @@ var FroggerJS;
 (function (FroggerJS) {
     var Game;
     (function (Game) {
+        var Frog = FroggerJS.Game.Objects.Frog;
         var Event = Utils.Event;
         var Logger = Utils.Logger;
-        var Sprite = FroggerJS.Graphics.Sprite;
+        var TilingSprite = PIXI.extras.TilingSprite;
         var GameManager = (function () {
-            function GameManager(graphicsLoader, scene) {
+            function GameManager(imageLoader, scene) {
                 this.onGameOver = new Event();
                 this.onNextLevel = new Event();
                 this.scene = scene;
-                this.graphicsLoader = graphicsLoader;
+                this.imageLoader = imageLoader;
+                this.frog = new Frog(imageLoader);
             }
             GameManager.prototype.loadLevel = function (levelConfiguration) {
                 Logger.logMessage("Initialize level " + levelConfiguration["level"] + "...");
-                var test = new Sprite(this.graphicsLoader.get("frog"));
-                this.scene.addChild(test);
+                var list = [
+                    "grass",
+                    "water",
+                    "water",
+                    "grass",
+                    "road",
+                    "road",
+                    "road",
+                    "grass"
+                ];
+                for (var i = 0; i < list.length; ++i) {
+                    var tilingSprite = new TilingSprite(this.imageLoader.get(list[i]), this.scene.getWidth(), 75);
+                    tilingSprite.position.y = i * 75;
+                    this.scene.addChild(tilingSprite);
+                }
+                this.scene.addChild(this.frog);
+                document.addEventListener("keydown", this.frog.onKeyPressedDown);
+                document.addEventListener("keyup", this.frog.onKeyPressedUp);
                 this.scene.onRender.register(this.update);
             };
             GameManager.prototype.clearLevel = function () {
+                document.removeEventListener("keydown", this.frog.onKeyPressedDown);
+                document.removeEventListener("keyup", this.frog.onKeyPressedUp);
                 this.scene.onRender.unregister(this.update);
             };
             GameManager.prototype.update = function () {
@@ -284,7 +346,7 @@ var FroggerJS;
 })(FroggerJS || (FroggerJS = {}));
 var FroggerJS;
 (function (FroggerJS) {
-    var GraphicsLoader = FroggerJS.Graphics.GraphicsLoader;
+    var GraphicsLoader = FroggerJS.Graphics.ImageLoader;
     var Scene = FroggerJS.Graphics.Scene;
     var GameLevelManager = FroggerJS.Game.GameManager;
     var StateManager = FroggerJS.States.StateManager;
@@ -319,7 +381,11 @@ var FroggerJS;
         };
         App.resources = [
             "frog",
-            "boat"
+            "frog-2",
+            "boat",
+            "grass",
+            "water",
+            "road"
         ];
         return App;
     }());

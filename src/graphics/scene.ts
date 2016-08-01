@@ -1,3 +1,4 @@
+/// <reference path="drawable.ts" />
 /// <reference path="../utils/event.ts" />
 
 namespace FroggerJS.Graphics {
@@ -6,6 +7,8 @@ namespace FroggerJS.Graphics {
 
     export class Scene {
 
+        private width: number;
+        private height: number;
         private renderer : PIXI.WebGLRenderer;
         private stage: PIXI.Container;
 
@@ -13,20 +16,35 @@ namespace FroggerJS.Graphics {
 
         public constructor(width: number, height: number) {
 
+            this.width = width;
+            this.height = height;
+
             this.renderer = new PIXI.WebGLRenderer(width, height);
             document.body.appendChild(this.renderer.view);
 
             this.stage = new PIXI.Container();
         }
 
-        public addChild(sprite: Sprite) {
-            this.stage.addChild(sprite.getSprite());
+        public addChild(object: PIXI.Sprite|Drawable) {
+            if(object instanceof PIXI.Sprite) {
+                this.stage.addChild(object);
+            } else {
+                this.stage.addChild(object.getSprite());
+            }
         }
 
-        public removeChild(sprite: Sprite) {
-            this.stage.removeChild(sprite.getSprite());
+        public removeChild(sprite: PIXI.Sprite) {
+            this.stage.removeChild(sprite);
         }
-        
+
+        public getWidth(): number {
+            return this.width;
+        }
+
+        public getHeight(): number {
+            return this.height;
+        }
+
         public render() {
             let self = this;
             function animate() {

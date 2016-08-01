@@ -1,4 +1,4 @@
-/// <reference path="./graphics/graphicsLoader.ts" />
+/// <reference path="./graphics/imageLoader.ts" />
 /// <reference path="./graphics/scene.ts" />
 /// <reference path="./game/gameManager.ts" />
 /// <reference path="./states/stateManager.ts" />
@@ -9,7 +9,7 @@
 
 namespace FroggerJS {
 
-    import GraphicsLoader = FroggerJS.Graphics.GraphicsLoader;
+    import GraphicsLoader = FroggerJS.Graphics.ImageLoader;
     import Scene = FroggerJS.Graphics.Scene;
     import GameLevelManager = FroggerJS.Game.GameManager;
     import StateManager = FroggerJS.States.StateManager;
@@ -25,7 +25,11 @@ namespace FroggerJS {
 
         private static resources = [
             "frog",
-            "boat"
+            "frog-2",
+            "boat",
+            "grass",
+            "water",
+            "road"
         ];
 
         public static initialize() {

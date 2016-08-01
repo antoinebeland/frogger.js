@@ -4,13 +4,24 @@ namespace FroggerJS.Graphics {
 
     import Event = Utils.Event;
 
-    export class GraphicsLoader {
+    /**
+     * Loader for the image resources.
+     */
+    export class ImageLoader {
 
         private loader: PIXI.loaders.Loader;
         private baseResourcesPath : string;
 
+        /**
+         * Occurred when the images loading is completed.
+         * @type {Utils.Event<void>}
+         */
         public onLoadingCompleted = new Event<void>();
 
+        /**
+         * Initializes a new instance of the ImageLoader class.
+         * @param baseResourcesPath     The base path where the resources are stored.
+         */
         public constructor(baseResourcesPath : string) {
 
             this.loader = PIXI.loader;
@@ -22,6 +33,11 @@ namespace FroggerJS.Graphics {
             });
         }
 
+        /**
+         * Registers one or many images to load.
+         * @param element   The element can be a string or a list of strings. 
+         *                  The specified string must be the name of the resource.
+         */
         public register(element: string|string[]): void {
 
             if(element instanceof Array) {
@@ -33,10 +49,22 @@ namespace FroggerJS.Graphics {
             }
         }
 
+        /**
+         * Gets the image associated with the specified name.
+         * @param name          The name of the resource.
+         * @returns {Texture}
+         */
         public get(name: string): PIXI.Texture {
+
+            if(!this.loader.resources[name]) {
+                throw `ERROR: The "${name}" doesn't exist in the resources.`
+            }
             return this.loader.resources[name].texture;
         }
 
+        /**
+         * Loads the register resources.
+         */
         public load(): void {
             this.loader.load();
         }
