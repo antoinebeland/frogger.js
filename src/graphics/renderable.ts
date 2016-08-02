@@ -1,7 +1,6 @@
 namespace FroggerJS.Graphics {
 
-
-    export interface Drawable {
+    export interface Renderable {
         getSprite(): PIXI.Sprite;
     }
 }

@@ -1,4 +1,5 @@
-/// <reference path="drawable.ts" />
+/// <reference path="../constants.ts" />
+/// <reference path="renderable.ts" />
 /// <reference path="../utils/event.ts" />
 
 namespace FroggerJS.Graphics {
@@ -9,8 +10,8 @@ namespace FroggerJS.Graphics {
 
         private width: number;
         private height: number;
-        private renderer : PIXI.WebGLRenderer;
         private stage: PIXI.Container;
+        private renderer : PIXI.WebGLRenderer | PIXI.CanvasRenderer;
 
         public onRender = new Event<void>();
 
@@ -18,22 +19,27 @@ namespace FroggerJS.Graphics {
 
             this.width = width;
             this.height = height;
-
-            this.renderer = new PIXI.WebGLRenderer(width, height);
-            document.body.appendChild(this.renderer.view);
-
             this.stage = new PIXI.Container();
+
+            this.renderer = PIXI.autoDetectRenderer(width, height, {
+                resolution: window.devicePixelRatio
+            });
+
+            this.resize();
+            document.body.appendChild(this.renderer.view);
+            window.addEventListener("resize", this.resize.bind(this));
         }
 
-        public addChild(object: PIXI.Sprite|Drawable) {
-            if(object instanceof PIXI.Sprite) {
-                this.stage.addChild(object);
-            } else {
-                this.stage.addChild(object.getSprite());
-            }
+        public addChild(object: PIXI.Sprite | Renderable, scaleToApply: number = 1): void {
+            let sprite = (object instanceof PIXI.Sprite) ? object : object.getSprite();
+            sprite.scale.x = scaleToApply;
+            sprite.scale.y = scaleToApply;
+
+            this.stage.addChild(sprite);
         }
 
-        public removeChild(sprite: PIXI.Sprite) {
+        public removeChild(object: PIXI.Sprite | Renderable): void {
+            let sprite = (object instanceof PIXI.Sprite) ? object : object.getSprite();
             this.stage.removeChild(sprite);
         }
 
@@ -45,7 +51,8 @@ namespace FroggerJS.Graphics {
             return this.height;
         }
 
-        public render() {
+        // TODO: Use PIXI.ticker.shared instead...
+        public render(): void {
             let self = this;
             function animate() {
                 requestAnimationFrame(animate);
@@ -53,6 +60,15 @@ namespace FroggerJS.Graphics {
                 self.renderer.render(self.stage);
             }
             animate();
+        }
+
+        /**
+         * @see http://www.rocketshipgames.com/blogs/tjkopena/2015/09/basic-scaling-animation-and-parallax-in-pixi-js-v3/
+         */
+        private resize() {
+            let ratio = Math.min(window.innerWidth / this.width, window.innerHeight / this.height);
+            this.stage.scale.x = this.stage.scale.y = ratio;
+            this.renderer.resize(Math.ceil(this.width * ratio), Math.ceil(this.height * ratio));
         }
     }
 }

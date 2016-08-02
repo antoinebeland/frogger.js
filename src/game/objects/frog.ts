@@ -1,51 +1,79 @@
-/// <reference path="../../graphics/drawable.ts" />
+/// <reference path="orientation.ts" />
+/// <reference path="../../constants.ts" />
+/// <reference path="../../graphics/renderable.ts" />
 /// <reference path="../../graphics/imageLoader.ts" />
 
 namespace FroggerJS.Game.Objects {
 
-    import GraphicsLoader = FroggerJS.Graphics.ImageLoader;
     import ImageLoader = FroggerJS.Graphics.ImageLoader;
-    import Drawable = FroggerJS.Graphics.Drawable;
+    import Renderable = FroggerJS.Graphics.Renderable;
 
-    export class Frog implements Drawable {
+    enum ArrowKeyCode {
+        Up = 38,
+        Down = 40,
+        Left = 37,
+        Right = 39
+    }
+    
+    export class Frog implements Renderable {
 
         private sprite: PIXI.Sprite;
         private keyUpTexture: PIXI.Texture;
         private keyDownTexture: PIXI.Texture;
 
-        public onKeyPressedDown: {(event: KeyboardEvent): void};
-        public onKeyPressedUp: {(event: KeyboardEvent): void};
+        public onKeyDown: {(event: KeyboardEvent): void};
+        public onKeyUp: {(event: KeyboardEvent): void};
 
         public constructor(imageLoader: ImageLoader) {
 
-            // TODO: Put into const...
             this.keyUpTexture = imageLoader.get("frog");
-            this.keyDownTexture = imageLoader.get("frog-2");
+            this.keyDownTexture = imageLoader.get("frog-extend");
 
             this.sprite = new PIXI.Sprite(this.keyUpTexture);
+            this.sprite.anchor = new PIXI.Point(0.5, 0.5);
+            this.sprite.position = new PIXI.Point(30, 30); // TODO: Put into const...
 
             let self = this;
-            this.onKeyPressedDown = function (event: KeyboardEvent) {
+            this.onKeyDown = function (event: KeyboardEvent) {
+
+                let rotation: number;
+                switch (event.keyCode) {
+                    case ArrowKeyCode.Left:
+                        rotation = Orientation.Left;
+                        break;
+                    case ArrowKeyCode.Up:
+                        rotation = Orientation.Up;
+                        break;
+                    case ArrowKeyCode.Right:
+                        rotation = Orientation.Right;
+                        break;
+                    case ArrowKeyCode.Down:
+                        rotation = Orientation.Down;
+                        break;
+                }
+                
+                self.sprite.rotation = rotation;
                 self.sprite.texture = self.keyDownTexture;
             };
 
-            this.onKeyPressedUp = function (event: KeyboardEvent) {
+            this.onKeyUp = function (event: KeyboardEvent) {
 
+                const SHIFTING = FroggerJS.Constants.TILE_SIZE;
                 self.sprite.texture = self.keyUpTexture;
+
                 switch (event.keyCode) {
-                    case 37: // Left
-                        // TODO: Put into const...
-                        self.sprite.position.x -= 75;
+                    case ArrowKeyCode.Left:
+                        self.sprite.position.x -= SHIFTING;
                         break;
-                    case 38: // Up
-                        self.sprite.position.y -= 75;
+                    case ArrowKeyCode.Up:
+                        self.sprite.position.y -= SHIFTING;
                         break;
 
-                    case 39: // Right
-                        self.sprite.position.x += 75;
+                    case ArrowKeyCode.Right:
+                        self.sprite.position.x += SHIFTING;
                         break;
-                    case 40: // Down
-                        self.sprite.position.y += 75;
+                    case ArrowKeyCode.Down:
+                        self.sprite.position.y += SHIFTING;
                         break;
                 }
             };

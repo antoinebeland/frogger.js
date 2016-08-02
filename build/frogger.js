@@ -1,3 +1,12 @@
+var FroggerJS;
+(function (FroggerJS) {
+    FroggerJS.Constants = {
+        TILE_SIZE: 60,
+        ASSET_SIZE: 120,
+        WINDOW_WIDTH: 780,
+        WINDOW_HEIGHT: 600
+    };
+})(FroggerJS || (FroggerJS = {}));
 var Utils;
 (function (Utils) {
     var Event = (function () {
@@ -69,19 +78,23 @@ var FroggerJS;
                 this.onRender = new Event();
                 this.width = width;
                 this.height = height;
-                this.renderer = new PIXI.WebGLRenderer(width, height);
-                document.body.appendChild(this.renderer.view);
                 this.stage = new PIXI.Container();
+                this.renderer = PIXI.autoDetectRenderer(width, height, {
+                    resolution: window.devicePixelRatio
+                });
+                this.resize();
+                document.body.appendChild(this.renderer.view);
+                window.addEventListener("resize", this.resize.bind(this));
             }
-            Scene.prototype.addChild = function (object) {
-                if (object instanceof PIXI.Sprite) {
-                    this.stage.addChild(object);
-                }
-                else {
-                    this.stage.addChild(object.getSprite());
-                }
+            Scene.prototype.addChild = function (object, scaleToApply) {
+                if (scaleToApply === void 0) { scaleToApply = 1; }
+                var sprite = (object instanceof PIXI.Sprite) ? object : object.getSprite();
+                sprite.scale.x = scaleToApply;
+                sprite.scale.y = scaleToApply;
+                this.stage.addChild(sprite);
             };
-            Scene.prototype.removeChild = function (sprite) {
+            Scene.prototype.removeChild = function (object) {
+                var sprite = (object instanceof PIXI.Sprite) ? object : object.getSprite();
                 this.stage.removeChild(sprite);
             };
             Scene.prototype.getWidth = function () {
@@ -99,6 +112,11 @@ var FroggerJS;
                 }
                 animate();
             };
+            Scene.prototype.resize = function () {
+                var ratio = Math.min(window.innerWidth / this.width, window.innerHeight / this.height);
+                this.stage.scale.x = this.stage.scale.y = ratio;
+                this.renderer.resize(Math.ceil(this.width * ratio), Math.ceil(this.height * ratio));
+            };
             return Scene;
         }());
         Graphics.Scene = Scene;
@@ -110,29 +128,90 @@ var FroggerJS;
     (function (Game) {
         var Objects;
         (function (Objects) {
+            (function (Orientation) {
+                Orientation[Orientation["Up"] = 0] = "Up";
+                Orientation[Orientation["Left"] = 3 * Math.PI / 2] = "Left";
+                Orientation[Orientation["Down"] = Math.PI] = "Down";
+                Orientation[Orientation["Right"] = Math.PI / 2] = "Right";
+            })(Objects.Orientation || (Objects.Orientation = {}));
+            var Orientation = Objects.Orientation;
+            var OrientationUtils = (function () {
+                function OrientationUtils() {
+                }
+                OrientationUtils.fromStringToOrientation = function (orientationString) {
+                    switch (orientationString.toLowerCase()) {
+                        case "up":
+                            return Orientation.Up;
+                        case "left":
+                            return Orientation.Left;
+                        case "down":
+                            return Orientation.Down;
+                        case "right":
+                            return Orientation.Right;
+                    }
+                    throw "ERROR: Invalid orientation string specified.";
+                };
+                return OrientationUtils;
+            }());
+            Objects.OrientationUtils = OrientationUtils;
+        })(Objects = Game.Objects || (Game.Objects = {}));
+    })(Game = FroggerJS.Game || (FroggerJS.Game = {}));
+})(FroggerJS || (FroggerJS = {}));
+var FroggerJS;
+(function (FroggerJS) {
+    var Game;
+    (function (Game) {
+        var Objects;
+        (function (Objects) {
+            var ArrowKeyCode;
+            (function (ArrowKeyCode) {
+                ArrowKeyCode[ArrowKeyCode["Up"] = 38] = "Up";
+                ArrowKeyCode[ArrowKeyCode["Down"] = 40] = "Down";
+                ArrowKeyCode[ArrowKeyCode["Left"] = 37] = "Left";
+                ArrowKeyCode[ArrowKeyCode["Right"] = 39] = "Right";
+            })(ArrowKeyCode || (ArrowKeyCode = {}));
             var Frog = (function () {
                 function Frog(imageLoader) {
                     this.keyUpTexture = imageLoader.get("frog");
-                    this.keyDownTexture = imageLoader.get("frog-2");
+                    this.keyDownTexture = imageLoader.get("frog-extend");
                     this.sprite = new PIXI.Sprite(this.keyUpTexture);
+                    this.sprite.anchor = new PIXI.Point(0.5, 0.5);
+                    this.sprite.position = new PIXI.Point(30, 30);
                     var self = this;
-                    this.onKeyPressedDown = function (event) {
+                    this.onKeyDown = function (event) {
+                        var rotation;
+                        switch (event.keyCode) {
+                            case ArrowKeyCode.Left:
+                                rotation = Objects.Orientation.Left;
+                                break;
+                            case ArrowKeyCode.Up:
+                                rotation = Objects.Orientation.Up;
+                                break;
+                            case ArrowKeyCode.Right:
+                                rotation = Objects.Orientation.Right;
+                                break;
+                            case ArrowKeyCode.Down:
+                                rotation = Objects.Orientation.Down;
+                                break;
+                        }
+                        self.sprite.rotation = rotation;
                         self.sprite.texture = self.keyDownTexture;
                     };
-                    this.onKeyPressedUp = function (event) {
+                    this.onKeyUp = function (event) {
+                        var SHIFTING = FroggerJS.Constants.TILE_SIZE;
                         self.sprite.texture = self.keyUpTexture;
                         switch (event.keyCode) {
-                            case 37:
-                                self.sprite.position.x -= 75;
+                            case ArrowKeyCode.Left:
+                                self.sprite.position.x -= SHIFTING;
                                 break;
-                            case 38:
-                                self.sprite.position.y -= 75;
+                            case ArrowKeyCode.Up:
+                                self.sprite.position.y -= SHIFTING;
                                 break;
-                            case 39:
-                                self.sprite.position.x += 75;
+                            case ArrowKeyCode.Right:
+                                self.sprite.position.x += SHIFTING;
                                 break;
-                            case 40:
-                                self.sprite.position.y += 75;
+                            case ArrowKeyCode.Down:
+                                self.sprite.position.y += SHIFTING;
                                 break;
                         }
                     };
@@ -143,6 +222,74 @@ var FroggerJS;
                 return Frog;
             }());
             Objects.Frog = Frog;
+        })(Objects = Game.Objects || (Game.Objects = {}));
+    })(Game = FroggerJS.Game || (FroggerJS.Game = {}));
+})(FroggerJS || (FroggerJS = {}));
+var FroggerJS;
+(function (FroggerJS) {
+    var Game;
+    (function (Game) {
+        var Objects;
+        (function (Objects) {
+            var Car = (function () {
+                function Car(imageLoader, orientation, speed) {
+                    var colorIndex = Math.floor(Math.random() * Car.availableColors.length);
+                    this.sprite = new PIXI.Sprite(imageLoader.get("car-" + Car.availableColors[colorIndex]));
+                    this.orientation = orientation;
+                    this.speed = speed;
+                    this.speedDecimal = 0;
+                    this.sprite.scale.x = 0.5;
+                    this.sprite.scale.y = 0.5;
+                    this.sprite.anchor = new PIXI.Point(0.5, 0.5);
+                    this.sprite.rotation = orientation;
+                    this.sprite.anchor = (orientation == Objects.Orientation.Right) ? new PIXI.Point(0, 0) : new PIXI.Point(1, 1);
+                }
+                Car.prototype.updatePosition = function () {
+                    var speedToApply = this.speed;
+                    if (this.speed % 1 != 0) {
+                        this.speedDecimal += this.speed;
+                        speedToApply = Math.floor(this.speedDecimal);
+                        this.speedDecimal = this.speedDecimal % 1;
+                    }
+                    this.sprite.position.x += (this.orientation == Objects.Orientation.Left) ? -speedToApply : speedToApply;
+                    if (this.sprite.position.x > 800 + this.sprite.height) {
+                        this.sprite.position.x = -this.sprite.height;
+                    }
+                    else if (this.sprite.position.x < -this.sprite.height) {
+                        this.sprite.position.x = 800 + this.sprite.height;
+                    }
+                };
+                Car.prototype.getSprite = function () {
+                    return this.sprite;
+                };
+                Car.availableColors = [
+                    "blue",
+                    "green",
+                    "red",
+                    "white"
+                ];
+                return Car;
+            }());
+            Objects.Car = Car;
+        })(Objects = Game.Objects || (Game.Objects = {}));
+    })(Game = FroggerJS.Game || (FroggerJS.Game = {}));
+})(FroggerJS || (FroggerJS = {}));
+var FroggerJS;
+(function (FroggerJS) {
+    var Game;
+    (function (Game) {
+        var Objects;
+        (function (Objects) {
+            var Boat = (function () {
+                function Boat(imageLoader) {
+                    this.sprite = new PIXI.Sprite(imageLoader.get("boat"));
+                }
+                Boat.prototype.getSprite = function () {
+                    return this.sprite;
+                };
+                return Boat;
+            }());
+            Objects.Boat = Boat;
         })(Objects = Game.Objects || (Game.Objects = {}));
     })(Game = FroggerJS.Game || (FroggerJS.Game = {}));
 })(FroggerJS || (FroggerJS = {}));
@@ -189,7 +336,8 @@ var FroggerJS;
         var Frog = FroggerJS.Game.Objects.Frog;
         var Event = Utils.Event;
         var Logger = Utils.Logger;
-        var TilingSprite = PIXI.extras.TilingSprite;
+        var Car = FroggerJS.Game.Objects.Car;
+        var OrientationUtils = FroggerJS.Game.Objects.OrientationUtils;
         var GameManager = (function () {
             function GameManager(imageLoader, scene) {
                 this.onGameOver = new Event();
@@ -197,35 +345,70 @@ var FroggerJS;
                 this.scene = scene;
                 this.imageLoader = imageLoader;
                 this.frog = new Frog(imageLoader);
+                this.movableObjects = [];
             }
             GameManager.prototype.loadLevel = function (levelConfiguration) {
                 Logger.logMessage("Initialize level " + levelConfiguration["level"] + "...");
                 var list = [
-                    "grass",
-                    "water",
-                    "water",
-                    "grass",
-                    "road",
-                    "road",
-                    "road",
-                    "grass"
+                    { texture: "grass-water-top" },
+                    { texture: "water", object: "boat", orientation: "right", speed: 1 },
+                    { texture: "water", object: "boat", orientation: "left", speed: 1.5 },
+                    { texture: "water", object: "boat", orientation: "right", speed: 1 },
+                    { texture: "grass-water-bottom" },
+                    { texture: "road-top", object: "car", orientation: "left", speed: 1 },
+                    { texture: "road-middle-top", object: "car", orientation: "left", speed: 1.5 },
+                    { texture: "road-middle-bottom", object: "car", orientation: "right", speed: 1.5 },
+                    { texture: "road-bottom", object: "car", orientation: "right", speed: 1 },
+                    { texture: "grass" }
                 ];
+                var SCALE_RATIO = FroggerJS.Constants.TILE_SIZE / FroggerJS.Constants.ASSET_SIZE;
+                var WIDTH_SPRITES_NUMBER = this.scene.getWidth() / FroggerJS.Constants.TILE_SIZE;
                 for (var i = 0; i < list.length; ++i) {
-                    var tilingSprite = new TilingSprite(this.imageLoader.get(list[i]), this.scene.getWidth(), 75);
-                    tilingSprite.position.y = i * 75;
-                    this.scene.addChild(tilingSprite);
+                    var texture = this.imageLoader.get(list[i].texture);
+                    for (var j = 0; j < WIDTH_SPRITES_NUMBER; ++j) {
+                        var sprite = new PIXI.Sprite(texture);
+                        sprite.position.x = j * FroggerJS.Constants.TILE_SIZE;
+                        sprite.position.y = i * FroggerJS.Constants.TILE_SIZE;
+                        this.scene.addChild(sprite, SCALE_RATIO);
+                    }
+                    this.movableObjects[i] = [];
+                    if (list[i].hasOwnProperty("object")) {
+                        if (!list[i].hasOwnProperty("orientation")) {
+                            throw "ERROR: Orientation property is missing.";
+                        }
+                        if (!list[i].hasOwnProperty("speed")) {
+                            throw "ERROR: Speed property is missing.";
+                        }
+                        var nextPosition = 0;
+                        var spriteHeight = 0;
+                        do {
+                            var movableObject = new Car(this.imageLoader, OrientationUtils.fromStringToOrientation(list[i]['orientation']), list[i].speed);
+                            var sprite = movableObject.getSprite();
+                            sprite.position.x = nextPosition;
+                            sprite.position.y = i * FroggerJS.Constants.TILE_SIZE;
+                            spriteHeight = sprite.height;
+                            nextPosition += spriteHeight + Math.floor((Math.random() * 2 * spriteHeight) + spriteHeight);
+                            this.movableObjects[i].push(movableObject);
+                            this.scene.addChild(movableObject, SCALE_RATIO);
+                        } while (nextPosition < this.scene.getWidth() + spriteHeight);
+                    }
                 }
-                this.scene.addChild(this.frog);
-                document.addEventListener("keydown", this.frog.onKeyPressedDown);
-                document.addEventListener("keyup", this.frog.onKeyPressedUp);
-                this.scene.onRender.register(this.update);
+                this.scene.addChild(this.frog, SCALE_RATIO);
+                document.addEventListener("keydown", this.frog.onKeyDown);
+                document.addEventListener("keyup", this.frog.onKeyUp);
+                this.scene.onRender.register(this.update.bind(this));
             };
             GameManager.prototype.clearLevel = function () {
-                document.removeEventListener("keydown", this.frog.onKeyPressedDown);
-                document.removeEventListener("keyup", this.frog.onKeyPressedUp);
+                document.removeEventListener("keydown", this.frog.onKeyDown);
+                document.removeEventListener("keyup", this.frog.onKeyUp);
                 this.scene.onRender.unregister(this.update);
             };
             GameManager.prototype.update = function () {
+                for (var i = 0; i < this.movableObjects.length; ++i) {
+                    for (var j = 0; j < this.movableObjects[i].length; ++j) {
+                        this.movableObjects[i][j].updatePosition();
+                    }
+                }
             };
             return GameManager;
         }());
@@ -367,7 +550,7 @@ var FroggerJS;
             loader.register(App.resources);
             loader.onLoadingCompleted.register(function () {
                 Logger.logMessage("Resources loaded.", LogLevel.Info);
-                var scene = new Scene(800, 600);
+                var scene = new Scene(FroggerJS.Constants.WINDOW_WIDTH, FroggerJS.Constants.WINDOW_HEIGHT);
                 var gameLevelManager = new GameLevelManager(loader, scene);
                 var stateManager = new StateManager();
                 stateManager.register("mainMenu", new MainMenuState(stateManager));
@@ -380,16 +563,41 @@ var FroggerJS;
             loader.load();
         };
         App.resources = [
+            "boat-red",
+            "boat-yellow",
+            "car-blue",
+            "car-green",
+            "car-red",
+            "car-white",
             "frog",
-            "frog-2",
-            "boat",
+            "frog-extend",
             "grass",
+            "grass-water-top",
+            "grass-water-bottom",
             "water",
-            "road"
+            "road-top",
+            "road-middle-top",
+            "road-middle-bottom",
+            "road-bottom"
         ];
         return App;
     }());
     FroggerJS.App = App;
 })(FroggerJS || (FroggerJS = {}));
 FroggerJS.App.initialize();
+var Utils;
+(function (Utils) {
+    var Physics = (function () {
+        function Physics() {
+        }
+        Physics.collides = function (rect1, rect2) {
+            return (rect1.x < rect2.x + rect2.width &&
+                rect1.x + rect1.width > rect2.x &&
+                rect1.y < rect2.y + rect2.height &&
+                rect1.height + rect1.y > rect2.y);
+        };
+        return Physics;
+    }());
+    Utils.Physics = Physics;
+})(Utils || (Utils = {}));
 //# sourceMappingURL=frogger.js.map

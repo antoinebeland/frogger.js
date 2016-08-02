@@ -1,3 +1,4 @@
+/// <reference path="constants.ts" />
 /// <reference path="./graphics/imageLoader.ts" />
 /// <reference path="./graphics/scene.ts" />
 /// <reference path="./game/gameManager.ts" />
@@ -9,6 +10,8 @@
 
 namespace FroggerJS {
 
+    declare var PIXI: any;
+
     import GraphicsLoader = FroggerJS.Graphics.ImageLoader;
     import Scene = FroggerJS.Graphics.Scene;
     import GameLevelManager = FroggerJS.Game.GameManager;
@@ -19,17 +22,25 @@ namespace FroggerJS {
     import Logger = Utils.Logger;
     import LogLevel = Utils.LogLevel;
 
-    declare var PIXI: any;
-
     export class App {
 
         private static resources = [
+            "boat-red",
+            "boat-yellow",
+            "car-blue",
+            "car-green",
+            "car-red",
+            "car-white",
             "frog",
-            "frog-2",
-            "boat",
+            "frog-extend",
             "grass",
+            "grass-water-top",
+            "grass-water-bottom",
             "water",
-            "road"
+            "road-top",
+            "road-middle-top",
+            "road-middle-bottom",
+            "road-bottom"
         ];
 
         public static initialize() {
@@ -47,7 +58,7 @@ namespace FroggerJS {
 
                 Logger.logMessage("Resources loaded.", LogLevel.Info);
 
-                let scene = new Scene(800, 600);
+                let scene = new Scene(FroggerJS.Constants.WINDOW_WIDTH, FroggerJS.Constants.WINDOW_HEIGHT);
                 let gameLevelManager = new GameLevelManager(loader, scene);
 
                 let stateManager = new StateManager();

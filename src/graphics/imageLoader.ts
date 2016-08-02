@@ -24,6 +24,8 @@ namespace FroggerJS.Graphics {
          */
         public constructor(baseResourcesPath : string) {
 
+            // TODO: Manage the resolution here...
+            
             this.loader = PIXI.loader;
             this.baseResourcesPath = baseResourcesPath;
 
