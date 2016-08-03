@@ -27,7 +27,7 @@ namespace FroggerJS.States {
 
             this.gameLevelManager.onGameOver.register(this.gameOverOccurred);
             this.gameLevelManager.onNextLevel.register(this.nextLevelOccurred);
-            this.gameLevelManager.loadLevel(this.levelConfiguration);
+            this.gameLevelManager.setupLevel(this.levelConfiguration);
         }
 
         public leaving(): void {

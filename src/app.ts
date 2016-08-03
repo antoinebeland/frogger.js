@@ -1,4 +1,4 @@
-/// <reference path="constants.ts" />
+/// <reference path="configuration.ts" />
 /// <reference path="./graphics/imageLoader.ts" />
 /// <reference path="./graphics/scene.ts" />
 /// <reference path="./game/gameManager.ts" />
@@ -31,6 +31,7 @@ namespace FroggerJS {
             "car-green",
             "car-red",
             "car-white",
+            "car-collider",
             "frog",
             "frog-extend",
             "grass",

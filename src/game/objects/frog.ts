@@ -1,5 +1,5 @@
 /// <reference path="orientation.ts" />
-/// <reference path="../../constants.ts" />
+/// <reference path="../../configuration.ts" />
 /// <reference path="../../graphics/renderable.ts" />
 /// <reference path="../../graphics/imageLoader.ts" />
 
@@ -77,6 +77,11 @@ namespace FroggerJS.Game.Objects {
                         break;
                 }
             };
+        }
+
+        public follow(mobile: Mobile): void {
+            //let position = mobile.getSprite().position;
+
         }
 
         public getSprite(): PIXI.Sprite {

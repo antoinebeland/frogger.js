@@ -1,3 +1,8 @@
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var FroggerJS;
 (function (FroggerJS) {
     FroggerJS.Constants = {
@@ -6,6 +11,20 @@ var FroggerJS;
         WINDOW_WIDTH: 780,
         WINDOW_HEIGHT: 600
     };
+    FroggerJS.Levels = [
+        [
+            { texture: "grass-water-top", touchAllowed: true },
+            { texture: "water", touchAllowed: false, mobile: { type: "boat", orientation: "right", speed: 1 } },
+            { texture: "water", touchAllowed: false, mobile: { type: "boat", orientation: "left", speed: 1.5 } },
+            { texture: "water", touchAllowed: false, mobile: { type: "boat", orientation: "right", speed: 1 } },
+            { texture: "grass-water-bottom", touchAllowed: true },
+            { texture: "road-top", touchAllowed: true, mobile: { type: "car", orientation: "left", speed: 1 } },
+            { texture: "road-middle-top", touchAllowed: true, mobile: { type: "car", orientation: "left", speed: 1.5 } },
+            { texture: "road-middle-bottom", touchAllowed: true, mobile: { type: "car", orientation: "right", speed: 1.5 } },
+            { texture: "road-bottom", touchAllowed: true, mobile: { type: "car", orientation: "right", speed: 1 } },
+            { texture: "grass", touchAllowed: true }
+        ]
+    ];
 })(FroggerJS || (FroggerJS = {}));
 var Utils;
 (function (Utils) {
@@ -96,12 +115,6 @@ var FroggerJS;
             Scene.prototype.removeChild = function (object) {
                 var sprite = (object instanceof PIXI.Sprite) ? object : object.getSprite();
                 this.stage.removeChild(sprite);
-            };
-            Scene.prototype.getWidth = function () {
-                return this.width;
-            };
-            Scene.prototype.getHeight = function () {
-                return this.height;
             };
             Scene.prototype.render = function () {
                 var self = this;
@@ -216,6 +229,8 @@ var FroggerJS;
                         }
                     };
                 }
+                Frog.prototype.follow = function (mobile) {
+                };
                 Frog.prototype.getSprite = function () {
                     return this.sprite;
                 };
@@ -231,20 +246,17 @@ var FroggerJS;
     (function (Game) {
         var Objects;
         (function (Objects) {
-            var Car = (function () {
-                function Car(imageLoader, orientation, speed) {
-                    var colorIndex = Math.floor(Math.random() * Car.availableColors.length);
-                    this.sprite = new PIXI.Sprite(imageLoader.get("car-" + Car.availableColors[colorIndex]));
+            var Mobile = (function () {
+                function Mobile(sprite, orientation, speed) {
+                    this.speedDecimal = 0;
+                    this.sprite = sprite;
                     this.orientation = orientation;
                     this.speed = speed;
-                    this.speedDecimal = 0;
-                    this.sprite.scale.x = 0.5;
-                    this.sprite.scale.y = 0.5;
                     this.sprite.anchor = new PIXI.Point(0.5, 0.5);
                     this.sprite.rotation = orientation;
                     this.sprite.anchor = (orientation == Objects.Orientation.Right) ? new PIXI.Point(0, 0) : new PIXI.Point(1, 1);
                 }
-                Car.prototype.updatePosition = function () {
+                Mobile.prototype.updatePosition = function () {
                     var speedToApply = this.speed;
                     if (this.speed % 1 != 0) {
                         this.speedDecimal += this.speed;
@@ -252,16 +264,39 @@ var FroggerJS;
                         this.speedDecimal = this.speedDecimal % 1;
                     }
                     this.sprite.position.x += (this.orientation == Objects.Orientation.Left) ? -speedToApply : speedToApply;
-                    if (this.sprite.position.x > 800 + this.sprite.height) {
+                    if (this.sprite.position.x > FroggerJS.Constants.WINDOW_WIDTH + this.sprite.height) {
                         this.sprite.position.x = -this.sprite.height;
                     }
                     else if (this.sprite.position.x < -this.sprite.height) {
-                        this.sprite.position.x = 800 + this.sprite.height;
+                        this.sprite.position.x = FroggerJS.Constants.WINDOW_WIDTH + this.sprite.height;
                     }
                 };
-                Car.prototype.getSprite = function () {
+                Mobile.prototype.getSprite = function () {
                     return this.sprite;
                 };
+                return Mobile;
+            }());
+            Objects.Mobile = Mobile;
+        })(Objects = Game.Objects || (Game.Objects = {}));
+    })(Game = FroggerJS.Game || (FroggerJS.Game = {}));
+})(FroggerJS || (FroggerJS = {}));
+var FroggerJS;
+(function (FroggerJS) {
+    var Game;
+    (function (Game) {
+        var Objects;
+        (function (Objects) {
+            var Car = (function (_super) {
+                __extends(Car, _super);
+                function Car(imageLoader, orientation, speed) {
+                    var colorIndex = Math.floor(Math.random() * Car.availableColors.length);
+                    var sprite = new PIXI.Sprite(imageLoader.get(Car.TYPE + "-" + Car.availableColors[colorIndex]));
+                    _super.call(this, sprite, orientation, speed);
+                }
+                Car.prototype.isCollisionAccepted = function () {
+                    return false;
+                };
+                Car.TYPE = "car";
                 Car.availableColors = [
                     "blue",
                     "green",
@@ -269,7 +304,7 @@ var FroggerJS;
                     "white"
                 ];
                 return Car;
-            }());
+            }(Objects.Mobile));
             Objects.Car = Car;
         })(Objects = Game.Objects || (Game.Objects = {}));
     })(Game = FroggerJS.Game || (FroggerJS.Game = {}));
@@ -280,16 +315,49 @@ var FroggerJS;
     (function (Game) {
         var Objects;
         (function (Objects) {
-            var Boat = (function () {
-                function Boat(imageLoader) {
-                    this.sprite = new PIXI.Sprite(imageLoader.get("boat"));
+            var Boat = (function (_super) {
+                __extends(Boat, _super);
+                function Boat(imageLoader, orientation, speed) {
+                    var colorIndex = Math.floor(Math.random() * Boat.availableColors.length);
+                    var sprite = new PIXI.Sprite(imageLoader.get(Boat.TYPE + "-" + Boat.availableColors[colorIndex]));
+                    _super.call(this, sprite, orientation, speed);
                 }
-                Boat.prototype.getSprite = function () {
-                    return this.sprite;
+                Boat.prototype.isCollisionAccepted = function () {
+                    return true;
                 };
+                Boat.TYPE = "boat";
+                Boat.availableColors = [
+                    "red",
+                    "yellow"
+                ];
                 return Boat;
-            }());
+            }(Objects.Mobile));
             Objects.Boat = Boat;
+        })(Objects = Game.Objects || (Game.Objects = {}));
+    })(Game = FroggerJS.Game || (FroggerJS.Game = {}));
+})(FroggerJS || (FroggerJS = {}));
+var FroggerJS;
+(function (FroggerJS) {
+    var Game;
+    (function (Game) {
+        var Objects;
+        (function (Objects) {
+            var MobileFactory = (function () {
+                function MobileFactory(imageLoader) {
+                    this.imageLoader = imageLoader;
+                }
+                MobileFactory.prototype.createMobile = function (mobileName, orientation, speed) {
+                    switch (mobileName.toLowerCase()) {
+                        case Objects.Car.TYPE:
+                            return new Objects.Car(this.imageLoader, orientation, speed);
+                        case Objects.Boat.TYPE:
+                            return new Objects.Boat(this.imageLoader, orientation, speed);
+                    }
+                    throw "ERROR: The mobile name doesn't exist.";
+                };
+                return MobileFactory;
+            }());
+            Objects.MobileFactory = MobileFactory;
         })(Objects = Game.Objects || (Game.Objects = {}));
     })(Game = FroggerJS.Game || (FroggerJS.Game = {}));
 })(FroggerJS || (FroggerJS = {}));
@@ -336,8 +404,8 @@ var FroggerJS;
         var Frog = FroggerJS.Game.Objects.Frog;
         var Event = Utils.Event;
         var Logger = Utils.Logger;
-        var Car = FroggerJS.Game.Objects.Car;
         var OrientationUtils = FroggerJS.Game.Objects.OrientationUtils;
+        var MobileFactory = FroggerJS.Game.Objects.MobileFactory;
         var GameManager = (function () {
             function GameManager(imageLoader, scene) {
                 this.onGameOver = new Event();
@@ -345,52 +413,55 @@ var FroggerJS;
                 this.scene = scene;
                 this.imageLoader = imageLoader;
                 this.frog = new Frog(imageLoader);
-                this.movableObjects = [];
+                this.mobileFactory = new MobileFactory(imageLoader);
+                this.mobileObjects = [];
             }
-            GameManager.prototype.loadLevel = function (levelConfiguration) {
+            GameManager.prototype.setupLevel = function (levelConfiguration) {
                 Logger.logMessage("Initialize level " + levelConfiguration["level"] + "...");
-                var list = [
-                    { texture: "grass-water-top" },
-                    { texture: "water", object: "boat", orientation: "right", speed: 1 },
-                    { texture: "water", object: "boat", orientation: "left", speed: 1.5 },
-                    { texture: "water", object: "boat", orientation: "right", speed: 1 },
-                    { texture: "grass-water-bottom" },
-                    { texture: "road-top", object: "car", orientation: "left", speed: 1 },
-                    { texture: "road-middle-top", object: "car", orientation: "left", speed: 1.5 },
-                    { texture: "road-middle-bottom", object: "car", orientation: "right", speed: 1.5 },
-                    { texture: "road-bottom", object: "car", orientation: "right", speed: 1 },
-                    { texture: "grass" }
-                ];
+                var level = FroggerJS.Levels[0];
+                if (level.length != FroggerJS.Constants.WINDOW_HEIGHT / FroggerJS.Constants.TILE_SIZE) {
+                    throw "ERROR: The level configuration isn't valid.";
+                }
                 var SCALE_RATIO = FroggerJS.Constants.TILE_SIZE / FroggerJS.Constants.ASSET_SIZE;
-                var WIDTH_SPRITES_NUMBER = this.scene.getWidth() / FroggerJS.Constants.TILE_SIZE;
-                for (var i = 0; i < list.length; ++i) {
-                    var texture = this.imageLoader.get(list[i].texture);
+                var WIDTH_SPRITES_NUMBER = FroggerJS.Constants.WINDOW_WIDTH / FroggerJS.Constants.TILE_SIZE;
+                for (var i = 0; i < level.length; ++i) {
+                    if (!level[i].hasOwnProperty("texture")) {
+                        throw "ERROR: Texture property is missing.";
+                    }
+                    if (!level[i].hasOwnProperty("touchAllowed")) {
+                        throw "ERROR: TouchAllowed property is missing.";
+                    }
+                    var texture = this.imageLoader.get(level[i].texture);
                     for (var j = 0; j < WIDTH_SPRITES_NUMBER; ++j) {
                         var sprite = new PIXI.Sprite(texture);
                         sprite.position.x = j * FroggerJS.Constants.TILE_SIZE;
                         sprite.position.y = i * FroggerJS.Constants.TILE_SIZE;
                         this.scene.addChild(sprite, SCALE_RATIO);
                     }
-                    this.movableObjects[i] = [];
-                    if (list[i].hasOwnProperty("object")) {
-                        if (!list[i].hasOwnProperty("orientation")) {
+                    this.mobileObjects[i] = [];
+                    if (level[i].hasOwnProperty("mobile")) {
+                        if (!level[i]['mobile'].hasOwnProperty("type")) {
+                            throw "ERROR: Type property is missing.";
+                        }
+                        if (!level[i]['mobile'].hasOwnProperty("orientation")) {
                             throw "ERROR: Orientation property is missing.";
                         }
-                        if (!list[i].hasOwnProperty("speed")) {
+                        if (!level[i]['mobile'].hasOwnProperty("speed")) {
                             throw "ERROR: Speed property is missing.";
                         }
                         var nextPosition = 0;
                         var spriteHeight = 0;
+                        var orientation_1 = OrientationUtils.fromStringToOrientation(level[i]['mobile']['orientation']);
                         do {
-                            var movableObject = new Car(this.imageLoader, OrientationUtils.fromStringToOrientation(list[i]['orientation']), list[i].speed);
+                            var movableObject = this.mobileFactory.createMobile(level[i]['mobile'].type, orientation_1, level[i]['mobile'].speed);
                             var sprite = movableObject.getSprite();
                             sprite.position.x = nextPosition;
                             sprite.position.y = i * FroggerJS.Constants.TILE_SIZE;
                             spriteHeight = sprite.height;
-                            nextPosition += spriteHeight + Math.floor((Math.random() * 2 * spriteHeight) + spriteHeight);
-                            this.movableObjects[i].push(movableObject);
+                            nextPosition += spriteHeight + Math.floor((Math.random() * 3 * spriteHeight / 2) + spriteHeight / 2);
+                            this.mobileObjects[i].push(movableObject);
                             this.scene.addChild(movableObject, SCALE_RATIO);
-                        } while (nextPosition < this.scene.getWidth() + spriteHeight);
+                        } while (nextPosition < FroggerJS.Constants.WINDOW_WIDTH);
                     }
                 }
                 this.scene.addChild(this.frog, SCALE_RATIO);
@@ -404,9 +475,12 @@ var FroggerJS;
                 this.scene.onRender.unregister(this.update);
             };
             GameManager.prototype.update = function () {
-                for (var i = 0; i < this.movableObjects.length; ++i) {
-                    for (var j = 0; j < this.movableObjects[i].length; ++j) {
-                        this.movableObjects[i][j].updatePosition();
+                var FROG_INDEX_POSITION = Math.floor(this.frog.getSprite().position.y / FroggerJS.Constants.TILE_SIZE);
+                for (var i = 0; i < this.mobileObjects.length; ++i) {
+                    for (var j = 0; j < this.mobileObjects[i].length; ++j) {
+                        this.mobileObjects[i][j].updatePosition();
+                        if (FROG_INDEX_POSITION == i) {
+                        }
                     }
                 }
             };
@@ -483,7 +557,7 @@ var FroggerJS;
                 Logger.logMessage("Entered in 'Game Level " + this.levelConfiguration["level"] + " State'.");
                 this.gameLevelManager.onGameOver.register(this.gameOverOccurred);
                 this.gameLevelManager.onNextLevel.register(this.nextLevelOccurred);
-                this.gameLevelManager.loadLevel(this.levelConfiguration);
+                this.gameLevelManager.setupLevel(this.levelConfiguration);
             };
             GameLevelState.prototype.leaving = function () {
                 this.gameLevelManager.onGameOver.unregister(this.gameOverOccurred);
@@ -569,6 +643,7 @@ var FroggerJS;
             "car-green",
             "car-red",
             "car-white",
+            "car-collider",
             "frog",
             "frog-extend",
             "grass",

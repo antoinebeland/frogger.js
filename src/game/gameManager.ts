@@ -1,8 +1,7 @@
 /// <reference path="./objects/orientation.ts" />
 /// <reference path="./objects/frog.ts" />
-/// <reference path="./objects/car.ts" />
-/// <reference path="./objects/boat.ts" />
-/// <reference path="../constants.ts" />
+/// <reference path="./objects/mobileFactory.ts" />
+/// <reference path="../configuration.ts" />
 /// <reference path="../graphics/imageLoader.ts" />
 /// <reference path="../graphics/scene.ts" />
 /// <reference path="../utils/event.ts" />
@@ -15,10 +14,8 @@ namespace FroggerJS.Game {
     import Frog = FroggerJS.Game.Objects.Frog;
     import Event = Utils.Event;
     import Logger = Utils.Logger;
-    import Boat = FroggerJS.Game.Objects.Boat;
-    import FXAAFilter = PIXI.FXAAFilter;
-    import Car = FroggerJS.Game.Objects.Car;
     import OrientationUtils = FroggerJS.Game.Objects.OrientationUtils;
+    import MobileFactory = FroggerJS.Game.Objects.MobileFactory;
 
     export class GameManager {
 
@@ -26,7 +23,8 @@ namespace FroggerJS.Game {
         private imageLoader: ImageLoader;
         private frog: Frog;
 
-        private movableObjects: any;
+        private mobileFactory: MobileFactory;
+        private mobileObjects: any;
 
         public onGameOver = new Event<void>();
         public onNextLevel = new Event<void>();
@@ -35,33 +33,36 @@ namespace FroggerJS.Game {
             this.scene = scene;
             this.imageLoader = imageLoader;
             this.frog = new Frog(imageLoader);
-            this.movableObjects = [];
+            this.mobileFactory = new MobileFactory(imageLoader);
+            this.mobileObjects = [];
         }
 
-        public loadLevel(levelConfiguration: any): void {
+        public setupLevel(levelConfiguration: any): void {
 
             Logger.logMessage(`Initialize level ${levelConfiguration["level"]}...`);
 
-            let list: any = [
-                {texture: "grass-water-top"},
-                {texture: "water", object: "boat", orientation: "right", speed: 1},
-                {texture: "water", object: "boat", orientation: "left", speed: 1.5},
-                {texture: "water", object: "boat", orientation: "right", speed: 1},
-                {texture: "grass-water-bottom"},
-                {texture: "road-top", object: "car", orientation: "left", speed: 1},
-                {texture: "road-middle-top", object: "car", orientation: "left", speed: 1.5},
-                {texture: "road-middle-bottom", object: "car", orientation: "right", speed: 1.5},
-                {texture: "road-bottom", object: "car", orientation: "right", speed: 1},
-                {texture: "grass"}
-            ];
+            // TODO: Put with the level configuration.
+            let level: any = FroggerJS.Levels[0];
+
+            if (level.length != FroggerJS.Constants.WINDOW_HEIGHT / FroggerJS.Constants.TILE_SIZE) {
+                throw "ERROR: The level configuration isn't valid."
+            }
 
             const SCALE_RATIO = FroggerJS.Constants.TILE_SIZE / FroggerJS.Constants.ASSET_SIZE;
-            const WIDTH_SPRITES_NUMBER = this.scene.getWidth() / FroggerJS.Constants.TILE_SIZE;
+            const WIDTH_SPRITES_NUMBER = FroggerJS.Constants.WINDOW_WIDTH / FroggerJS.Constants.TILE_SIZE;
 
-            for(let i = 0; i < list.length; ++i) {
+            for(let i = 0; i < level.length; ++i) {
 
-                let texture = this.imageLoader.get(list[i].texture);
-                for(let j = 0; j < WIDTH_SPRITES_NUMBER; ++j) {
+                if (!level[i].hasOwnProperty("texture")) {
+                    throw "ERROR: Texture property is missing.";
+                }
+                if (!level[i].hasOwnProperty("touchAllowed")) {
+                    throw "ERROR: TouchAllowed property is missing.";
+                }
+
+                // Generates the tiles
+                let texture = this.imageLoader.get(level[i].texture);
+                for (let j = 0; j < WIDTH_SPRITES_NUMBER; ++j) {
 
                     let sprite = new PIXI.Sprite(texture);
                     sprite.position.x = j * FroggerJS.Constants.TILE_SIZE;
@@ -69,32 +70,39 @@ namespace FroggerJS.Game {
                     this.scene.addChild(sprite, SCALE_RATIO);
                 }
 
-                this.movableObjects[i] = [];
-                if(list[i].hasOwnProperty("object")) {
+                // Added the mobile objects
+                this.mobileObjects[i] = [];
+                if (level[i].hasOwnProperty("mobile")) {
 
-                    if(!list[i].hasOwnProperty("orientation")) {
+                    if (!level[i]['mobile'].hasOwnProperty("type")) {
+                        throw "ERROR: Type property is missing.";
+                    }
+                    if (!level[i]['mobile'].hasOwnProperty("orientation")) {
                         throw "ERROR: Orientation property is missing.";
                     }
-                    if(!list[i].hasOwnProperty("speed")) {
+                    if (!level[i]['mobile'].hasOwnProperty("speed")) {
                         throw "ERROR: Speed property is missing.";
                     }
 
                     let nextPosition = 0;
                     let spriteHeight = 0;
+                    let orientation = OrientationUtils.fromStringToOrientation(level[i]['mobile']['orientation']);
                     do {
-                        let movableObject = new Car(this.imageLoader, OrientationUtils.fromStringToOrientation(list[i]['orientation']), list[i].speed);
+                        let movableObject =
+                            this.mobileFactory.createMobile(level[i]['mobile'].type, orientation, level[i]['mobile'].speed);
                         
                         let sprite = movableObject.getSprite();
                         sprite.position.x = nextPosition;
                         sprite.position.y = i * FroggerJS.Constants.TILE_SIZE;
 
+                        // Generates the next position of the sprite.
                         spriteHeight = sprite.height;
-                        nextPosition += spriteHeight + Math.floor((Math.random() * 2 * spriteHeight) + spriteHeight);
+                        nextPosition += spriteHeight + Math.floor((Math.random() * 3 * spriteHeight / 2) + spriteHeight / 2);
 
-                        this.movableObjects[i].push(movableObject);
+                        this.mobileObjects[i].push(movableObject);
                         this.scene.addChild(movableObject, SCALE_RATIO);
 
-                    } while(nextPosition < this.scene.getWidth() + spriteHeight);
+                    } while (nextPosition < FroggerJS.Constants.WINDOW_WIDTH);
                 }
             }
 
@@ -115,9 +123,19 @@ namespace FroggerJS.Game {
 
         private update(): void {
 
-            for(let i = 0; i < this.movableObjects.length; ++i) {
-                for(let j = 0; j < this.movableObjects[i].length; ++j) {
-                   this.movableObjects[i][j].updatePosition();
+            const FROG_INDEX_POSITION = Math.floor(this.frog.getSprite().position.y / FroggerJS.Constants.TILE_SIZE);
+
+            for (let i = 0; i < this.mobileObjects.length; ++i) {
+
+
+                for (let j = 0; j < this.mobileObjects[i].length; ++j) {
+                   this.mobileObjects[i][j].updatePosition();
+
+                    if (FROG_INDEX_POSITION == i) {
+
+                    }
+
+                    
                 }
             }
 

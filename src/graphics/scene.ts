@@ -1,4 +1,4 @@
-/// <reference path="../constants.ts" />
+/// <reference path="../configuration.ts" />
 /// <reference path="renderable.ts" />
 /// <reference path="../utils/event.ts" />
 
@@ -41,14 +41,6 @@ namespace FroggerJS.Graphics {
         public removeChild(object: PIXI.Sprite | Renderable): void {
             let sprite = (object instanceof PIXI.Sprite) ? object : object.getSprite();
             this.stage.removeChild(sprite);
-        }
-
-        public getWidth(): number {
-            return this.width;
-        }
-
-        public getHeight(): number {
-            return this.height;
         }
 
         // TODO: Use PIXI.ticker.shared instead...

@@ -1,21 +1,28 @@
-/// <reference path="../../graphics/renderable.ts" />
+/// <reference path="mobile.ts" />
+/// <reference path="orientation.ts" />
 /// <reference path="../../graphics/imageLoader.ts" />
 
 namespace FroggerJS.Game.Objects {
     
     import ImageLoader = FroggerJS.Graphics.ImageLoader;
-    import Renderable = FroggerJS.Graphics.Renderable;
 
-    export class Boat implements Renderable {
+    export class Boat extends Mobile {
 
-        private sprite: PIXI.Sprite;
+        public static TYPE = "boat";
+        private static availableColors = [
+            "red",
+            "yellow"
+        ];
 
-        public constructor(imageLoader: ImageLoader) {
-            this.sprite = new PIXI.Sprite(imageLoader.get("boat"));
+        public constructor(imageLoader: ImageLoader, orientation: Orientation, speed: number) {
+
+            let colorIndex = Math.floor(Math.random() * Boat.availableColors.length);
+            let sprite = new PIXI.Sprite(imageLoader.get(`${Boat.TYPE}-${Boat.availableColors[colorIndex]}`));
+            super(sprite, orientation, speed);
         }
-        
-        public getSprite(): PIXI.Sprite {
-            return this.sprite;
+
+        public isCollisionAccepted(): boolean {
+            return true;
         }
     }
 }
