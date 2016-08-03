@@ -14,7 +14,7 @@ namespace FroggerJS.Game.Objects {
             this.imageLoader = imageLoader;
         }
 
-        public createMobile(mobileName: string, orientation: Orientation, speed: number): Mobile {
+        public createMobile(mobileName: string, orientation: Orientation, speed: number): MobileObject {
 
             switch (mobileName.toLowerCase()) {
                 case Car.TYPE:

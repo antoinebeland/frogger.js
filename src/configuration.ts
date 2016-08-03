@@ -4,7 +4,8 @@ namespace FroggerJS {
         TILE_SIZE: 60,
         ASSET_SIZE: 120,
         WINDOW_WIDTH: 780,
-        WINDOW_HEIGHT: 600
+        WINDOW_HEIGHT: 600,
+        DISPLAY_BOUNDING: true
     };
 
     export var Levels: any = [

@@ -9,7 +9,8 @@ var FroggerJS;
         TILE_SIZE: 60,
         ASSET_SIZE: 120,
         WINDOW_WIDTH: 780,
-        WINDOW_HEIGHT: 600
+        WINDOW_HEIGHT: 600,
+        DISPLAY_BOUNDING: true
     };
     FroggerJS.Levels = [
         [
@@ -107,13 +108,13 @@ var FroggerJS;
             }
             Scene.prototype.addChild = function (object, scaleToApply) {
                 if (scaleToApply === void 0) { scaleToApply = 1; }
-                var sprite = (object instanceof PIXI.Sprite) ? object : object.getSprite();
+                var sprite = (object instanceof PIXI.DisplayObject) ? object : object.getDisplayObject();
                 sprite.scale.x = scaleToApply;
                 sprite.scale.y = scaleToApply;
                 this.stage.addChild(sprite);
             };
             Scene.prototype.removeChild = function (object) {
-                var sprite = (object instanceof PIXI.Sprite) ? object : object.getSprite();
+                var sprite = (object instanceof PIXI.DisplayObject) ? object : object.getDisplayObject();
                 this.stage.removeChild(sprite);
             };
             Scene.prototype.render = function () {
@@ -172,10 +173,70 @@ var FroggerJS;
 })(FroggerJS || (FroggerJS = {}));
 var FroggerJS;
 (function (FroggerJS) {
+    var Physics;
+    (function (Physics) {
+        var CircleBounding = (function () {
+            function CircleBounding(center, radius) {
+                this.center = center;
+                this.radius = radius;
+            }
+            CircleBounding.prototype.getCenter = function () {
+                return this.center;
+            };
+            CircleBounding.prototype.getRadius = function () {
+                return this.radius;
+            };
+            CircleBounding.prototype.isCollide = function (bounding) {
+                if (bounding instanceof Physics.RectangleBounding) {
+                    var widthDivided = bounding.getWidth() / 2;
+                    var heightDivided = bounding.getHeight() / 2;
+                    var distX = Math.abs(this.center.x - bounding.getTop().x - widthDivided);
+                    var distY = Math.abs(this.center.y - bounding.getTop().y - heightDivided);
+                    if (distX > (widthDivided + this.radius)) {
+                        return false;
+                    }
+                    if (distY > (heightDivided + this.radius)) {
+                        return false;
+                    }
+                    if (distX <= (widthDivided)) {
+                        return true;
+                    }
+                    if (distY <= (heightDivided)) {
+                        return true;
+                    }
+                    var dx = distX - widthDivided;
+                    var dy = distY - heightDivided;
+                    return (dx * dx + dy * dy <= (this.radius * this.radius));
+                }
+                else if (bounding instanceof CircleBounding) {
+                    var dx = this.center.x - bounding.getCenter().x;
+                    var dy = this.center.y - bounding.getCenter().y;
+                    var distance = Math.sqrt(dx * dx + dy * dy);
+                    return distance < this.radius + bounding.getRadius();
+                }
+                throw "ERROR: Unknown bounding.";
+            };
+            CircleBounding.prototype.getDisplayObject = function () {
+                var graphics = new PIXI.Graphics();
+                graphics.position = this.center;
+                graphics.alpha = 0.5;
+                graphics.beginFill(0xFF0000);
+                graphics.drawCircle(0, 0, this.radius);
+                graphics.endFill();
+                return graphics;
+            };
+            return CircleBounding;
+        }());
+        Physics.CircleBounding = CircleBounding;
+    })(Physics = FroggerJS.Physics || (FroggerJS.Physics = {}));
+})(FroggerJS || (FroggerJS = {}));
+var FroggerJS;
+(function (FroggerJS) {
     var Game;
     (function (Game) {
         var Objects;
         (function (Objects) {
+            var CircleBounding = FroggerJS.Physics.CircleBounding;
             var ArrowKeyCode;
             (function (ArrowKeyCode) {
                 ArrowKeyCode[ArrowKeyCode["Up"] = 38] = "Up";
@@ -190,6 +251,7 @@ var FroggerJS;
                     this.sprite = new PIXI.Sprite(this.keyUpTexture);
                     this.sprite.anchor = new PIXI.Point(0.5, 0.5);
                     this.sprite.position = new PIXI.Point(30, 30);
+                    this.bounding = new CircleBounding(this.sprite.position, this.sprite.width * 0.15);
                     var self = this;
                     this.onKeyDown = function (event) {
                         var rotation;
@@ -231,8 +293,11 @@ var FroggerJS;
                 }
                 Frog.prototype.follow = function (mobile) {
                 };
-                Frog.prototype.getSprite = function () {
+                Frog.prototype.getDisplayObject = function () {
                     return this.sprite;
+                };
+                Frog.prototype.getBounding = function () {
+                    return this.bounding;
                 };
                 return Frog;
             }());
@@ -242,21 +307,68 @@ var FroggerJS;
 })(FroggerJS || (FroggerJS = {}));
 var FroggerJS;
 (function (FroggerJS) {
+    var Physics;
+    (function (Physics) {
+        var RectangleBounding = (function () {
+            function RectangleBounding(top, width, height) {
+                this.top = top;
+                this.width = width;
+                this.height = height;
+            }
+            RectangleBounding.prototype.getTop = function () {
+                return this.top;
+            };
+            RectangleBounding.prototype.getWidth = function () {
+                return this.width;
+            };
+            RectangleBounding.prototype.getHeight = function () {
+                return this.height;
+            };
+            RectangleBounding.prototype.isCollide = function (bounding) {
+                if (bounding instanceof RectangleBounding) {
+                    return this.top.x < bounding.getTop().x + bounding.getWidth() &&
+                        this.top.x + this.width > bounding.getTop().x &&
+                        this.top.y < bounding.getTop().y + bounding.getHeight() &&
+                        this.height + this.top.y > bounding.getTop().y;
+                }
+                else if (bounding instanceof Physics.CircleBounding) {
+                    return bounding.isCollide(this);
+                }
+                throw "ERROR: Unknown bounding.";
+            };
+            RectangleBounding.prototype.getDisplayObject = function () {
+                var graphics = new PIXI.Graphics();
+                graphics.position = this.top;
+                graphics.alpha = 0.5;
+                graphics.beginFill(0x0000FF);
+                graphics.drawRect(0, 0, this.width, this.height);
+                graphics.endFill();
+                return graphics;
+            };
+            return RectangleBounding;
+        }());
+        Physics.RectangleBounding = RectangleBounding;
+    })(Physics = FroggerJS.Physics || (FroggerJS.Physics = {}));
+})(FroggerJS || (FroggerJS = {}));
+var FroggerJS;
+(function (FroggerJS) {
     var Game;
     (function (Game) {
         var Objects;
         (function (Objects) {
-            var Mobile = (function () {
-                function Mobile(sprite, orientation, speed) {
+            var RectangleBounding = FroggerJS.Physics.RectangleBounding;
+            var MobileObject = (function () {
+                function MobileObject(sprite, orientation, speed) {
                     this.speedDecimal = 0;
                     this.sprite = sprite;
                     this.orientation = orientation;
                     this.speed = speed;
                     this.sprite.anchor = new PIXI.Point(0.5, 0.5);
                     this.sprite.rotation = orientation;
-                    this.sprite.anchor = (orientation == Objects.Orientation.Right) ? new PIXI.Point(0, 0) : new PIXI.Point(1, 1);
+                    this.sprite.anchor = (orientation == Objects.Orientation.Right) ? new PIXI.Point(0, 1) : new PIXI.Point(1, 0);
+                    this.bounding = new RectangleBounding(this.sprite.position, this.sprite.height / 2, this.sprite.width / 2);
                 }
-                Mobile.prototype.updatePosition = function () {
+                MobileObject.prototype.updatePosition = function () {
                     var speedToApply = this.speed;
                     if (this.speed % 1 != 0) {
                         this.speedDecimal += this.speed;
@@ -271,12 +383,15 @@ var FroggerJS;
                         this.sprite.position.x = FroggerJS.Constants.WINDOW_WIDTH + this.sprite.height;
                     }
                 };
-                Mobile.prototype.getSprite = function () {
+                MobileObject.prototype.getDisplayObject = function () {
                     return this.sprite;
                 };
-                return Mobile;
+                MobileObject.prototype.getBounding = function () {
+                    return this.bounding;
+                };
+                return MobileObject;
             }());
-            Objects.Mobile = Mobile;
+            Objects.MobileObject = MobileObject;
         })(Objects = Game.Objects || (Game.Objects = {}));
     })(Game = FroggerJS.Game || (FroggerJS.Game = {}));
 })(FroggerJS || (FroggerJS = {}));
@@ -304,7 +419,7 @@ var FroggerJS;
                     "white"
                 ];
                 return Car;
-            }(Objects.Mobile));
+            }(Objects.MobileObject));
             Objects.Car = Car;
         })(Objects = Game.Objects || (Game.Objects = {}));
     })(Game = FroggerJS.Game || (FroggerJS.Game = {}));
@@ -331,7 +446,7 @@ var FroggerJS;
                     "yellow"
                 ];
                 return Boat;
-            }(Objects.Mobile));
+            }(Objects.MobileObject));
             Objects.Boat = Boat;
         })(Objects = Game.Objects || (Game.Objects = {}));
     })(Game = FroggerJS.Game || (FroggerJS.Game = {}));
@@ -454,7 +569,7 @@ var FroggerJS;
                         var orientation_1 = OrientationUtils.fromStringToOrientation(level[i]['mobile']['orientation']);
                         do {
                             var movableObject = this.mobileFactory.createMobile(level[i]['mobile'].type, orientation_1, level[i]['mobile'].speed);
-                            var sprite = movableObject.getSprite();
+                            var sprite = movableObject.getDisplayObject();
                             sprite.position.x = nextPosition;
                             sprite.position.y = i * FroggerJS.Constants.TILE_SIZE;
                             spriteHeight = sprite.height;
@@ -465,6 +580,14 @@ var FroggerJS;
                     }
                 }
                 this.scene.addChild(this.frog, SCALE_RATIO);
+                if (FroggerJS.Constants.DISPLAY_BOUNDING) {
+                    for (var i = 0; i < this.mobileObjects.length; ++i) {
+                        for (var j = 0; j < this.mobileObjects[i].length; ++j) {
+                            this.scene.addChild(this.mobileObjects[i][j].getBounding());
+                        }
+                    }
+                    this.scene.addChild(this.frog.getBounding());
+                }
                 document.addEventListener("keydown", this.frog.onKeyDown);
                 document.addEventListener("keyup", this.frog.onKeyUp);
                 this.scene.onRender.register(this.update.bind(this));
@@ -475,11 +598,14 @@ var FroggerJS;
                 this.scene.onRender.unregister(this.update);
             };
             GameManager.prototype.update = function () {
-                var FROG_INDEX_POSITION = Math.floor(this.frog.getSprite().position.y / FroggerJS.Constants.TILE_SIZE);
+                var FROG_INDEX_POSITION = Math.floor(this.frog.getDisplayObject().position.y / FroggerJS.Constants.TILE_SIZE);
                 for (var i = 0; i < this.mobileObjects.length; ++i) {
                     for (var j = 0; j < this.mobileObjects[i].length; ++j) {
                         this.mobileObjects[i][j].updatePosition();
                         if (FROG_INDEX_POSITION == i) {
+                            if (this.mobileObjects[i][j].getBounding().isCollide(this.frog.getBounding())) {
+                                console.log("COLLIDE!");
+                            }
                         }
                     }
                 }
@@ -643,7 +769,6 @@ var FroggerJS;
             "car-green",
             "car-red",
             "car-white",
-            "car-collider",
             "frog",
             "frog-extend",
             "grass",
@@ -660,19 +785,4 @@ var FroggerJS;
     FroggerJS.App = App;
 })(FroggerJS || (FroggerJS = {}));
 FroggerJS.App.initialize();
-var Utils;
-(function (Utils) {
-    var Physics = (function () {
-        function Physics() {
-        }
-        Physics.collides = function (rect1, rect2) {
-            return (rect1.x < rect2.x + rect2.width &&
-                rect1.x + rect1.width > rect2.x &&
-                rect1.y < rect2.y + rect2.height &&
-                rect1.height + rect1.y > rect2.y);
-        };
-        return Physics;
-    }());
-    Utils.Physics = Physics;
-})(Utils || (Utils = {}));
 //# sourceMappingURL=frogger.js.map

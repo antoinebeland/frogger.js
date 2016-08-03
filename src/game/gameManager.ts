@@ -1,6 +1,6 @@
 /// <reference path="./objects/orientation.ts" />
 /// <reference path="./objects/frog.ts" />
-/// <reference path="./objects/mobileFactory.ts" />
+/// <reference path="./objects/mobileObjectFactory.ts" />
 /// <reference path="../configuration.ts" />
 /// <reference path="../graphics/imageLoader.ts" />
 /// <reference path="../graphics/scene.ts" />
@@ -16,6 +16,7 @@ namespace FroggerJS.Game {
     import Logger = Utils.Logger;
     import OrientationUtils = FroggerJS.Game.Objects.OrientationUtils;
     import MobileFactory = FroggerJS.Game.Objects.MobileFactory;
+    import CircleBounding = FroggerJS.Physics.CircleBounding;
 
     export class GameManager {
 
@@ -91,9 +92,11 @@ namespace FroggerJS.Game {
                         let movableObject =
                             this.mobileFactory.createMobile(level[i]['mobile'].type, orientation, level[i]['mobile'].speed);
                         
-                        let sprite = movableObject.getSprite();
+                        let sprite = movableObject.getDisplayObject() as PIXI.Sprite;
                         sprite.position.x = nextPosition;
                         sprite.position.y = i * FroggerJS.Constants.TILE_SIZE;
+
+                        // TODO: Think that the sprite is bigger!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
                         // Generates the next position of the sprite.
                         spriteHeight = sprite.height;
@@ -107,6 +110,15 @@ namespace FroggerJS.Game {
             }
 
             this.scene.addChild(this.frog, SCALE_RATIO);
+
+            if(FroggerJS.Constants.DISPLAY_BOUNDING) {
+                for (let i = 0; i < this.mobileObjects.length; ++i) {
+                    for (let j = 0; j < this.mobileObjects[i].length; ++j) {
+                        this.scene.addChild(this.mobileObjects[i][j].getBounding());
+                    }
+                }
+                this.scene.addChild(this.frog.getBounding());
+            }
 
             document.addEventListener("keydown", this.frog.onKeyDown);
             document.addEventListener("keyup", this.frog.onKeyUp);
@@ -123,7 +135,7 @@ namespace FroggerJS.Game {
 
         private update(): void {
 
-            const FROG_INDEX_POSITION = Math.floor(this.frog.getSprite().position.y / FroggerJS.Constants.TILE_SIZE);
+            const FROG_INDEX_POSITION = Math.floor(this.frog.getDisplayObject().position.y / FroggerJS.Constants.TILE_SIZE);
 
             for (let i = 0; i < this.mobileObjects.length; ++i) {
 
@@ -132,10 +144,10 @@ namespace FroggerJS.Game {
                    this.mobileObjects[i][j].updatePosition();
 
                     if (FROG_INDEX_POSITION == i) {
-
+                        if (this.mobileObjects[i][j].getBounding().isCollide(this.frog.getBounding())) {
+                            console.log("COLLIDE!");
+                        }
                     }
-
-                    
                 }
             }
 

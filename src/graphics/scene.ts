@@ -30,16 +30,16 @@ namespace FroggerJS.Graphics {
             window.addEventListener("resize", this.resize.bind(this));
         }
 
-        public addChild(object: PIXI.Sprite | Renderable, scaleToApply: number = 1): void {
-            let sprite = (object instanceof PIXI.Sprite) ? object : object.getSprite();
+        public addChild(object: PIXI.DisplayObject | Renderable, scaleToApply: number = 1): void {
+            let sprite = (object instanceof PIXI.DisplayObject) ? object : object.getDisplayObject();
             sprite.scale.x = scaleToApply;
             sprite.scale.y = scaleToApply;
 
             this.stage.addChild(sprite);
         }
 
-        public removeChild(object: PIXI.Sprite | Renderable): void {
-            let sprite = (object instanceof PIXI.Sprite) ? object : object.getSprite();
+        public removeChild(object: PIXI.DisplayObject | Renderable): void {
+            let sprite = (object instanceof PIXI.DisplayObject) ? object : object.getDisplayObject();
             this.stage.removeChild(sprite);
         }
 

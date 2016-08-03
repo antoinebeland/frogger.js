@@ -31,7 +31,6 @@ namespace FroggerJS {
             "car-green",
             "car-red",
             "car-white",
-            "car-collider",
             "frog",
             "frog-extend",
             "grass",

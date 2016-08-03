@@ -2,18 +2,23 @@
 /// <reference path="../../configuration.ts" />
 /// <reference path="../../graphics/renderable.ts" />
 /// <reference path="../../graphics/imageLoader.ts" />
+/// <reference path="../../physics/collidable.ts" />
+/// <reference path="../../physics/rectangleBounding.ts" />
 
 namespace FroggerJS.Game.Objects {
 
     import Renderable = FroggerJS.Graphics.Renderable;
+    import Collidable = FroggerJS.Physics.Collidable;
+    import Bounding = FroggerJS.Physics.Bounding;
+    import RectangleBounding = FroggerJS.Physics.RectangleBounding;
 
-    export abstract class Mobile implements Renderable {
-        
+    export abstract class MobileObject implements Renderable, Collidable {
+
+        private sprite: PIXI.Sprite;
+        private bounding: RectangleBounding;
+        private orientation: Orientation;
+        private speed: number;
         private speedDecimal = 0;
-
-        protected sprite: PIXI.Sprite;
-        protected orientation: Orientation;
-        protected speed: number;
 
         public constructor(sprite: PIXI.Sprite, orientation: Orientation, speed: number) {
 
@@ -21,9 +26,13 @@ namespace FroggerJS.Game.Objects {
             this.orientation = orientation;
             this.speed = speed;
 
+            // Applies the rotation
             this.sprite.anchor = new PIXI.Point(0.5, 0.5);
             this.sprite.rotation = orientation;
-            this.sprite.anchor = (orientation == Orientation.Right) ? new PIXI.Point(0, 0) : new PIXI.Point(1, 1);
+            this.sprite.anchor = (orientation == Orientation.Right) ? new PIXI.Point(0, 1) : new PIXI.Point(1, 0);
+
+            // TODO: Fix here!!
+            this.bounding = new RectangleBounding(this.sprite.position, this.sprite.height/2, this.sprite.width/2);
         }
 
         public updatePosition(): void {
@@ -49,8 +58,12 @@ namespace FroggerJS.Game.Objects {
             }
         }
 
-        public getSprite(): PIXI.Sprite {
+        public getDisplayObject(): PIXI.DisplayObject {
             return this.sprite;
+        }
+
+        public getBounding(): Bounding {
+            return this.bounding;
         }
 
         public abstract isCollisionAccepted(): boolean;

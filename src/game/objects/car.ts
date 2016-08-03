@@ -1,4 +1,4 @@
-/// <reference path="mobile.ts" />
+/// <reference path="mobileObject.ts" />
 /// <reference path="orientation.ts" />
 /// <reference path="../../graphics/imageLoader.ts" />
 
@@ -6,8 +6,8 @@ namespace FroggerJS.Game.Objects {
 
     import ImageLoader = FroggerJS.Graphics.ImageLoader;
 
-    export class Car extends Mobile {
-
+    export class Car extends MobileObject {
+        
         public static TYPE = "car";
         private static availableColors = [
             "blue",
