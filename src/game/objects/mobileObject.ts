@@ -1,5 +1,5 @@
 /// <reference path="orientation.ts" />
-/// <reference path="../../configuration.ts" />
+/// <reference path="../../config.ts" />
 /// <reference path="../../graphics/renderable.ts" />
 /// <reference path="../../graphics/imageLoader.ts" />
 /// <reference path="../../physics/collidable.ts" />
@@ -22,6 +22,7 @@ namespace FroggerJS.Game.Objects {
 
         public constructor(sprite: PIXI.Sprite, orientation: Orientation, speed: number) {
 
+            // TODO: Use frame instead of sprite...
             this.sprite = sprite;
             this.orientation = orientation;
             this.speed = speed;
@@ -32,7 +33,7 @@ namespace FroggerJS.Game.Objects {
             this.sprite.anchor = (orientation == Orientation.Right) ? new PIXI.Point(0, 1) : new PIXI.Point(1, 0);
 
             // TODO: Fix here!!
-            this.bounding = new RectangleBounding(this.sprite.position, this.sprite.height/2, this.sprite.width/2);
+            this.bounding = new RectangleBounding(this.sprite.position, this.sprite.height, this.sprite.width);
         }
 
         public updatePosition(): void {
@@ -66,6 +67,7 @@ namespace FroggerJS.Game.Objects {
             return this.bounding;
         }
 
+        // TODO: Change the name of this function.
         public abstract isCollisionAccepted(): boolean;
     }
 }

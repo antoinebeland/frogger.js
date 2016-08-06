@@ -5,7 +5,7 @@
 namespace FroggerJS.Game.Objects {
     
     import ImageLoader = FroggerJS.Graphics.ImageLoader;
-    
+
     export class Boat extends MobileObject {
 
         public static TYPE = "boat";
@@ -19,8 +19,6 @@ namespace FroggerJS.Game.Objects {
             let colorIndex = Math.floor(Math.random() * Boat.availableColors.length);
             let sprite = new PIXI.Sprite(imageLoader.get(`${Boat.TYPE}-${Boat.availableColors[colorIndex]}`));
             super(sprite, orientation, speed);
-
-            
         }
 
         public isCollisionAccepted(): boolean {

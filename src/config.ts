@@ -1,11 +1,10 @@
 namespace FroggerJS {
 
     export var Constants: any = {
-        TILE_SIZE: 60,
-        ASSET_SIZE: 120,
-        WINDOW_WIDTH: 780,
-        WINDOW_HEIGHT: 600,
-        DISPLAY_BOUNDING: true
+        TILE_SIZE: 120,
+        WINDOW_WIDTH: 1560,
+        WINDOW_HEIGHT: 1200,
+        DISPLAY_BOUNDING: false
     };
 
     export var Levels: any = [

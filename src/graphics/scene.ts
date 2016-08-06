@@ -1,10 +1,11 @@
-/// <reference path="../configuration.ts" />
+/// <reference path="../config.ts" />
 /// <reference path="renderable.ts" />
 /// <reference path="../utils/event.ts" />
 
 namespace FroggerJS.Graphics {
 
     import Event = Utils.Event;
+    import Sprite = PIXI.Sprite;
 
     export class Scene {
 
@@ -30,12 +31,9 @@ namespace FroggerJS.Graphics {
             window.addEventListener("resize", this.resize.bind(this));
         }
 
-        public addChild(object: PIXI.DisplayObject | Renderable, scaleToApply: number = 1): void {
-            let sprite = (object instanceof PIXI.DisplayObject) ? object : object.getDisplayObject();
-            sprite.scale.x = scaleToApply;
-            sprite.scale.y = scaleToApply;
-
-            this.stage.addChild(sprite);
+        public addChild(object: PIXI.DisplayObject | Renderable): void {
+            let displayObject = (object instanceof PIXI.DisplayObject) ? object : object.getDisplayObject();
+            this.stage.addChild(displayObject);
         }
 
         public removeChild(object: PIXI.DisplayObject | Renderable): void {

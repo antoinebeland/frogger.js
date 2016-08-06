@@ -1,7 +1,7 @@
 /// <reference path="./objects/orientation.ts" />
 /// <reference path="./objects/frog.ts" />
 /// <reference path="./objects/mobileObjectFactory.ts" />
-/// <reference path="../configuration.ts" />
+/// <reference path="../config.ts" />
 /// <reference path="../graphics/imageLoader.ts" />
 /// <reference path="../graphics/scene.ts" />
 /// <reference path="../utils/event.ts" />
@@ -49,9 +49,7 @@ namespace FroggerJS.Game {
                 throw "ERROR: The level configuration isn't valid."
             }
 
-            const SCALE_RATIO = FroggerJS.Constants.TILE_SIZE / FroggerJS.Constants.ASSET_SIZE;
             const WIDTH_SPRITES_NUMBER = FroggerJS.Constants.WINDOW_WIDTH / FroggerJS.Constants.TILE_SIZE;
-
             for(let i = 0; i < level.length; ++i) {
 
                 if (!level[i].hasOwnProperty("texture")) {
@@ -68,7 +66,7 @@ namespace FroggerJS.Game {
                     let sprite = new PIXI.Sprite(texture);
                     sprite.position.x = j * FroggerJS.Constants.TILE_SIZE;
                     sprite.position.y = i * FroggerJS.Constants.TILE_SIZE;
-                    this.scene.addChild(sprite, SCALE_RATIO);
+                    this.scene.addChild(sprite);
                 }
 
                 // Added the mobile objects
@@ -96,21 +94,20 @@ namespace FroggerJS.Game {
                         sprite.position.x = nextPosition;
                         sprite.position.y = i * FroggerJS.Constants.TILE_SIZE;
 
-                        // TODO: Think that the sprite is bigger!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
                         // Generates the next position of the sprite.
                         spriteHeight = sprite.height;
-                        nextPosition += spriteHeight + Math.floor((Math.random() * 3 * spriteHeight / 2) + spriteHeight / 2);
+                        nextPosition += spriteHeight + Math.floor((Math.random() * 2.5 * spriteHeight) + spriteHeight);
 
                         this.mobileObjects[i].push(movableObject);
-                        this.scene.addChild(movableObject, SCALE_RATIO);
+                        this.scene.addChild(movableObject);
 
                     } while (nextPosition < FroggerJS.Constants.WINDOW_WIDTH);
                 }
             }
 
-            this.scene.addChild(this.frog, SCALE_RATIO);
+            this.scene.addChild(this.frog);
 
+            // Displays the bounding if the option is enabled.
             if(FroggerJS.Constants.DISPLAY_BOUNDING) {
                 for (let i = 0; i < this.mobileObjects.length; ++i) {
                     for (let j = 0; j < this.mobileObjects[i].length; ++j) {
@@ -135,23 +132,29 @@ namespace FroggerJS.Game {
 
         private update(): void {
 
+            // TODO: Put in Frog class.
             const FROG_INDEX_POSITION = Math.floor(this.frog.getDisplayObject().position.y / FroggerJS.Constants.TILE_SIZE);
 
             for (let i = 0; i < this.mobileObjects.length; ++i) {
-
-
+                
                 for (let j = 0; j < this.mobileObjects[i].length; ++j) {
                    this.mobileObjects[i][j].updatePosition();
 
                     if (FROG_INDEX_POSITION == i) {
-                        if (this.mobileObjects[i][j].getBounding().isCollide(this.frog.getBounding())) {
-                            console.log("COLLIDE!");
+                        let mobileObject = this.mobileObjects[i][j];
+
+                        if (mobileObject.getBounding().isCollide(this.frog.getBounding())) {
+
+                            if(mobileObject.isCollisionAccepted()) {
+                                this.frog.follow(mobileObject);
+                            }
+                            else {
+                                console.log("DIED!");
+                            }
                         }
                     }
                 }
             }
-
-            // Update the position of the cars...
         }
     }
 }

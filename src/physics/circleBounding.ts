@@ -2,24 +2,46 @@
 
 namespace FroggerJS.Physics {
 
+    /**
+     * Defines a circle bounding.
+     */
     export class CircleBounding implements Bounding {
 
         private center: PIXI.Point;
         private radius: number;
 
+        /**
+         * Initializes a new instance of the CircleBounding class.
+         * @param center    The center point of the circle.
+         * @param radius    The radius of the circle.
+         */
         public constructor(center: PIXI.Point, radius: number) {
             this.center = center;
             this.radius = radius;
         }
 
+        /**
+         * Gets the center point of the circle.
+         * @returns {PIXI.Point}
+         */
         public getCenter(): PIXI.Point {
             return this.center;
         }
 
+        /**
+         * Gets the radius point of the circle.
+         * @returns {number}
+         */
         public getRadius(): number {
             return this.radius;
         }
 
+        /**
+         * Indicates if there is a collision between the current and the specified bounding.
+         * @param bounding      The bounding to check.
+         * @return {boolean}    TRUE if there is a collision between the current and the specified bounding.
+         *                      FALSE otherwise.
+         */
         public isCollide(bounding: Bounding): boolean {
 
             if (bounding instanceof RectangleBounding) {
@@ -66,6 +88,10 @@ namespace FroggerJS.Physics {
             throw "ERROR: Unknown bounding.";
         }
 
+        /**
+         * Gets the display object associated with the current bounding.
+         * @returns {FroggerJS.Graphics|PIXI.Graphics}
+         */
         public getDisplayObject(): PIXI.DisplayObject {
 
             let graphics = new PIXI.Graphics();

@@ -1,5 +1,5 @@
 /// <reference path="orientation.ts" />
-/// <reference path="../../configuration.ts" />
+/// <reference path="../../config.ts" />
 /// <reference path="../../graphics/renderable.ts" />
 /// <reference path="../../graphics/imageLoader.ts" />
 /// <reference path="../../physics/collidable.ts" />
@@ -19,29 +19,44 @@ namespace FroggerJS.Game.Objects {
         Left = 37,
         Right = 39
     }
-    
+
+    /**
+     * Defines the main actor of the game.
+     */
     export class Frog implements Renderable, Collidable {
 
         private keyUpTexture: PIXI.Texture;
         private keyDownTexture: PIXI.Texture;
         private sprite: PIXI.Sprite;
         private bounding: CircleBounding;
+        private deltaPosition: number = undefined;
 
+        /**
+         * Occurred when a key is pressed.
+         */
         public onKeyDown: {(event: KeyboardEvent): void};
+
+        /**
+         * Occurred when a key is released.
+         */
         public onKeyUp: {(event: KeyboardEvent): void};
 
+        /**
+         * Initializes a new instance of the Frog class.
+         * @param imageLoader   The image loader to used to load the textures.
+         */
         public constructor(imageLoader: ImageLoader) {
 
             this.keyUpTexture = imageLoader.get("frog");
             this.keyDownTexture = imageLoader.get("frog-extend");
-
             this.sprite = new PIXI.Sprite(this.keyUpTexture);
-            this.sprite.anchor = new PIXI.Point(0.5, 0.5);
-            this.sprite.position = new PIXI.Point(30, 30); // TODO: Put into const...
+            
+            const CENTER = this.sprite.height / 2;
+            const BOUNDING_FACTOR = 0.3;
 
-            // TODO: Think that the sprite is bigger!!!!!!!
-            this.bounding = new CircleBounding(this.sprite.position, this.sprite.width * 0.15);
-            //this.bounding = new FroggerJS.Physics.RectangleBounding(this.sprite.position, this.sprite.width / 2, this.sprite.height / 2);
+            this.sprite.anchor = new PIXI.Point(0.5, 0.5);
+            this.sprite.position = new PIXI.Point(CENTER, CENTER);
+            this.bounding = new CircleBounding(this.sprite.position, this.sprite.width * BOUNDING_FACTOR);
 
             let self = this;
             this.onKeyDown = function (event: KeyboardEvent) {
@@ -86,18 +101,34 @@ namespace FroggerJS.Game.Objects {
                         self.sprite.position.y += SHIFTING;
                         break;
                 }
+                self.deltaPosition = undefined; // Reset the delta position.
             };
         }
 
+        /**
+         * Follows the specified mobile object.
+         * @param mobile    The mobile object to follow.
+         */
         public follow(mobile: MobileObject): void {
-            //let position = mobile.getDisplayObject().position;
 
+            if(!this.deltaPosition) {
+                this.deltaPosition = this.sprite.position.x - mobile.getDisplayObject().position.x;
+            }
+            this.sprite.position.x = mobile.getDisplayObject().position.x + this.deltaPosition;
         }
 
+        /**
+         * Gets the display object associated with the frog.
+         * @returns {PIXI.Sprite}
+         */
         public getDisplayObject(): PIXI.DisplayObject {
             return this.sprite;
         }
 
+        /**
+         * Gets the bounding associated with the frog.
+         * @returns {CircleBounding}
+         */
         public getBounding(): Bounding {
             return this.bounding;
         }

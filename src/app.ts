@@ -1,4 +1,4 @@
-/// <reference path="configuration.ts" />
+/// <reference path="config.ts" />
 /// <reference path="./graphics/imageLoader.ts" />
 /// <reference path="./graphics/scene.ts" />
 /// <reference path="./game/gameManager.ts" />

@@ -6,11 +6,10 @@ var __extends = (this && this.__extends) || function (d, b) {
 var FroggerJS;
 (function (FroggerJS) {
     FroggerJS.Constants = {
-        TILE_SIZE: 60,
-        ASSET_SIZE: 120,
-        WINDOW_WIDTH: 780,
-        WINDOW_HEIGHT: 600,
-        DISPLAY_BOUNDING: true
+        TILE_SIZE: 120,
+        WINDOW_WIDTH: 1560,
+        WINDOW_HEIGHT: 1200,
+        DISPLAY_BOUNDING: false
     };
     FroggerJS.Levels = [
         [
@@ -106,12 +105,9 @@ var FroggerJS;
                 document.body.appendChild(this.renderer.view);
                 window.addEventListener("resize", this.resize.bind(this));
             }
-            Scene.prototype.addChild = function (object, scaleToApply) {
-                if (scaleToApply === void 0) { scaleToApply = 1; }
-                var sprite = (object instanceof PIXI.DisplayObject) ? object : object.getDisplayObject();
-                sprite.scale.x = scaleToApply;
-                sprite.scale.y = scaleToApply;
-                this.stage.addChild(sprite);
+            Scene.prototype.addChild = function (object) {
+                var displayObject = (object instanceof PIXI.DisplayObject) ? object : object.getDisplayObject();
+                this.stage.addChild(displayObject);
             };
             Scene.prototype.removeChild = function (object) {
                 var sprite = (object instanceof PIXI.DisplayObject) ? object : object.getDisplayObject();
@@ -246,12 +242,15 @@ var FroggerJS;
             })(ArrowKeyCode || (ArrowKeyCode = {}));
             var Frog = (function () {
                 function Frog(imageLoader) {
+                    this.deltaPosition = undefined;
                     this.keyUpTexture = imageLoader.get("frog");
                     this.keyDownTexture = imageLoader.get("frog-extend");
                     this.sprite = new PIXI.Sprite(this.keyUpTexture);
+                    var CENTER = this.sprite.height / 2;
+                    var BOUNDING_FACTOR = 0.3;
                     this.sprite.anchor = new PIXI.Point(0.5, 0.5);
-                    this.sprite.position = new PIXI.Point(30, 30);
-                    this.bounding = new CircleBounding(this.sprite.position, this.sprite.width * 0.15);
+                    this.sprite.position = new PIXI.Point(CENTER, CENTER);
+                    this.bounding = new CircleBounding(this.sprite.position, this.sprite.width * BOUNDING_FACTOR);
                     var self = this;
                     this.onKeyDown = function (event) {
                         var rotation;
@@ -289,9 +288,14 @@ var FroggerJS;
                                 self.sprite.position.y += SHIFTING;
                                 break;
                         }
+                        self.deltaPosition = undefined;
                     };
                 }
                 Frog.prototype.follow = function (mobile) {
+                    if (!this.deltaPosition) {
+                        this.deltaPosition = this.sprite.position.x - mobile.getDisplayObject().position.x;
+                    }
+                    this.sprite.position.x = mobile.getDisplayObject().position.x + this.deltaPosition;
                 };
                 Frog.prototype.getDisplayObject = function () {
                     return this.sprite;
@@ -366,7 +370,7 @@ var FroggerJS;
                     this.sprite.anchor = new PIXI.Point(0.5, 0.5);
                     this.sprite.rotation = orientation;
                     this.sprite.anchor = (orientation == Objects.Orientation.Right) ? new PIXI.Point(0, 1) : new PIXI.Point(1, 0);
-                    this.bounding = new RectangleBounding(this.sprite.position, this.sprite.height / 2, this.sprite.width / 2);
+                    this.bounding = new RectangleBounding(this.sprite.position, this.sprite.height, this.sprite.width);
                 }
                 MobileObject.prototype.updatePosition = function () {
                     var speedToApply = this.speed;
@@ -537,7 +541,6 @@ var FroggerJS;
                 if (level.length != FroggerJS.Constants.WINDOW_HEIGHT / FroggerJS.Constants.TILE_SIZE) {
                     throw "ERROR: The level configuration isn't valid.";
                 }
-                var SCALE_RATIO = FroggerJS.Constants.TILE_SIZE / FroggerJS.Constants.ASSET_SIZE;
                 var WIDTH_SPRITES_NUMBER = FroggerJS.Constants.WINDOW_WIDTH / FroggerJS.Constants.TILE_SIZE;
                 for (var i = 0; i < level.length; ++i) {
                     if (!level[i].hasOwnProperty("texture")) {
@@ -551,7 +554,7 @@ var FroggerJS;
                         var sprite = new PIXI.Sprite(texture);
                         sprite.position.x = j * FroggerJS.Constants.TILE_SIZE;
                         sprite.position.y = i * FroggerJS.Constants.TILE_SIZE;
-                        this.scene.addChild(sprite, SCALE_RATIO);
+                        this.scene.addChild(sprite);
                     }
                     this.mobileObjects[i] = [];
                     if (level[i].hasOwnProperty("mobile")) {
@@ -573,13 +576,13 @@ var FroggerJS;
                             sprite.position.x = nextPosition;
                             sprite.position.y = i * FroggerJS.Constants.TILE_SIZE;
                             spriteHeight = sprite.height;
-                            nextPosition += spriteHeight + Math.floor((Math.random() * 3 * spriteHeight / 2) + spriteHeight / 2);
+                            nextPosition += spriteHeight + Math.floor((Math.random() * 2.5 * spriteHeight) + spriteHeight);
                             this.mobileObjects[i].push(movableObject);
-                            this.scene.addChild(movableObject, SCALE_RATIO);
+                            this.scene.addChild(movableObject);
                         } while (nextPosition < FroggerJS.Constants.WINDOW_WIDTH);
                     }
                 }
-                this.scene.addChild(this.frog, SCALE_RATIO);
+                this.scene.addChild(this.frog);
                 if (FroggerJS.Constants.DISPLAY_BOUNDING) {
                     for (var i = 0; i < this.mobileObjects.length; ++i) {
                         for (var j = 0; j < this.mobileObjects[i].length; ++j) {
@@ -603,8 +606,14 @@ var FroggerJS;
                     for (var j = 0; j < this.mobileObjects[i].length; ++j) {
                         this.mobileObjects[i][j].updatePosition();
                         if (FROG_INDEX_POSITION == i) {
-                            if (this.mobileObjects[i][j].getBounding().isCollide(this.frog.getBounding())) {
-                                console.log("COLLIDE!");
+                            var mobileObject = this.mobileObjects[i][j];
+                            if (mobileObject.getBounding().isCollide(this.frog.getBounding())) {
+                                if (mobileObject.isCollisionAccepted()) {
+                                    this.frog.follow(mobileObject);
+                                }
+                                else {
+                                    console.log("DIED!");
+                                }
                             }
                         }
                     }
