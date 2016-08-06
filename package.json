@@ -1,0 +1,20 @@
+{
+  "name": "frogger.js",
+  "version": "1.0.0",
+  "description": "Frogger game implements in TypeScript.",
+  "main": "gulpfile.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/antoinebeland/frogger.js.git"
+  },
+  "author": "Antoine Béland",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/antoinebeland/frogger.js/issues"
+  },
+  "homepage": "https://github.com/antoinebeland/frogger.js#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-webserver": "^0.9.1"
+  }
+}
