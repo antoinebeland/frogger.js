@@ -1,7 +1,7 @@
 # <img atl="frogger.js" src="https://raw.githubusercontent.com/antoinebeland/frogger.js/master/build/assets/logo.png" height="60">
 A frogger game implements in TypeScript.
 
-![Screenshot](https://raw.githubusercontent.com/antoinebeland/frogger.js/master/build/assets/screenshot.jpg)
+![Screenshot](https://raw.githubusercontent.com/antoinebeland/frogger.js/master/build/assets/screenshot.png)
 
 ## Getting Started
 The application will be available on my [personal website](www.antoinebeland.com) soon.
