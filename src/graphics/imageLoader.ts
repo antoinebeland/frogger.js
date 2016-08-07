@@ -45,7 +45,7 @@ namespace FroggerJS.Graphics {
                     this.registerSingleElement(element[i]);
                 }
             } else {
-                this.registerSingleElement(element);
+                this.registerSingleElement(element as string);
             }
         }
 

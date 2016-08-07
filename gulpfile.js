@@ -3,17 +3,18 @@
 var constants = {
   BUILD_DIRECTORY: "build",
   SOURCES_DIRECTORY: "src",
-  DEFAULT_HTML_FILE: "index.html",
   SERVER_PORT: 8080
 };
 
 var gulp = require('gulp');
+var connect = require('gulp-connect');
+var open = require('open');
 var ts = require('gulp-typescript');
 var tsProject = ts.createProject('tsconfig.json');
 var rename = require("gulp-rename");
 var sourceMaps = require('gulp-sourcemaps');
 var uglify = require('gulp-uglify');
-var webServer = require('gulp-webserver');
+
 
 /**
  * Build Task
@@ -28,10 +29,8 @@ gulp.task('build', function () {
 
   return tsResult.js
     .pipe(uglify())
-    .pipe(rename({
-      suffix: '.min'
-    }))
-    .pipe(sourceMaps.write("."))
+    .pipe(rename({ suffix: '.min' }))
+    .pipe(sourceMaps.write(".", { includeContent: false, sourceRoot: "../" + constants.SOURCES_DIRECTORY }))
     .pipe(gulp.dest(constants.BUILD_DIRECTORY));
 });
 
@@ -41,13 +40,11 @@ gulp.task('build', function () {
  * Starts a web server and open the default web browser to the index file.
  */
 gulp.task('run', function () {
-  gulp.src(constants.BUILD_DIRECTORY)
-    .pipe(webServer({
-      livereload: true,
-      fallback: constants.DEFAULT_HTML_FILE,
-      port: constants.SERVER_PORT,
-      open: true
-    }));
+  connect.server({
+    port: constants.SERVER_PORT,
+    livereload: true
+  });
+  open("http://localhost:" + constants.SERVER_PORT + "/" + constants.BUILD_DIRECTORY);
 });
 
 /**

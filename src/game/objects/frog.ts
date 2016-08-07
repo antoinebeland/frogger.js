@@ -25,10 +25,13 @@ namespace FroggerJS.Game.Objects {
      */
     export class Frog implements Renderable, Collidable {
 
+        private static availableLives = 5;
+
         private keyUpTexture: PIXI.Texture;
         private keyDownTexture: PIXI.Texture;
         private sprite: PIXI.Sprite;
         private bounding: CircleBounding;
+        private tilePosition: number = 0;               // TODO: Check the initial value!
         private deltaPosition: number = undefined;
 
         /**
@@ -49,13 +52,11 @@ namespace FroggerJS.Game.Objects {
 
             this.keyUpTexture = imageLoader.get("frog");
             this.keyDownTexture = imageLoader.get("frog-extend");
-            this.sprite = new PIXI.Sprite(this.keyUpTexture);
-            
-            const CENTER = this.sprite.height / 2;
-            const BOUNDING_FACTOR = 0.3;
 
+            this.sprite = new PIXI.Sprite(this.keyUpTexture);
             this.sprite.anchor = new PIXI.Point(0.5, 0.5);
-            this.sprite.position = new PIXI.Point(CENTER, CENTER);
+
+            const BOUNDING_FACTOR = 0.3;
             this.bounding = new CircleBounding(this.sprite.position, this.sprite.width * BOUNDING_FACTOR);
 
             let self = this;
@@ -76,7 +77,7 @@ namespace FroggerJS.Game.Objects {
                         rotation = Orientation.Down;
                         break;
                 }
-                
+
                 self.sprite.rotation = rotation;
                 self.sprite.texture = self.keyDownTexture;
             };
@@ -102,7 +103,47 @@ namespace FroggerJS.Game.Objects {
                         break;
                 }
                 self.deltaPosition = undefined; // Reset the delta position.
+
+                // Checks if the frog has changed of tile.
+                if (event.keyCode == ArrowKeyCode.Up || event.keyCode == ArrowKeyCode.Down) {
+                    self.updateTilePosition();
+                }
             };
+        }
+
+        /**
+         * Removes one live to the available lives of the frog.
+         */
+        public static removeOneLive(): void {
+            if (--Frog.availableLives < 0) {
+                throw "ERROR: Negative live count.";
+            }
+        }
+
+        /**
+         * Gets the available lives of the frog.
+         * @returns {number}
+         */
+        public static getAvailableLives(): number {
+            return Frog.availableLives;
+        }
+
+        /**
+         * Sets the available lives of the frog.
+         * @param availableLives    The available lives to set.
+         */
+        public static setAvailableLives(availableLives: number): void {
+            Frog.availableLives = availableLives;
+        }
+
+        /**
+         * Sets the position of the frog at the start position.
+         */
+        public startPosition(): void {
+            this.sprite.rotation = Orientation.Up;
+            this.sprite.position.x = FroggerJS.Constants.WINDOW_WIDTH / 2;
+            this.sprite.position.y = FroggerJS.Constants.WINDOW_HEIGHT - (this.sprite.height / 2);
+            this.updateTilePosition();
         }
 
         /**
@@ -115,6 +156,14 @@ namespace FroggerJS.Game.Objects {
                 this.deltaPosition = this.sprite.position.x - mobile.getDisplayObject().position.x;
             }
             this.sprite.position.x = mobile.getDisplayObject().position.x + this.deltaPosition;
+        }
+
+        /**
+         * Gets the tile index position of the frog.
+         * @returns {number}
+         */
+        public getTilePosition(): number {
+            return this.tilePosition;
         }
 
         /**
@@ -131,6 +180,13 @@ namespace FroggerJS.Game.Objects {
          */
         public getBounding(): Bounding {
             return this.bounding;
+        }
+
+        /**
+         * Updates the position of the frog based on the tile logic.
+         */
+        private updateTilePosition() {
+            this.tilePosition = Math.floor(this.sprite.position.y / FroggerJS.Constants.TILE_SIZE);
         }
     }
 }

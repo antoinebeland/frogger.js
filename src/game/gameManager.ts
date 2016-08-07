@@ -23,9 +23,10 @@ namespace FroggerJS.Game {
         private scene : Scene;
         private imageLoader: ImageLoader;
         private frog: Frog;
-
         private mobileFactory: MobileFactory;
+
         private mobileObjects: any;
+        private touchAllowedStatus: boolean[];
 
         public onGameOver = new Event<void>();
         public onNextLevel = new Event<void>();
@@ -35,7 +36,9 @@ namespace FroggerJS.Game {
             this.imageLoader = imageLoader;
             this.frog = new Frog(imageLoader);
             this.mobileFactory = new MobileFactory(imageLoader);
+
             this.mobileObjects = [];
+            this.touchAllowedStatus = [];
         }
 
         public setupLevel(levelConfiguration: any): void {
@@ -58,6 +61,7 @@ namespace FroggerJS.Game {
                 if (!level[i].hasOwnProperty("touchAllowed")) {
                     throw "ERROR: TouchAllowed property is missing.";
                 }
+                this.touchAllowedStatus.push(level[i]['touchAllowed']);
 
                 // Generates the tiles
                 let texture = this.imageLoader.get(level[i].texture);
@@ -73,24 +77,25 @@ namespace FroggerJS.Game {
                 this.mobileObjects[i] = [];
                 if (level[i].hasOwnProperty("mobile")) {
 
-                    if (!level[i]['mobile'].hasOwnProperty("type")) {
+                    let mobileElement = level[i]['mobile'];
+                    if (!mobileElement.hasOwnProperty("type")) {
                         throw "ERROR: Type property is missing.";
                     }
-                    if (!level[i]['mobile'].hasOwnProperty("orientation")) {
+                    if (!mobileElement.hasOwnProperty("orientation")) {
                         throw "ERROR: Orientation property is missing.";
                     }
-                    if (!level[i]['mobile'].hasOwnProperty("speed")) {
+                    if (!mobileElement.hasOwnProperty("speed")) {
                         throw "ERROR: Speed property is missing.";
                     }
 
                     let nextPosition = 0;
                     let spriteHeight = 0;
-                    let orientation = OrientationUtils.fromStringToOrientation(level[i]['mobile']['orientation']);
+                    let orientation = OrientationUtils.fromStringToOrientation(mobileElement['orientation']);
                     do {
-                        let movableObject =
-                            this.mobileFactory.createMobile(level[i]['mobile'].type, orientation, level[i]['mobile'].speed);
+                        let mobileObject =
+                            this.mobileFactory.createMobile(mobileElement.type, orientation, mobileElement.speed);
                         
-                        let sprite = movableObject.getDisplayObject() as PIXI.Sprite;
+                        let sprite = mobileObject.getDisplayObject() as PIXI.Sprite;
                         sprite.position.x = nextPosition;
                         sprite.position.y = i * FroggerJS.Constants.TILE_SIZE;
 
@@ -98,13 +103,14 @@ namespace FroggerJS.Game {
                         spriteHeight = sprite.height;
                         nextPosition += spriteHeight + Math.floor((Math.random() * 2.5 * spriteHeight) + spriteHeight);
 
-                        this.mobileObjects[i].push(movableObject);
-                        this.scene.addChild(movableObject);
+                        this.mobileObjects[i].push(mobileObject);
+                        this.scene.addChild(mobileObject);
 
                     } while (nextPosition < FroggerJS.Constants.WINDOW_WIDTH);
                 }
             }
 
+            this.frog.startPosition();
             this.scene.addChild(this.frog);
 
             // Displays the bounding if the option is enabled.
@@ -132,28 +138,43 @@ namespace FroggerJS.Game {
 
         private update(): void {
 
-            // TODO: Put in Frog class.
-            const FROG_INDEX_POSITION = Math.floor(this.frog.getDisplayObject().position.y / FroggerJS.Constants.TILE_SIZE);
-
             for (let i = 0; i < this.mobileObjects.length; ++i) {
-                
+                let isCollide = false;
+
                 for (let j = 0; j < this.mobileObjects[i].length; ++j) {
                    this.mobileObjects[i][j].updatePosition();
 
-                    if (FROG_INDEX_POSITION == i) {
+                    if (this.frog.getTilePosition() == i) {
                         let mobileObject = this.mobileObjects[i][j];
 
                         if (mobileObject.getBounding().isCollide(this.frog.getBounding())) {
+                            isCollide = true;
 
                             if(mobileObject.isCollisionAccepted()) {
                                 this.frog.follow(mobileObject);
                             }
                             else {
-                                console.log("DIED!");
+                                this.restartLevel();
                             }
                         }
                     }
                 }
+                if (this.frog.getTilePosition() == i && !isCollide && !this.touchAllowedStatus[i]){
+                    this.restartLevel();
+                }
+            }
+        }
+
+        private restartLevel() {
+
+            Frog.removeOneLive();   // TODO: Rename function
+            this.frog.startPosition();
+
+            let availableLives = Frog.getAvailableLives();
+            Logger.logMessage(`One live lost. ${availableLives} live(s) remaining.`);
+
+            if(availableLives <= 0) {
+                this.onGameOver.invoke();
             }
         }
     }

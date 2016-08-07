@@ -32,12 +32,16 @@ namespace FroggerJS.Graphics {
         }
 
         public addChild(object: PIXI.DisplayObject | Renderable): void {
-            let displayObject = (object instanceof PIXI.DisplayObject) ? object : object.getDisplayObject();
+            let displayObject = (object instanceof PIXI.DisplayObject) ? object
+                : (object as Renderable).getDisplayObject();
+
             this.stage.addChild(displayObject);
         }
 
         public removeChild(object: PIXI.DisplayObject | Renderable): void {
-            let sprite = (object instanceof PIXI.DisplayObject) ? object : object.getDisplayObject();
+            let sprite = (object instanceof PIXI.DisplayObject) ? object
+                : (object as Renderable).getDisplayObject();
+
             this.stage.removeChild(sprite);
         }
 
@@ -47,6 +51,7 @@ namespace FroggerJS.Graphics {
             function animate() {
                 requestAnimationFrame(animate);
                 self.onRender.invoke();
+                //noinspection TypeScriptValidateTypes
                 self.renderer.render(self.stage);
             }
             animate();

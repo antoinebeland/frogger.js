@@ -32,7 +32,7 @@ To run the application, you have to type the following command:
 gulp run
 ```
 This command will start a web server and will automatically open a tab of your default web browser at
-the following address: [http://localhost:8080/](http://localhost:8080/).
+the following address: [http://localhost:8080/build](http://localhost:8080/build).
 
 ## Contribute
 Feel free to fork my repository to improve my project.
