@@ -38,4 +38,4 @@ the following address: [http://localhost:8080/](http://localhost:8080/).
 Feel free to fork my repository to improve my project.
 
 ## License
-This project is under the [MIT license](LICENCE).
+This project is under the [MIT license](https://raw.githubusercontent.com/antoinebeland/frogger.js/master/LICENSE).
