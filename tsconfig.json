@@ -4,7 +4,11 @@
     "noImplicitAny": true,
     "removeComments": true,
     "preserveConstEnums": true,
-    "outFile": "build/frogger.js",
+    "outFile": "frogger.js",
     "sourceMap": true
-  }
+  },
+  "exclude": [
+    "build",
+    "node_modules"
+  ]
 }

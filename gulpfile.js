@@ -1,21 +1,64 @@
+"use strict";
+
+var constants = {
+  BUILD_DIRECTORY: "build",
+  SOURCES_DIRECTORY: "src",
+  DEFAULT_HTML_FILE: "index.html",
+  SERVER_PORT: 8080
+};
+
 var gulp = require('gulp');
+var ts = require('gulp-typescript');
+var tsProject = ts.createProject('tsconfig.json');
+var rename = require("gulp-rename");
+var sourceMaps = require('gulp-sourcemaps');
+var uglify = require('gulp-uglify');
 var webServer = require('gulp-webserver');
 
-gulp.task('run', function() {
-  gulp.src('app')
-    .pipe();
+/**
+ * Build Task
+ * ----------
+ * Compiles the files of the 'src' directory to generate a minified file
+ * in the 'build' folder.
+ */
+gulp.task('build', function () {
+  var tsResult = tsProject.src()
+    .pipe(sourceMaps.init())
+    .pipe(ts(tsProject));
+
+  return tsResult.js
+    .pipe(uglify())
+    .pipe(rename({
+      suffix: '.min'
+    }))
+    .pipe(sourceMaps.write("."))
+    .pipe(gulp.dest(constants.BUILD_DIRECTORY));
 });
 
-gulp.task('run', function() {
-  gulp.src('build')
+/**
+ * Run Task
+ * --------
+ * Starts a web server and open the default web browser to the index file.
+ */
+gulp.task('run', function () {
+  gulp.src(constants.BUILD_DIRECTORY)
     .pipe(webServer({
       livereload: true,
-      fallback: "index.html",
-      port: 8080,
+      fallback: constants.DEFAULT_HTML_FILE,
+      port: constants.SERVER_PORT,
       open: true
     }));
 });
 
-gulp.task('default', function() {
-  // TODO
+/**
+ * Default Task
+ * ------------
+ * Creates a watcher to automatically call the 'build' task when a project file is changed.
+ * Starts the 'run' task.
+ */
+gulp.task('default', ['run'], function () {
+  var watcher = gulp.watch(constants.SOURCES_DIRECTORY + '/**/*.ts', ['build']);
+  watcher.on('change', function(event) {
+    console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
+  });
 });
