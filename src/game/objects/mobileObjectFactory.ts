@@ -6,7 +6,7 @@ namespace FroggerJS.Game.Objects {
 
     import ImageLoader = FroggerJS.Graphics.ImageLoader;
 
-    export class MobileFactory {
+    export class MobileObjectFactory {
 
         private imageLoader: ImageLoader;
 
@@ -14,7 +14,7 @@ namespace FroggerJS.Game.Objects {
             this.imageLoader = imageLoader;
         }
 
-        public createMobile(mobileName: string, orientation: Orientation, speed: number): MobileObject {
+        public createMobile(mobileName: string, orientation: string, speed: number): MobileObject {
 
             switch (mobileName.toLowerCase()) {
                 case Car.TYPE:

@@ -1,5 +1,6 @@
 /// <reference path="config.ts" />
 /// <reference path="./graphics/imageLoader.ts" />
+/// <reference path="./graphics/ticker.ts" />
 /// <reference path="./graphics/scene.ts" />
 /// <reference path="./game/gameManager.ts" />
 /// <reference path="./states/stateManager.ts" />
@@ -14,7 +15,8 @@ namespace FroggerJS {
 
     import GraphicsLoader = FroggerJS.Graphics.ImageLoader;
     import Scene = FroggerJS.Graphics.Scene;
-    import GameLevelManager = FroggerJS.Game.GameManager;
+    import Ticker = FroggerJS.Graphics.Ticker;
+    import GameManager = FroggerJS.Game.GameManager;
     import StateManager = FroggerJS.States.StateManager;
     import MainMenuState = FroggerJS.States.MainMenuState;
     import GameLevelState = FroggerJS.States.GameLevelState;
@@ -25,12 +27,18 @@ namespace FroggerJS {
     export class App {
 
         private static resources = [
-            "boat-red",
-            "boat-yellow",
-            "car-blue",
-            "car-green",
-            "car-red",
-            "car-white",
+            "boat-red-left",
+            "boat-red-right",
+            "boat-yellow-left",
+            "boat-yellow-right",
+            "car-blue-left",
+            "car-blue-right",
+            "car-green-left",
+            "car-green-right",
+            "car-red-left",
+            "car-red-right",
+            "car-white-left",
+            "car-white-right",
             "frog",
             "frog-extend",
             "grass",
@@ -58,18 +66,20 @@ namespace FroggerJS {
 
                 Logger.logMessage("Resources loaded.", LogLevel.Info);
 
+                let ticker = new Ticker();
                 let scene = new Scene(FroggerJS.Constants.WINDOW_WIDTH, FroggerJS.Constants.WINDOW_HEIGHT);
-                let gameLevelManager = new GameLevelManager(loader, scene);
+                let gameManager = new GameManager(loader, scene);
 
                 let stateManager = new StateManager();
                 stateManager.register("mainMenu", new MainMenuState(stateManager));
-                stateManager.register("level1", new GameLevelState(gameLevelManager, {level: 1, levelsCount: 2}, stateManager));
-                stateManager.register("level2", new GameLevelState(gameLevelManager, {level: 2, levelsCount: 2}, stateManager));
+                stateManager.register("level1", new GameLevelState(gameManager, {level: 1, levelsCount: 2}, ticker, stateManager));
+                stateManager.register("level2", new GameLevelState(gameManager, {level: 2, levelsCount: 2}, ticker, stateManager));
                 stateManager.register("endGame", new EndGameState());
                 
                 stateManager.change("mainMenu");
 
-                scene.render();
+                ticker.register(scene);
+                ticker.start();
             });
             loader.load();
         }

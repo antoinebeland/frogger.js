@@ -1,9 +1,7 @@
-/// <reference path="orientation.ts" />
 /// <reference path="../../config.ts" />
 /// <reference path="../../graphics/renderable.ts" />
-/// <reference path="../../graphics/imageLoader.ts" />
+/// <reference path="../../graphics/updatable.ts" />
 /// <reference path="../../physics/collidable.ts" />
-/// <reference path="../../physics/rectangleBounding.ts" />
 
 namespace FroggerJS.Game.Objects {
 
@@ -11,63 +9,44 @@ namespace FroggerJS.Game.Objects {
     import Collidable = FroggerJS.Physics.Collidable;
     import Bounding = FroggerJS.Physics.Bounding;
     import RectangleBounding = FroggerJS.Physics.RectangleBounding;
+    import Updatable = FroggerJS.Graphics.Updatable;
 
-    export abstract class MobileObject implements Renderable, Collidable {
+    export abstract class MobileObject implements Renderable, Collidable, Updatable {
 
-        private sprite: PIXI.Sprite;
-        private bounding: RectangleBounding;
-        private orientation: Orientation;
         private speed: number;
         private speedDecimal = 0;
-
-        public constructor(sprite: PIXI.Sprite, orientation: Orientation, speed: number) {
-
-            // TODO: Use frame instead of sprite...
-            this.sprite = sprite;
-            this.orientation = orientation;
+        private orientation: string;
+        
+        public constructor(speed: number, orientation: string) {
             this.speed = speed;
 
-            // Applies the rotation
-            this.sprite.anchor = new PIXI.Point(0.5, 0.5);
-            this.sprite.rotation = orientation;
-            this.sprite.anchor = (orientation == Orientation.Right) ? new PIXI.Point(0, 1) : new PIXI.Point(1, 0);
-
-            // TODO: Fix here!!
-            this.bounding = new RectangleBounding(this.sprite.position, this.sprite.height, this.sprite.width);
+            orientation = orientation.toLowerCase();
+            if(orientation != "left" && orientation != "right") {
+                throw "ERROR: Invalid orientation specified";
+            }
+            this.orientation = orientation;
         }
 
-        public updatePosition(): void {
+        public abstract getDisplayObject(): PIXI.Sprite;
+        public abstract getBounding(): Bounding;
+        public abstract isCollisionAccepted(): boolean; // TODO: Change the name of this function.
 
-            let speedToApply = this.speed;
+        public update(deltaTime: number): void {
 
-            // Checks if the speed is an integer.
-            if (this.speed % 1 != 0) {
-                this.speedDecimal += this.speed;
-                speedToApply = Math.floor(this.speedDecimal);
-                this.speedDecimal = this.speedDecimal % 1;
-            }
+            this.speedDecimal += this.speed * deltaTime;
+            let speedToApply = Math.floor(this.speedDecimal);
+            this.speedDecimal = this.speedDecimal % 1;
 
-            // Updates the sprite position based on the orientation.
-            this.sprite.position.x += (this.orientation == Orientation.Left) ? -speedToApply : speedToApply;
+            let sprite = this.getDisplayObject();
+            sprite.position.x += (this.orientation == "left") ? -speedToApply : speedToApply;
 
             // Checks if the sprite is out of bound.
-            if (this.sprite.position.x > FroggerJS.Constants.WINDOW_WIDTH + this.sprite.height) {
-                this.sprite.position.x = -this.sprite.height;
+            if (sprite.position.x > FroggerJS.Constants.WINDOW_WIDTH + sprite.width) {
+                sprite.position.x = -sprite.width;
 
-            } else if(this.sprite.position.x < -this.sprite.height) {
-                this.sprite.position.x = FroggerJS.Constants.WINDOW_WIDTH + this.sprite.height;
+            } else if(sprite.position.x < -sprite.width) {
+                sprite.position.x = FroggerJS.Constants.WINDOW_WIDTH + sprite.width;
             }
         }
-
-        public getDisplayObject(): PIXI.DisplayObject {
-            return this.sprite;
-        }
-
-        public getBounding(): Bounding {
-            return this.bounding;
-        }
-
-        // TODO: Change the name of this function.
-        public abstract isCollisionAccepted(): boolean;
     }
 }

@@ -1,60 +1,64 @@
 /// <reference path="../config.ts" />
 /// <reference path="renderable.ts" />
+/// <reference path="updatable.ts" />
 /// <reference path="../utils/event.ts" />
 
 namespace FroggerJS.Graphics {
 
     import Event = Utils.Event;
     import Sprite = PIXI.Sprite;
+    import Updatable = FroggerJS.Graphics.Updatable;
 
-    export class Scene {
+    export class Scene implements Updatable {
 
         private width: number;
         private height: number;
+
         private stage: PIXI.Container;
         private renderer : PIXI.WebGLRenderer | PIXI.CanvasRenderer;
-
-        public onRender = new Event<void>();
 
         public constructor(width: number, height: number) {
 
             this.width = width;
             this.height = height;
-            this.stage = new PIXI.Container();
 
+            this.stage = new PIXI.Container();
             this.renderer = PIXI.autoDetectRenderer(width, height, {
                 resolution: window.devicePixelRatio
             });
-
             this.resize();
+            
             document.body.appendChild(this.renderer.view);
             window.addEventListener("resize", this.resize.bind(this));
         }
 
         public addChild(object: PIXI.DisplayObject | Renderable): void {
-            let displayObject = (object instanceof PIXI.DisplayObject) ? object
-                : (object as Renderable).getDisplayObject();
 
-            this.stage.addChild(displayObject);
+            if (object instanceof PIXI.DisplayObject) {
+                this.stage.addChild(object);
+            }
+            else {
+                this.stage.addChild((object as Renderable).getDisplayObject());
+            }
         }
 
         public removeChild(object: PIXI.DisplayObject | Renderable): void {
-            let sprite = (object instanceof PIXI.DisplayObject) ? object
-                : (object as Renderable).getDisplayObject();
-
-            this.stage.removeChild(sprite);
+            
+            if (object instanceof PIXI.DisplayObject) {
+                this.stage.removeChild(object);
+            }
+            else {
+                this.stage.removeChild((object as Renderable).getDisplayObject());
+            }
         }
 
-        // TODO: Use PIXI.ticker.shared instead...
-        public render(): void {
-            let self = this;
-            function animate() {
-                requestAnimationFrame(animate);
-                self.onRender.invoke();
-                //noinspection TypeScriptValidateTypes
-                self.renderer.render(self.stage);
-            }
-            animate();
+        public clear() {
+            this.stage.removeChildren();
+        }
+
+        public update(deltaTime: number): void {
+            //noinspection TypeScriptValidateTypes
+            this.renderer.render(this.stage);
         }
 
         /**

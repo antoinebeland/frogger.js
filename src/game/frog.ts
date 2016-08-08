@@ -1,23 +1,31 @@
-/// <reference path="orientation.ts" />
-/// <reference path="../../config.ts" />
-/// <reference path="../../graphics/renderable.ts" />
-/// <reference path="../../graphics/imageLoader.ts" />
-/// <reference path="../../physics/collidable.ts" />
-/// <reference path="../../physics/circleBounding.ts" />
+/// <reference path="../config.ts" />
+/// <reference path="./objects/mobileObject.ts" />
+/// <reference path="../graphics/renderable.ts" />
+/// <reference path="../graphics/imageLoader.ts" />
+/// <reference path="../physics/collidable.ts" />
+/// <reference path="../physics/circleBounding.ts" />
 
-namespace FroggerJS.Game.Objects {
+namespace FroggerJS.Game {
 
     import ImageLoader = FroggerJS.Graphics.ImageLoader;
     import Renderable = FroggerJS.Graphics.Renderable;
     import Collidable = FroggerJS.Physics.Collidable;
     import Bounding = FroggerJS.Physics.Bounding;
     import CircleBounding = FroggerJS.Physics.CircleBounding;
+    import MobileObject = FroggerJS.Game.Objects.MobileObject;
 
     enum ArrowKeyCode {
         Up = 38,
         Down = 40,
         Left = 37,
         Right = 39
+    }
+
+    enum Rotation {
+        Up = 0,
+        Left = 3 * Math.PI / 2,
+        Down = Math.PI,
+        Right = Math.PI / 2
     }
 
     /**
@@ -31,7 +39,8 @@ namespace FroggerJS.Game.Objects {
         private keyDownTexture: PIXI.Texture;
         private sprite: PIXI.Sprite;
         private bounding: CircleBounding;
-        private tilePosition: number = 0;               // TODO: Check the initial value!
+
+        private tilePosition: number = undefined;
         private deltaPosition: number = undefined;
 
         /**
@@ -65,16 +74,16 @@ namespace FroggerJS.Game.Objects {
                 let rotation: number;
                 switch (event.keyCode) {
                     case ArrowKeyCode.Left:
-                        rotation = Orientation.Left;
+                        rotation = Rotation.Left;
                         break;
                     case ArrowKeyCode.Up:
-                        rotation = Orientation.Up;
+                        rotation = Rotation.Up;
                         break;
                     case ArrowKeyCode.Right:
-                        rotation = Orientation.Right;
+                        rotation = Rotation.Right;
                         break;
                     case ArrowKeyCode.Down:
-                        rotation = Orientation.Down;
+                        rotation = Rotation.Down;
                         break;
                 }
 
@@ -133,6 +142,9 @@ namespace FroggerJS.Game.Objects {
          * @param availableLives    The available lives to set.
          */
         public static setAvailableLives(availableLives: number): void {
+            if (availableLives < 0) {
+                throw "ERROR: Negative live count.";
+            }
             Frog.availableLives = availableLives;
         }
 
@@ -140,7 +152,7 @@ namespace FroggerJS.Game.Objects {
          * Sets the position of the frog at the start position.
          */
         public startPosition(): void {
-            this.sprite.rotation = Orientation.Up;
+            this.sprite.rotation = Rotation.Up;
             this.sprite.position.x = FroggerJS.Constants.WINDOW_WIDTH / 2;
             this.sprite.position.y = FroggerJS.Constants.WINDOW_HEIGHT - (this.sprite.height / 2);
             this.updateTilePosition();
