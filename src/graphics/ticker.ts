@@ -44,7 +44,6 @@ namespace FroggerJS.Graphics {
             this.ticker.start();
         }
 
-
         /**
          * Stops the ticker.
          */

@@ -27,7 +27,7 @@ namespace Utils {
         }
 
         /**
-         * Invoke the event.
+         * Invokes the event.
          *
          * @param data      The data to pass to the handlers.
          */

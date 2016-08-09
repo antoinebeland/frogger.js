@@ -1,7 +1,7 @@
 namespace FroggerJS.Graphics {
 
     /**
-     * Indicates that an object can be update.
+     * Indicates that an object can be updated.
      */
     export interface Updatable {
 
