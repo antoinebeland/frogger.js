@@ -2,6 +2,7 @@ namespace Utils {
 
     /**
      * Defines an event
+     *
      * @see http://stackoverflow.com/questions/12881212/does-typescript-support-events-on-classes
      */
     export class Event<T> {
@@ -9,6 +10,7 @@ namespace Utils {
 
         /**
          * Registers an handler.
+         *
          * @param handler   Handler to register.
          */
         public register(handler: { (data?: T): void }) {
@@ -17,6 +19,7 @@ namespace Utils {
 
         /**
          * Unregisters an handler.
+         *
          * @param handler   Handler to unregister.
          */
         public unregister(handler: { (data?: T): void }) {
@@ -25,6 +28,7 @@ namespace Utils {
 
         /**
          * Invoke the event.
+         *
          * @param data      The data to pass to the handlers.
          */
         public invoke(data?: T) {

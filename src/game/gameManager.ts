@@ -1,6 +1,6 @@
 /// <reference path="../config.ts" />
-/// <reference path="./frog.ts" />
-/// <reference path="./objects/mobileObjectFactory.ts" />
+/// <reference path="./actor.ts" />
+/// <reference path="./objects/mobileFactory.ts" />
 /// <reference path="../graphics/updatable.ts" />
 /// <reference path="../graphics/imageLoader.ts" />
 /// <reference path="../graphics/scene.ts" />
@@ -11,10 +11,10 @@ namespace FroggerJS.Game {
     
     import ImageLoader = FroggerJS.Graphics.ImageLoader;
     import Scene = FroggerJS.Graphics.Scene;
-    import Frog = FroggerJS.Game.Frog;
+    import Actor = FroggerJS.Game.Actor;
     import Event = Utils.Event;
     import Logger = Utils.Logger;
-    import MobileObjectFactory = FroggerJS.Game.Objects.MobileObjectFactory;
+    import MobileObjectFactory = FroggerJS.Game.Objects.MobileFactory;
     import Updatable = FroggerJS.Graphics.Updatable;
 
     export class GameManager implements Updatable {
@@ -22,7 +22,7 @@ namespace FroggerJS.Game {
         private imageLoader: ImageLoader;
         private scene : Scene;
 
-        private frog: Frog;
+        private actor: Actor;
         private mobileObjectFactory: MobileObjectFactory;
         private mobileObjects: any;
         private touchAllowedStatus: boolean[];
@@ -35,7 +35,7 @@ namespace FroggerJS.Game {
             this.imageLoader = imageLoader;
             this.scene = scene;
             
-            this.frog = new Frog(imageLoader);
+            this.actor = new Actor(imageLoader);
             this.mobileObjectFactory = new MobileObjectFactory(imageLoader);
             this.mobileObjects = [];
             this.touchAllowedStatus = [];
@@ -52,6 +52,7 @@ namespace FroggerJS.Game {
                 throw "ERROR: The level configuration isn't valid."
             }
 
+            // TODO: Put in other file...
             const WIDTH_SPRITES_NUMBER = FroggerJS.Constants.WINDOW_WIDTH / FroggerJS.Constants.TILE_SIZE;
             for(let i = 0; i < level.length; ++i) {
 
@@ -109,8 +110,8 @@ namespace FroggerJS.Game {
                 }
             }
 
-            this.frog.startPosition();
-            this.scene.addChild(this.frog);
+            this.actor.startPosition();
+            this.scene.addChild(this.actor);
 
             // Displays the bounding if the option is enabled.
             if(FroggerJS.Constants.DISPLAY_BOUNDING) {
@@ -119,24 +120,25 @@ namespace FroggerJS.Game {
                         this.scene.addChild(this.mobileObjects[i][j].getBounding());
                     }
                 }
-                this.scene.addChild(this.frog.getBounding());
+                this.scene.addChild(this.actor.getBounding());
             }
 
-            var basicText = new PIXI.Text(Frog.getAvailableLives());
+            // TODO: Remove from here!
+            var basicText = new PIXI.Text(Actor.getAvailableLives());
             basicText.x = 30;
             basicText.y = 90;
 
             this.scene.addChild(basicText);
 
-            document.addEventListener("keydown", this.frog.onKeyDown);
-            document.addEventListener("keyup", this.frog.onKeyUp);
+            document.addEventListener("keydown", this.actor.onKeyDown);
+            document.addEventListener("keyup", this.actor.onKeyUp);
         }
 
         // TODO: Rename the function...
         public clearLevel(): void {
 
-            document.removeEventListener("keydown", this.frog.onKeyDown);
-            document.removeEventListener("keyup", this.frog.onKeyUp);
+            document.removeEventListener("keydown", this.actor.onKeyDown);
+            document.removeEventListener("keyup", this.actor.onKeyUp);
         }
 
         public update(deltaTime: number): void {
@@ -147,14 +149,14 @@ namespace FroggerJS.Game {
                 for (let j = 0; j < this.mobileObjects[i].length; ++j) {
                    this.mobileObjects[i][j].update(deltaTime);
 
-                    if (this.frog.getTilePosition() == i) {
+                    if (this.actor.getTilePosition() == i) {
                         let mobileObject = this.mobileObjects[i][j];
 
-                        if (mobileObject.getBounding().isCollide(this.frog.getBounding())) {
+                        if (mobileObject.getBounding().isCollide(this.actor.getBounding())) {
                             isCollide = true;
 
-                            if(mobileObject.isCollisionAccepted()) {
-                                this.frog.follow(mobileObject);
+                            if(mobileObject.canBeHit()) {
+                                this.actor.follow(mobileObject);
                             }
                             else {
                                 this.restartLevel();
@@ -162,7 +164,7 @@ namespace FroggerJS.Game {
                         }
                     }
                 }
-                if (this.frog.getTilePosition() == i && !isCollide && !this.touchAllowedStatus[i]){
+                if (this.actor.getTilePosition() == i && !isCollide && !this.touchAllowedStatus[i]){
                     this.restartLevel();
                 }
             }
@@ -170,10 +172,10 @@ namespace FroggerJS.Game {
 
         private restartLevel() {
 
-            Frog.removeOneLive();   // TODO: Rename function
-            this.frog.startPosition();
+            Actor.removeOneLive();   // TODO: Rename function
+            this.actor.startPosition();
 
-            let availableLives = Frog.getAvailableLives();
+            let availableLives = Actor.getAvailableLives();
             Logger.logMessage(`One live lost. ${availableLives} live(s) remaining.`);
 
             if(availableLives <= 0) {

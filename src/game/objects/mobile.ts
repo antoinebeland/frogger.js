@@ -7,30 +7,57 @@ namespace FroggerJS.Game.Objects {
 
     import Renderable = FroggerJS.Graphics.Renderable;
     import Collidable = FroggerJS.Physics.Collidable;
-    import Bounding = FroggerJS.Physics.Bounding;
-    import RectangleBounding = FroggerJS.Physics.RectangleBounding;
     import Updatable = FroggerJS.Graphics.Updatable;
+    import Bounding = FroggerJS.Physics.Bounding;
 
-    export abstract class MobileObject implements Renderable, Collidable, Updatable {
+    /**
+     * Defines the base class for a mobile object (an object that moves automatically).
+     */
+    export abstract class Mobile implements Renderable, Collidable, Updatable {
 
         private speed: number;
         private speedDecimal = 0;
         private orientation: string;
-        
-        public constructor(speed: number, orientation: string) {
-            this.speed = speed;
 
+        /**
+         * Initializes a new instance of the Mobile class.
+         *
+         * @param speed         The speed of the mobile.
+         * @param orientation   The orientation of the mobile.
+         */
+        protected constructor(speed: number, orientation: string) {
+
+            // TODO: Make the validation in other place!
             orientation = orientation.toLowerCase();
             if(orientation != "left" && orientation != "right") {
                 throw "ERROR: Invalid orientation specified";
             }
+
+
+            this.speed = speed;
             this.orientation = orientation;
         }
 
+        /**
+         * Gets the display object associated with the mobile.
+         */
         public abstract getDisplayObject(): PIXI.Sprite;
-        public abstract getBounding(): Bounding;
-        public abstract isCollisionAccepted(): boolean; // TODO: Change the name of this function.
 
+        /**
+         * Gets the bounding associated with the mobile.
+         */
+        public abstract getBounding(): Bounding;
+
+        /**
+         * Indicates if the current mobile can be hit by the actor.
+         */
+        public abstract canBeHit(): boolean;
+
+        /**
+         * Updates the position of the mobile based on the speed and the orientation.
+         *
+         * @param deltaTime     The delta time.
+         */
         public update(deltaTime: number): void {
 
             this.speedDecimal += this.speed * deltaTime;

@@ -1,5 +1,5 @@
 /// <reference path="../config.ts" />
-/// <reference path="./objects/mobileObject.ts" />
+/// <reference path="./objects/mobile.ts" />
 /// <reference path="../graphics/renderable.ts" />
 /// <reference path="../graphics/imageLoader.ts" />
 /// <reference path="../physics/collidable.ts" />
@@ -10,9 +10,9 @@ namespace FroggerJS.Game {
     import ImageLoader = FroggerJS.Graphics.ImageLoader;
     import Renderable = FroggerJS.Graphics.Renderable;
     import Collidable = FroggerJS.Physics.Collidable;
+    import Mobile = FroggerJS.Game.Objects.Mobile;
     import Bounding = FroggerJS.Physics.Bounding;
     import CircleBounding = FroggerJS.Physics.CircleBounding;
-    import MobileObject = FroggerJS.Game.Objects.MobileObject;
 
     enum ArrowKeyCode {
         Up = 38,
@@ -29,9 +29,9 @@ namespace FroggerJS.Game {
     }
 
     /**
-     * Defines the main actor of the game.
+     * Defines the actor of the game.
      */
-    export class Frog implements Renderable, Collidable {
+    export class Actor implements Renderable, Collidable {
 
         private static availableLives = 5;
 
@@ -54,7 +54,8 @@ namespace FroggerJS.Game {
         public onKeyUp: {(event: KeyboardEvent): void};
 
         /**
-         * Initializes a new instance of the Frog class.
+         * Initializes a new instance of the Actor class.
+         *
          * @param imageLoader   The image loader to used to load the textures.
          */
         public constructor(imageLoader: ImageLoader) {
@@ -113,7 +114,7 @@ namespace FroggerJS.Game {
                 }
                 self.deltaPosition = undefined; // Reset the delta position.
 
-                // Checks if the frog has changed of tile.
+                // Checks if the actor has changed of tile.
                 if (event.keyCode == ArrowKeyCode.Up || event.keyCode == ArrowKeyCode.Down) {
                     self.updateTilePosition();
                 }
@@ -121,35 +122,37 @@ namespace FroggerJS.Game {
         }
 
         /**
-         * Removes one live to the available lives of the frog.
+         * Removes one live to the available lives of the actor.
          */
         public static removeOneLive(): void {
-            if (--Frog.availableLives < 0) {
+            if (--Actor.availableLives < 0) {
                 throw "ERROR: Negative live count.";
             }
         }
 
         /**
-         * Gets the available lives of the frog.
-         * @returns {number}
+         * Gets the available lives of the actor.
+         *
+         * @returns {number}    The number of available lives.
          */
         public static getAvailableLives(): number {
-            return Frog.availableLives;
+            return Actor.availableLives;
         }
 
         /**
-         * Sets the available lives of the frog.
+         * Sets the available lives of the actor.
+         *
          * @param availableLives    The available lives to set.
          */
         public static setAvailableLives(availableLives: number): void {
             if (availableLives < 0) {
                 throw "ERROR: Negative live count.";
             }
-            Frog.availableLives = availableLives;
+            Actor.availableLives = availableLives;
         }
 
         /**
-         * Sets the position of the frog at the start position.
+         * Sets the position of the actor at the start position.
          */
         public startPosition(): void {
             this.sprite.rotation = Rotation.Up;
@@ -160,9 +163,10 @@ namespace FroggerJS.Game {
 
         /**
          * Follows the specified mobile object.
+         *
          * @param mobile    The mobile object to follow.
          */
-        public follow(mobile: MobileObject): void {
+        public follow(mobile: Mobile): void {
 
             if(!this.deltaPosition) {
                 this.deltaPosition = this.sprite.position.x - mobile.getDisplayObject().position.x;
@@ -171,31 +175,34 @@ namespace FroggerJS.Game {
         }
 
         /**
-         * Gets the tile index position of the frog.
-         * @returns {number}
+         * Gets the tile index position of the actor.
+         *
+         * @returns {number}            The current index of the actor.
          */
         public getTilePosition(): number {
             return this.tilePosition;
         }
 
         /**
-         * Gets the display object associated with the frog.
-         * @returns {PIXI.Sprite}
+         * Gets the display object associated with the actor.
+         *
+         * @returns {PIXI.Sprite}       The sprite associated with the actor.
          */
         public getDisplayObject(): PIXI.DisplayObject {
             return this.sprite;
         }
 
         /**
-         * Gets the bounding associated with the frog.
-         * @returns {CircleBounding}
+         * Gets the bounding associated with the actor.
+         *
+         * @returns {CircleBounding}    The bounding associated with the actor.
          */
         public getBounding(): Bounding {
             return this.bounding;
         }
 
         /**
-         * Updates the position of the frog based on the tile logic.
+         * Updates the position of the actor based on the tile logic.
          */
         private updateTilePosition() {
             this.tilePosition = Math.floor(this.sprite.position.y / FroggerJS.Constants.TILE_SIZE);

@@ -17,6 +17,7 @@ namespace Utils {
 
         /**
          * Gets or sets the active log level for the logger.
+         *
          * @type {Utils.LogLevel}
          */
         static activeLogLevel: LogLevel = LogLevel.Debug;

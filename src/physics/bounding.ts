@@ -11,9 +11,8 @@ namespace FroggerJS.Physics {
 
         /**
          * Indicates if there is a collision between the current and the specified bounding.
+         *
          * @param bounding      The bounding to check.
-         * @return {boolean}    TRUE if there is a collision between the current and the specified bounding.
-         *                      FALSE otherwise.
          */
         isCollide(bounding: Bounding): boolean;
     }

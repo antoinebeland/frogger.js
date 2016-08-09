@@ -1,4 +1,4 @@
-/// <reference path="mobileObject.ts" />
+/// <reference path="mobile.ts" />
 /// <reference path="../../graphics/imageLoader.ts" />
 /// <reference path="../../physics/rectangleBounding.ts" />
 
@@ -8,7 +8,10 @@ namespace FroggerJS.Game.Objects {
     import Bounding = FroggerJS.Physics.Bounding;
     import RectangleBounding = FroggerJS.Physics.RectangleBounding;
 
-    export class Car extends MobileObject {
+    /**
+     * Defines a car.
+     */
+    export class Car extends Mobile {
 
         public static TYPE = "car";
         private static availableColors = [
@@ -21,6 +24,13 @@ namespace FroggerJS.Game.Objects {
         private sprite: PIXI.Sprite;
         private bounding: Bounding;
 
+        /**
+         * Initializes a new instance of the Car class.
+         *
+         * @param imageLoader       The image loader to use.
+         * @param orientation       The orientation of the car.
+         * @param speed             The speed of the car.
+         */
         public constructor(imageLoader: ImageLoader, orientation: string, speed: number) {
             super(speed, orientation);
 
@@ -31,15 +41,30 @@ namespace FroggerJS.Game.Objects {
             this.bounding = new RectangleBounding(this.sprite.position, this.sprite.width, this.sprite.height);
         }
 
+        /**
+         * Gets the display object associated with the car.
+         *
+         * @returns {PIXI.Sprite}   The sprite associated with the car.
+         */
         public getDisplayObject(): PIXI.Sprite {
             return this.sprite;
         }
 
+        /**
+         * Gets the bounding associated with the car.
+         *
+         * @returns {Bounding}      The bounding associated with the car.
+         */
         public getBounding(): Bounding {
             return this.bounding;
         }
 
-        public isCollisionAccepted(): boolean {
+        /**
+         * Indicates if the car can be hit.
+         *
+         * @returns {boolean}       FALSE: the car cannot be hit by the actor.
+         */
+        public canBeHit(): boolean {
             return false;
         }
     }

@@ -14,12 +14,14 @@ namespace FroggerJS.Graphics {
 
         /**
          * Occurred when the images loading is completed.
+         *
          * @type {Utils.Event<void>}
          */
         public onLoadingCompleted = new Event<void>();
 
         /**
          * Initializes a new instance of the ImageLoader class.
+         *
          * @param baseResourcesPath     The base path where the resources are stored.
          */
         public constructor(baseResourcesPath : string) {
@@ -35,6 +37,7 @@ namespace FroggerJS.Graphics {
 
         /**
          * Registers one or many images to load.
+         *
          * @param element   The element can be a string or a list of strings. 
          *                  The specified string must be the name of the resource.
          */
@@ -51,6 +54,7 @@ namespace FroggerJS.Graphics {
 
         /**
          * Gets the image associated with the specified name.
+         *
          * @param name          The name of the resource.
          * @returns {Texture}
          */
