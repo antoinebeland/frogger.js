@@ -56,7 +56,7 @@ namespace FroggerJS.Game.Objects {
         /**
          * Updates the position of the mobile based on the speed and the orientation.
          *
-         * @param deltaTime     The delta time.
+         * @param deltaTime     The delta time to use.
          */
         public update(deltaTime: number): void {
 

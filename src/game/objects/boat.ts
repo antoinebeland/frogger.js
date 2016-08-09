@@ -59,7 +59,7 @@ namespace FroggerJS.Game.Objects {
 
 
         /**
-         * Indicates if the boat can be hit.
+         * Indicates if the boat can be hit by the actor.
          *
          * @returns {boolean}       TRUE: the boat can always be hit by the actor.
          */

@@ -1,6 +1,5 @@
 /// <reference path="../config.ts" />
 /// <reference path="renderable.ts" />
-/// <reference path="updatable.ts" />
 /// <reference path="../utils/event.ts" />
 
 namespace FroggerJS.Graphics {
@@ -9,6 +8,9 @@ namespace FroggerJS.Graphics {
     import Sprite = PIXI.Sprite;
     import Updatable = FroggerJS.Graphics.Updatable;
 
+    /**
+     * Defines the graphic scene.
+     */
     export class Scene implements Updatable {
 
         private width: number;
@@ -17,6 +19,12 @@ namespace FroggerJS.Graphics {
         private stage: PIXI.Container;
         private renderer : PIXI.WebGLRenderer | PIXI.CanvasRenderer;
 
+        /**
+         * Initializes a new instance of the Scene class.
+         *
+         * @param width     The width of the scene.
+         * @param height    The height of the scene.
+         */
         public constructor(width: number, height: number) {
 
             this.width = width;
@@ -32,6 +40,11 @@ namespace FroggerJS.Graphics {
             window.addEventListener("resize", this.resize.bind(this));
         }
 
+        /**
+         * Adds the specified child to the scene.
+         *
+         * @param object    The object to add.
+         */
         public addChild(object: PIXI.DisplayObject | Renderable): void {
 
             if (object instanceof PIXI.DisplayObject) {
@@ -42,6 +55,11 @@ namespace FroggerJS.Graphics {
             }
         }
 
+        /**
+         *  Removes the specified of the scene.
+         *
+         * @param object    The object to remove.
+         */
         public removeChild(object: PIXI.DisplayObject | Renderable): void {
             
             if (object instanceof PIXI.DisplayObject) {
@@ -52,16 +70,26 @@ namespace FroggerJS.Graphics {
             }
         }
 
+        /**
+         * Clears all the objects of the scene.
+         */
         public clear() {
             this.stage.removeChildren();
         }
 
+        /**
+         * Updates the scene.
+         *
+         * @param deltaTime     The delta time to use.
+         */
         public update(deltaTime: number): void {
             //noinspection TypeScriptValidateTypes
             this.renderer.render(this.stage);
         }
 
         /**
+         * Resizes the scene at the good dimension based on the window size.
+         *
          * @see http://www.rocketshipgames.com/blogs/tjkopena/2015/09/basic-scaling-animation-and-parallax-in-pixi-js-v3/
          */
         private resize() {

@@ -60,7 +60,7 @@ namespace FroggerJS.Game.Objects {
         }
 
         /**
-         * Indicates if the car can be hit.
+         * Indicates if the car can be hit by the actor.
          *
          * @returns {boolean}       FALSE: the car cannot be hit by the actor.
          */

@@ -56,7 +56,7 @@ namespace FroggerJS.Graphics {
          * Gets the image associated with the specified name.
          *
          * @param name          The name of the resource.
-         * @returns {Texture}
+         * @returns {Texture}   The surface associated with the specified name.
          */
         public get(name: string): PIXI.Texture {
 
@@ -73,6 +73,11 @@ namespace FroggerJS.Graphics {
             this.loader.load();
         }
 
+        /**
+         * Registers an element to load.
+         *
+         * @param name      The name of the resource to load.
+         */
         private registerSingleElement(name: string): void {
             this.loader.add(name, `${this.baseResourcesPath}/${name}.png`);
         }
