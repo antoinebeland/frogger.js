@@ -70,6 +70,7 @@ namespace FroggerJS.Game {
             this.bounding = new CircleBounding(this.sprite.position, this.sprite.width * BOUNDING_FACTOR);
 
             let self = this;
+            // TODO: Bind the context this!!!
             this.onKeyDown = function (event: KeyboardEvent) {
 
                 let rotation: number;
