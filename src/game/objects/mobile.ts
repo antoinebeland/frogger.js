@@ -59,7 +59,7 @@ namespace FroggerJS.Game.Objects {
             this.speedDecimal = this.speedDecimal % 1;
 
             let sprite = this.getDisplayObject();
-            sprite.position.x += (this.orientation == Orientation.Left) ? -speedToApply : speedToApply;
+            sprite.position.x += (this.orientation == "left") ? -speedToApply : speedToApply;
 
             // Checks if the sprite is out of bound.
             if (sprite.position.x > FroggerJS.Constants.WINDOW_WIDTH + sprite.width) {

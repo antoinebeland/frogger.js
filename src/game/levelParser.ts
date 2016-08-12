@@ -9,8 +9,7 @@ namespace FroggerJS.Game {
     import Mobile = FroggerJS.Game.Objects.Mobile;
     import MobileFactory = FroggerJS.Game.Objects.MobileFactory;
     import GoalPlatform = FroggerJS.Game.Objects.GoalPlatform;
-    import OrientationUtils = FroggerJS.Game.Objects.OrientationUtils;
-
+    
     /**
      * Defines the parser result to return.
      */
@@ -151,7 +150,6 @@ namespace FroggerJS.Game {
 
             let nextPosition = 0;
             let spriteWidth = 0;
-            let orientation = OrientationUtils.getOrientationFromString(mobileElement.orientation);
             do {
                 let mobileObject =
                     this.mobileFactory.createMobile(mobileElement.type, mobileElement.orientation, mobileElement.speed);
