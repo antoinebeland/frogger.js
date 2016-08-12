@@ -14,6 +14,9 @@ namespace FroggerJS.Game {
     import Bounding = FroggerJS.Physics.Bounding;
     import CircleBounding = FroggerJS.Physics.CircleBounding;
 
+    /**
+     * Defines the key codes associated with the arrow keys.
+     */
     enum ArrowKeyCode {
         Up = 38,
         Down = 40,
@@ -21,6 +24,9 @@ namespace FroggerJS.Game {
         Right = 39
     }
 
+    /**
+     * Defines the sprite rotation based on the active arrow key.
+     */
     enum Rotation {
         Up = 0,
         Left = 3 * Math.PI / 2,
@@ -64,7 +70,8 @@ namespace FroggerJS.Game {
             this.keyDownTexture = imageLoader.get("frog-extend");
 
             this.sprite = new PIXI.Sprite(this.keyUpTexture);
-            this.sprite.anchor = new PIXI.Point(0.5, 0.5);
+            this.sprite.anchor.x = 0.5;
+            this.sprite.anchor.y = 0.5;
 
             const BOUNDING_FACTOR = 0.3;
             this.bounding = new CircleBounding(this.sprite.position, this.sprite.width * BOUNDING_FACTOR);
@@ -125,9 +132,9 @@ namespace FroggerJS.Game {
         /**
          * Removes one live to the available lives of the actor.
          */
-        public static removeOneLive(): void {
+        public static loseLife(): void {
             if (--Actor.availableLives < 0) {
-                throw "ERROR: Negative live count.";
+                throw new Error("Negative live count.");
             }
         }
 
@@ -147,7 +154,7 @@ namespace FroggerJS.Game {
          */
         public static setAvailableLives(availableLives: number): void {
             if (availableLives < 0) {
-                throw "ERROR: Negative live count.";
+                throw new Error("Negative live count.");
             }
             Actor.availableLives = availableLives;
         }
@@ -180,7 +187,7 @@ namespace FroggerJS.Game {
          *
          * @returns {number}            The current index of the actor.
          */
-        public getTilePosition(): number {
+        public getLinePosition(): number {
             return this.tilePosition;
         }
 

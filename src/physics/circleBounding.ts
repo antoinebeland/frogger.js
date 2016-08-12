@@ -47,7 +47,7 @@ namespace FroggerJS.Physics {
          *                      FALSE otherwise.
          */
         public isCollide(bounding: Bounding): boolean {
-
+            
             if (bounding instanceof RectangleBounding) {
 
                 // Solution from StackOverflow:
@@ -89,7 +89,7 @@ namespace FroggerJS.Physics {
 
                 return distance < this.radius + bounding.getRadius();
             }
-            throw "ERROR: Unknown bounding.";
+            throw new Error("Unknown bounding.");
         }
 
         /**

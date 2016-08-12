@@ -1,5 +1,7 @@
 /// <reference path="../config.ts" />
 /// <reference path="renderable.ts" />
+/// <reference path="../physics/collidable.ts" />
+/// <reference path="../physics/rectangleBounding.ts" />
 /// <reference path="../utils/event.ts" />
 
 namespace FroggerJS.Graphics {
@@ -7,16 +9,21 @@ namespace FroggerJS.Graphics {
     import Event = Utils.Event;
     import Sprite = PIXI.Sprite;
     import Updatable = FroggerJS.Graphics.Updatable;
+    import Collidable = FroggerJS.Physics.Collidable;
+    import Bounding = FroggerJS.Physics.Bounding;
+    import RectangleBounding = FroggerJS.Physics.RectangleBounding;
+    import isCollidable = FroggerJS.Physics.isCollidable;
 
     /**
      * Defines the graphic scene.
      */
-    export class Scene implements Updatable {
+    export class Scene implements Collidable, Updatable {
 
         private width: number;
         private height: number;
 
         private stage: PIXI.Container;
+        private bounding: Bounding;
         private renderer : PIXI.WebGLRenderer | PIXI.CanvasRenderer;
 
         /**
@@ -31,9 +38,11 @@ namespace FroggerJS.Graphics {
             this.height = height;
 
             this.stage = new PIXI.Container();
+            this.bounding = new RectangleBounding(new PIXI.Point(0, 0), this.width, this.height);
             this.renderer = PIXI.autoDetectRenderer(width, height, {
                 resolution: window.devicePixelRatio
             });
+
             this.resize();
             
             document.body.appendChild(this.renderer.view);
@@ -41,17 +50,39 @@ namespace FroggerJS.Graphics {
         }
 
         /**
+         * Gets the bounding associated with the scene.
+         *
+         * @returns {Bounding}      The bounding associated with the scene.
+         */
+        public getBounding(): Bounding  {
+            return this.bounding;
+        }
+
+        /**
+         * Updates the scene.
+         *
+         * @param deltaTime     The delta time to use.
+         */
+        public update(deltaTime: number): void {
+            //noinspection TypeScriptValidateTypes
+            this.renderer.render(this.stage);
+        }
+
+        /**
          * Adds the specified child to the scene.
          *
          * @param object    The object to add.
          */
-        public addChild(object: PIXI.DisplayObject | Renderable): void {
+        public addChild(object: PIXI.DisplayObject | Renderable | Collidable): void {
 
             if (object instanceof PIXI.DisplayObject) {
                 this.stage.addChild(object);
-            }
-            else {
+            } else {
                 this.stage.addChild((object as Renderable).getDisplayObject());
+
+                if(FroggerJS.Constants.DISPLAY_BOUNDING && isCollidable(object)) {
+                    this.stage.addChild((object as Collidable).getBounding().getDisplayObject());
+                }
             }
         }
 
@@ -64,8 +95,7 @@ namespace FroggerJS.Graphics {
             
             if (object instanceof PIXI.DisplayObject) {
                 this.stage.removeChild(object);
-            }
-            else {
+            } else {
                 this.stage.removeChild((object as Renderable).getDisplayObject());
             }
         }
@@ -75,16 +105,6 @@ namespace FroggerJS.Graphics {
          */
         public clear() {
             this.stage.removeChildren();
-        }
-
-        /**
-         * Updates the scene.
-         *
-         * @param deltaTime     The delta time to use.
-         */
-        public update(deltaTime: number): void {
-            //noinspection TypeScriptValidateTypes
-            this.renderer.render(this.stage);
         }
 
         /**

@@ -41,6 +41,7 @@ namespace FroggerJS {
             "car-white-right",
             "frog",
             "frog-extend",
+            "goal",
             "grass",
             "grass-water-top",
             "grass-water-bottom",

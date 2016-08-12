@@ -29,8 +29,8 @@ namespace FroggerJS.States {
 
             Logger.logMessage(`Entered in 'Game Level ${this.levelConfiguration["level"]} State'.`);
 
-            this.gameManager.onGameOver.register(this.gameOverOccurred);
-            this.gameManager.onNextLevel.register(this.nextLevelOccurred);
+            this.gameManager.onGameOver.register(this.gameOverOccurred, this);
+            this.gameManager.onNextLevel.register(this.nextLevelOccurred, this);
             this.gameManager.setupLevel(this.levelConfiguration);
             this.ticker.register(this.gameManager);
         }
@@ -38,9 +38,9 @@ namespace FroggerJS.States {
         public leaving(): void {
 
             this.ticker.unregister(this.gameManager);
-            this.gameManager.onGameOver.unregister(this.gameOverOccurred);
-            this.gameManager.onNextLevel.unregister(this.nextLevelOccurred);
-            this.gameManager.clearLevel();
+            this.gameManager.onGameOver.unregister(this.gameOverOccurred, this);
+            this.gameManager.onNextLevel.unregister(this.nextLevelOccurred, this);
+            this.gameManager.destroyLevel();
 
             Logger.logMessage(`Leaving the 'Game Level ${this.levelConfiguration["level"]} State'.`);
         }

@@ -73,7 +73,7 @@ namespace FroggerJS.Physics {
             } else if(bounding instanceof CircleBounding) {
                 return bounding.isCollide(this);
             }
-            throw "ERROR: Unknown bounding.";
+            throw new Error("Unknown bounding.");
         }
 
         /**

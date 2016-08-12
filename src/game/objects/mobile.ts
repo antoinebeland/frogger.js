@@ -25,7 +25,7 @@ namespace FroggerJS.Game.Objects {
          * @param speed         The speed of the mobile.
          * @param orientation   The orientation of the mobile.
          */
-        protected constructor(speed: number, orientation: string) {
+        constructor(speed: number, orientation: string) {
 
             // TODO: Make the validation in other place!
             orientation = orientation.toLowerCase();

@@ -23,15 +23,21 @@ var uglify = require('gulp-uglify');
  * in the 'build' folder.
  */
 gulp.task('build', function () {
-  var tsResult = tsProject.src()
-    .pipe(sourceMaps.init())
-    .pipe(ts(tsProject));
 
-  return tsResult.js
-    .pipe(uglify())
-    .pipe(rename({ suffix: '.min' }))
-    .pipe(sourceMaps.write(".", { includeContent: false, sourceRoot: "../" + constants.SOURCES_DIRECTORY }))
-    .pipe(gulp.dest(constants.BUILD_DIRECTORY));
+  try {
+    var tsResult = tsProject.src()
+      .pipe(sourceMaps.init())
+      .pipe(ts(tsProject));
+
+    return tsResult.js
+      .pipe(uglify())
+      .pipe(rename({ suffix: '.min' }))
+      .pipe(sourceMaps.write(".", { includeContent: false, sourceRoot: "../" + constants.SOURCES_DIRECTORY }))
+      .pipe(gulp.dest(constants.BUILD_DIRECTORY));
+
+  } catch(e) {
+    console.log(e);
+  }
 });
 
 /**
