@@ -1,5 +1,6 @@
 /// <reference path="car.ts" />
 /// <reference path="boat.ts" />
+/// <reference path="orientation.ts" />
 /// <reference path="../../graphics/imageLoader.ts" />
 
 namespace FroggerJS.Game.Objects {
@@ -30,7 +31,7 @@ namespace FroggerJS.Game.Objects {
          * @param speed         The speed of the mobile.
          * @returns {Mobile}    A new instance of a mobile based on the specified features.
          */
-        public createMobile(mobileName: string, orientation: string, speed: number): Mobile {
+        public createMobile(mobileName: string, orientation: Orientation, speed: number): Mobile {
 
             switch (mobileName.toLowerCase()) {
                 case Car.TYPE:

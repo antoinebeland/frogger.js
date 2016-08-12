@@ -1,4 +1,5 @@
 /// <reference path="mobile.ts" />
+/// <reference path="orientation.ts" />
 /// <reference path="../../graphics/imageLoader.ts" />
 /// <reference path="../../physics/rectangleBounding.ts" />
 
@@ -31,7 +32,7 @@ namespace FroggerJS.Game.Objects {
          * @param orientation       The orientation of the car.
          * @param speed             The speed of the car.
          */
-        public constructor(imageLoader: ImageLoader, orientation: string, speed: number) {
+        public constructor(imageLoader: ImageLoader, orientation: Orientation, speed: number) {
             super(speed, orientation);
 
             let colorIndex = Math.floor(Math.random() * Car.availableColors.length);

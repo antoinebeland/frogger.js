@@ -1,4 +1,5 @@
 /// <reference path="../../config.ts" />
+/// <reference path="orientation.ts" />
 /// <reference path="../../graphics/renderable.ts" />
 /// <reference path="../../graphics/updatable.ts" />
 /// <reference path="../../physics/collidable.ts" />
@@ -17,7 +18,7 @@ namespace FroggerJS.Game.Objects {
 
         private speed: number;
         private speedDecimal = 0;
-        private orientation: string;
+        private orientation: Orientation;
 
         /**
          * Initializes a new instance of the Mobile class.
@@ -25,14 +26,7 @@ namespace FroggerJS.Game.Objects {
          * @param speed         The speed of the mobile.
          * @param orientation   The orientation of the mobile.
          */
-        constructor(speed: number, orientation: string) {
-
-            // TODO: Make the validation in other place!
-            orientation = orientation.toLowerCase();
-            if(orientation != "left" && orientation != "right") {
-                throw "ERROR: Invalid orientation specified";
-            }
-
+        constructor(speed: number, orientation: Orientation) {
 
             this.speed = speed;
             this.orientation = orientation;
@@ -65,7 +59,7 @@ namespace FroggerJS.Game.Objects {
             this.speedDecimal = this.speedDecimal % 1;
 
             let sprite = this.getDisplayObject();
-            sprite.position.x += (this.orientation == "left") ? -speedToApply : speedToApply;
+            sprite.position.x += (this.orientation == Orientation.Left) ? -speedToApply : speedToApply;
 
             // Checks if the sprite is out of bound.
             if (sprite.position.x > FroggerJS.Constants.WINDOW_WIDTH + sprite.width) {
