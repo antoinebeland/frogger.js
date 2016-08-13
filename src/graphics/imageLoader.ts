@@ -61,7 +61,7 @@ namespace FroggerJS.Graphics {
         public get(name: string): PIXI.Texture {
 
             if(!this.loader.resources[name]) {
-                throw `ERROR: The "${name}" doesn't exist in the resources.`
+                throw new Error(`The "${name}" doesn't exist in the resources.`)
             }
             return this.loader.resources[name].texture;
         }

@@ -28,7 +28,7 @@ namespace FroggerJS.States {
         public change(name: string): void {
 
             if(!(name in this.states)) {
-                throw "ERROR: The specified name for the state doesn't exist.";
+                throw new Error("The specified name for the state doesn't exist.");
             }
 
             let nextState = this.states[name];

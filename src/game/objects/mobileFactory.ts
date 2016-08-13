@@ -39,7 +39,7 @@ namespace FroggerJS.Game.Objects {
                 case Boat.TYPE:
                     return new Boat(this.imageLoader, orientation, speed);
             }
-            throw "ERROR: The mobile name doesn't exist.";
+            throw new Error("The mobile name doesn't exist.");
         }
     }
 }
