@@ -19,11 +19,15 @@ namespace FroggerJS.Game {
     import Mobile = FroggerJS.Game.Objects.Mobile;
     import GoalDeck = FroggerJS.Game.Objects.GoalDeck;
 
+    /**
+     * Defines the manager of the game.
+     */
     export class GameManager implements Updatable {
 
         private imageLoader: ImageLoader;
         private scene : Scene;
         private levelParser: LevelParser;
+        private isLevelLoaded = false;
 
         private actor: Actor;
         private mobiles: Mobile[][];
@@ -33,16 +37,32 @@ namespace FroggerJS.Game {
         public onGameOver = new Event<void>();
         public onNextLevel = new Event<void>();
 
+        /**
+         * Initializes a new instance of the GameManager class.
+         *
+         * @param imageLoader   The image loader to use.
+         * @param scene         The scene to use.
+         */
         public constructor(imageLoader: ImageLoader, scene: Scene) {
 
             this.imageLoader = imageLoader;
             this.scene = scene;
             this.levelParser = new LevelParser(imageLoader);
 
-            // TODO: Set the available lives for the frog.
+            Actor.setAvailableLives(FroggerJS.Constants.AVAILABLE_LIVES);
         }
 
+        /**
+         * Setups the specified level configuration.
+         *
+         * @param levelConfiguration    The level configuration to use.
+         */
         public setupLevel(levelConfiguration: any): void {
+
+            // Checks if there is a level currently loaded before to load an other one.
+            if (this.isLevelLoaded) {
+                this.destroyLevel();
+            }
 
             Logger.logMessage(`Initialize level ${levelConfiguration["level"]}...`);
 
@@ -74,20 +94,41 @@ namespace FroggerJS.Game {
 
             this.generateActor();
 
-
             var basicText = new PIXI.Text('LEVEL: 0', {font : '30px Arial', fill : 0xffffff});
             basicText.x = 0;
             basicText.y = 0;
 
             this.scene.addChild(basicText);
+
+
+            this.isLevelLoaded = true;  // Indicates that the level is loaded correctly.
         }
 
+        /**
+         * Destroys the current loaded level.
+         */
         public destroyLevel(): void {
+
+            if (!this.isLevelLoaded) {
+                return;
+            }
+
             document.removeEventListener("keydown", this.actor.onKeyDown);
             document.removeEventListener("keyup", this.actor.onKeyUp);
+            this.isLevelLoaded = false;
         }
 
+        /**
+         * Updates the game with the specified delta time.
+         *
+         * @param deltaTime     The delta time to use.
+         */
         public update(deltaTime: number): void {
+
+            // Checks if there is a level loaded before to update anything.
+            if (!this.isLevelLoaded) {
+                throw new Error("No level is loaded.");
+            }
 
             // Iterates over the mobiles.
             for (let i = 0; i < this.mobiles.length; ++i) {
@@ -135,13 +176,14 @@ namespace FroggerJS.Game {
                         return goal.isAvailable();
                     }).length;
 
+                    this.actor.getDisplayObject().x = goalDeck.getDisplayObject().x;
+                    this.actor.getDisplayObject().y = goalDeck.getDisplayObject().y;
+
                     // Checks if there is no other available goal decks (all the goal decks are occupied).
                     if (availableGoalsCount == 0) {
                         this.onNextLevel.invoke();
                         return;
                     } else {
-                        this.actor.getDisplayObject().x = goalDeck.getDisplayObject().x;
-                        this.actor.getDisplayObject().y = goalDeck.getDisplayObject().y;
                         this.generateActor();
                     }
                 }

@@ -4,7 +4,8 @@ namespace FroggerJS {
         TILE_SIZE: 120,
         WINDOW_WIDTH: 1560,
         WINDOW_HEIGHT: 1200,
-        DISPLAY_BOUNDING: false // For DEBUG purpose
+        DISPLAY_BOUNDING: false, // For DEBUG purpose
+        AVAILABLE_LIVES: 5
     };
 
     export var Levels: any = [
