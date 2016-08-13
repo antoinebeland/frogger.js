@@ -1,8 +1,7 @@
 /// <reference path="../config.ts" />
 /// <reference path="./actor.ts" />
 /// <reference path="./levelParser.ts" />
-/// <reference path="./objects/goalPlatform.ts" />
-/// <reference path="./objects/mobileFactory.ts" />
+/// <reference path="./objects/goalDeck.ts" />
 /// <reference path="../graphics/updatable.ts" />
 /// <reference path="../graphics/imageLoader.ts" />
 /// <reference path="../graphics/scene.ts" />
@@ -17,17 +16,18 @@ namespace FroggerJS.Game {
     import Event = Utils.Event;
     import Logger = Utils.Logger;
     import Updatable = FroggerJS.Graphics.Updatable;
-    import GoalPlatform = FroggerJS.Game.Objects.GoalPlatform;
+    import Mobile = FroggerJS.Game.Objects.Mobile;
+    import GoalDeck = FroggerJS.Game.Objects.GoalDeck;
 
     export class GameManager implements Updatable {
 
         private imageLoader: ImageLoader;
         private scene : Scene;
-        private actor: Actor;
         private levelParser: LevelParser;
 
-        private mobiles: any;
-        private goals: GoalPlatform[];
+        private actor: Actor;
+        private mobiles: Mobile[][];
+        private goals: GoalDeck[];
         private touchAllowedStatus: boolean[];
 
         public onGameOver = new Event<void>();
@@ -37,8 +37,9 @@ namespace FroggerJS.Game {
 
             this.imageLoader = imageLoader;
             this.scene = scene;
-            this.actor = new Actor(imageLoader);
             this.levelParser = new LevelParser(imageLoader);
+
+            // TODO: Set the available lives for the frog.
         }
 
         public setupLevel(levelConfiguration: any): void {
@@ -66,71 +67,114 @@ namespace FroggerJS.Game {
                 }
             }
 
-            // Adds the goal platforms to the scene.
+            // Adds the goal decks to the scene.
             for (let i = 0; i < this.goals.length; ++i) {
                 this.scene.addChild(this.goals[i]);
             }
 
-            this.actor.startPosition();
-            this.scene.addChild(this.actor);
+            this.generateActor();
+
 
             /*var basicText = new PIXI.Text("LEVEL " + levelConfiguration["level"]);
             basicText.x = 30;
             basicText.y = 90;
 
             this.scene.addChild(basicText);*/
-
-            document.addEventListener("keydown", this.actor.onKeyDown);
-            document.addEventListener("keyup", this.actor.onKeyUp);
         }
 
         public destroyLevel(): void {
-
             document.removeEventListener("keydown", this.actor.onKeyDown);
             document.removeEventListener("keyup", this.actor.onKeyUp);
         }
 
         public update(deltaTime: number): void {
 
+            // Iterates over the mobiles.
             for (let i = 0; i < this.mobiles.length; ++i) {
+
                 let isCollide = false;
-
                 for (let j = 0; j < this.mobiles[i].length; ++j) {
-                   this.mobiles[i][j].update(deltaTime);
 
+                    this.mobiles[i][j].update(deltaTime);
+
+                    // Checks if the line position of the mobile is the same than the actor.
                     if (this.actor.getLinePosition() == i) {
                         let mobileObject = this.mobiles[i][j];
 
+                        // Checks if there is a collision between the actor and the mobile.
                         if (mobileObject.getBounding().isCollide(this.actor.getBounding())) {
                             isCollide = true;
 
+                            // Checks if the mobile can be hit by the actor.
                             if(mobileObject.canBeHit()) {
                                 this.actor.follow(mobileObject);
-                            }
-                            else {
+                            } else {
                                 this.restartLevel();
                             }
                         }
                     }
                 }
-                if (this.actor.getLinePosition() == i && !isCollide && !this.touchAllowedStatus[i]){
+
+                /* Checks if there is a collision between the actor and the tile,
+                   and if the collision is forbidden between the two. */
+                if (this.actor.getLinePosition() == i && !isCollide && !this.touchAllowedStatus[i]) {
                     this.restartLevel();
                 }
             }
 
+            // Iterates over the goal decks.
             for (let i = 0; i < this.goals.length; ++i) {
-                this.goals[i].update(deltaTime);
+                let goalDeck = this.goals[i];
 
-                if (this.actor.getLinePosition() == 0 && this.goals[i].getBounding().isCollide(this.actor.getBounding())) {
-                    console.log("GOAL!");
+                // Checks if there is a collision with a goal deck and the goal deck is available.
+                if (this.actor.getLinePosition() == 0 && goalDeck.isAvailable() &&
+                    goalDeck.getBounding().isCollide(this.actor.getBounding())) {
+
+                    goalDeck.setAvailability(false);
+                    let availableGoalsCount = this.goals.filter(function (goal) {
+                        return goal.isAvailable();
+                    }).length;
+
+                    // Checks if there is no other available goal decks (all the goal decks are occupied).
+                    if (availableGoalsCount == 0) {
+                        this.onNextLevel.invoke();
+                        return;
+                    } else {
+                        this.actor.getDisplayObject().x = goalDeck.getDisplayObject().x;
+                        this.actor.getDisplayObject().y = goalDeck.getDisplayObject().y;
+                        this.generateActor();
+                    }
                 }
             }
 
+            // Checks if the actor is inside the scene.
             if(!this.scene.getBounding().isCollide(this.actor.getBounding())) {
-                console.log("OUT!");
+                this.restartLevel();
             }
         }
 
+        /**
+         * Generates a new actor.
+         */
+        private generateActor() {
+
+            if (this.actor) {
+                document.removeEventListener("keydown", this.actor.onKeyDown);
+                document.removeEventListener("keyup", this.actor.onKeyUp);
+            }
+
+            this.actor = new Actor(this.imageLoader);
+            this.actor.startPosition();
+
+            document.addEventListener("keydown", this.actor.onKeyDown);
+            document.addEventListener("keyup", this.actor.onKeyUp);
+
+            this.scene.addChild(this.actor);
+        }
+
+        /**
+         * Restarts the current loaded level.
+         */
         private restartLevel() {
 
             Actor.loseLife();

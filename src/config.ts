@@ -4,7 +4,7 @@ namespace FroggerJS {
         TILE_SIZE: 120,
         WINDOW_WIDTH: 1560,
         WINDOW_HEIGHT: 1200,
-        DISPLAY_BOUNDING: false
+        DISPLAY_BOUNDING: false // For DEBUG purpose
     };
 
     export var Levels: any = [
@@ -23,6 +23,5 @@ namespace FroggerJS {
                 { texture: "grass", touchAllowed: true }
             ]
         }
-
     ];
 }

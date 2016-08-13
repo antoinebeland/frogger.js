@@ -1,5 +1,4 @@
 /// <reference path="../../graphics/renderable.ts" />
-/// <reference path="../../graphics/updatable.ts" />
 /// <reference path="../../physics/collidable.ts" />
 /// <reference path="../../graphics/imageLoader.ts" />
 /// <reference path="../../physics/circleBounding.ts" />
@@ -8,21 +7,21 @@ namespace FroggerJS.Game.Objects {
 
     import Renderable = FroggerJS.Graphics.Renderable;
     import Collidable = FroggerJS.Physics.Collidable;
-    import Updatable = FroggerJS.Graphics.Updatable;
     import ImageLoader = FroggerJS.Graphics.ImageLoader;
     import Bounding = FroggerJS.Physics.Bounding;
     import CircleBounding = FroggerJS.Physics.CircleBounding;
 
     /**
-     * Defines the goal platform.
+     * Defines the goal deck.
      */
-    export class GoalPlatform implements Renderable, Collidable, Updatable {
+    export class GoalDeck implements Renderable, Collidable {
 
         private sprite: PIXI.Sprite;
         private bounding: Bounding;
+        private availability: boolean;
 
         /**
-         * Initializes a new instance of the GoalPlatform class.
+         * Initializes a new instance of the GoalDeck class.
          *
          * @param imageLoader       The image loader to use.
          */
@@ -32,38 +31,45 @@ namespace FroggerJS.Game.Objects {
             this.sprite.anchor.x = 0.5;
             this.sprite.anchor.y = 0.5;
 
-            this.bounding = new CircleBounding(this.sprite.position, this.sprite.width * 0.5);
+            const BOUNDING_FACTOR = 0.4;
+            this.bounding = new CircleBounding(this.sprite.position, this.sprite.width * BOUNDING_FACTOR);
+            this.availability = true;
         }
 
         /**
-         * Gets the display object associated with the goal platform.
+         * Gets the display object associated with the goal deck.
          *
-         * @returns {PIXI.Sprite}   The sprite associated with the goal platform.
+         * @returns {PIXI.Sprite}   The sprite associated with the goal deck.
          */
         public getDisplayObject(): PIXI.Sprite {
             return this.sprite;
         }
 
         /**
-         * Gets the bounding associated with the goal platform.
+         * Gets the bounding associated with the goal deck.
          *
-         * @returns {Bounding}      The bounding associated with the goal platform.
+         * @returns {Bounding}      The bounding associated with the goal deck.
          */
         public getBounding(): Bounding {
             return this.bounding;
         }
 
         /**
-         * Updates the rotation of the goal platform.
+         * Indicates if the current goal deck is available.
          *
-         * @param deltaTime         The delta time to use.
+         * @returns {boolean}   TRUE if the deck is available. FALSE otherwise.
          */
-        public update(deltaTime: number): void {
-            this.sprite.rotation += 0.05 * deltaTime;
+        public isAvailable(): boolean {
+            return this.availability;
         }
 
-        public associate(actor: Actor) {
-
+        /**
+         * Sets the availability of the current goal deck.
+         *
+         * @param isAvailable   The boolean to set.
+         */
+        public setAvailability(isAvailable: boolean): void {
+            this.availability = isAvailable;
         }
     }
 }

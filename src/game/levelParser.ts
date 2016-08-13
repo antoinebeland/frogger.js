@@ -1,5 +1,5 @@
 /// <reference path="../config.ts" />
-/// <reference path="./objects/goalPlatform.ts" />
+/// <reference path="./objects/goalDeck.ts" />
 /// <reference path="./objects/mobileFactory.ts" />
 /// <reference path="../graphics/imageLoader.ts" />
 
@@ -8,7 +8,7 @@ namespace FroggerJS.Game {
     import ImageLoader = FroggerJS.Graphics.ImageLoader;
     import Mobile = FroggerJS.Game.Objects.Mobile;
     import MobileFactory = FroggerJS.Game.Objects.MobileFactory;
-    import GoalPlatform = FroggerJS.Game.Objects.GoalPlatform;
+    import GoalDeck = FroggerJS.Game.Objects.GoalDeck;
     
     /**
      * Defines the parser result to return.
@@ -16,7 +16,7 @@ namespace FroggerJS.Game {
      type LevelParserResult = {
          tiles: PIXI.Sprite[][],
          mobiles: Mobile[][],
-         goals: GoalPlatform[],
+         goals: GoalDeck[],
          touchAllowedStatus: boolean[]
      }
 
@@ -90,8 +90,8 @@ namespace FroggerJS.Game {
                 for (let j = 0; j < WIDTH_SPRITES_NUMBER; ++j) {
 
                     let sprite = new PIXI.Sprite(texture);
-                    sprite.position.x = j * FroggerJS.Constants.TILE_SIZE;
-                    sprite.position.y = i * FroggerJS.Constants.TILE_SIZE;
+                    sprite.x = j * FroggerJS.Constants.TILE_SIZE;
+                    sprite.y = i * FroggerJS.Constants.TILE_SIZE;
 
                     result.tiles[i].push(sprite);
                 }
@@ -104,18 +104,18 @@ namespace FroggerJS.Game {
             }
 
             const HALF_TILE = FroggerJS.Constants.TILE_SIZE * 0.5;
-            const HALF_WIDTH_DIVIDE_BY_GOAL_PLATFORMS_NUMBER =
+            const HALF_WIDTH_DIVIDE_BY_GOAL_DECKS_NUMBER =
                 FroggerJS.Constants.WINDOW_WIDTH / (levelConfiguration.goalsNumber * 2);
 
-            // Generates the goal platforms.
+            // Generates the goal decks.
             for (let i = 0; i < levelConfiguration.goalsNumber; ++i) {
-                let goalPlatform = new GoalPlatform(this.imageLoader);
+                let goalDeck = new GoalDeck(this.imageLoader);
 
-                let displayObject = goalPlatform.getDisplayObject();
-                displayObject.position.x = HALF_WIDTH_DIVIDE_BY_GOAL_PLATFORMS_NUMBER * (2 * i + 1);
-                displayObject.position.y = HALF_TILE;
+                let displayObject = goalDeck.getDisplayObject();
+                displayObject.x = HALF_WIDTH_DIVIDE_BY_GOAL_DECKS_NUMBER * (2 * i + 1);
+                displayObject.y = HALF_TILE;
 
-                result.goals.push(goalPlatform);
+                result.goals.push(goalDeck);
             }
 
             return result;
@@ -155,8 +155,8 @@ namespace FroggerJS.Game {
                     this.mobileFactory.createMobile(mobileElement.type, mobileElement.orientation, mobileElement.speed);
 
                 let sprite = mobileObject.getDisplayObject() as PIXI.Sprite;
-                sprite.position.x = nextPosition;
-                sprite.position.y = lineIndex * FroggerJS.Constants.TILE_SIZE;
+                sprite.x = nextPosition;
+                sprite.y = lineIndex * FroggerJS.Constants.TILE_SIZE;
 
                 // Generates the next position of the sprite.
                 spriteWidth = sprite.width;
