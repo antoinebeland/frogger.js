@@ -75,11 +75,11 @@ namespace FroggerJS.Game {
             this.generateActor();
 
 
-            /*var basicText = new PIXI.Text("LEVEL " + levelConfiguration["level"]);
-            basicText.x = 30;
-            basicText.y = 90;
+            var basicText = new PIXI.Text('LEVEL: 0', {font : '30px Arial', fill : 0xffffff});
+            basicText.x = 0;
+            basicText.y = 0;
 
-            this.scene.addChild(basicText);*/
+            this.scene.addChild(basicText);
         }
 
         public destroyLevel(): void {

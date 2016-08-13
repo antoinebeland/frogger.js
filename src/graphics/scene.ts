@@ -80,7 +80,7 @@ namespace FroggerJS.Graphics {
             } else {
                 this.stage.addChild((object as Renderable).getDisplayObject());
 
-                if(FroggerJS.Constants.DISPLAY_BOUNDING && isCollidable(object)) {
+                if (FroggerJS.Constants.DISPLAY_BOUNDING && isCollidable(object)) {
                     this.stage.addChild((object as Collidable).getBounding().getDisplayObject());
                 }
             }

@@ -11,6 +11,7 @@ namespace FroggerJS.Graphics {
 
         private loader: PIXI.loaders.Loader;
         private baseResourcesPath : string;
+        private imageExtension : string;
 
         /**
          * Occurred when the images loading is completed.
@@ -23,11 +24,13 @@ namespace FroggerJS.Graphics {
          * Initializes a new instance of the ImageLoader class.
          *
          * @param baseResourcesPath     The base path where the resources are stored.
+         * @param [imageExtension]      The image extension to use.
          */
-        public constructor(baseResourcesPath : string) {
+        public constructor(baseResourcesPath: string, imageExtension: string = "png") {
 
             this.loader = PIXI.loader;
             this.baseResourcesPath = baseResourcesPath;
+            this.imageExtension = imageExtension;
 
             let self = this;
             this.loader.once("complete", function () {
@@ -79,7 +82,7 @@ namespace FroggerJS.Graphics {
          * @param name      The name of the resource to load.
          */
         private registerSingleElement(name: string): void {
-            this.loader.add(name, `${this.baseResourcesPath}/${name}.png`);
+            this.loader.add(name, `${this.baseResourcesPath}/${name}.${this.imageExtension}`);
         }
     }
 }

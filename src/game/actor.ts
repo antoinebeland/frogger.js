@@ -107,17 +107,25 @@ namespace FroggerJS.Game {
 
                 switch (event.keyCode) {
                     case ArrowKeyCode.Left:
-                        self.sprite.position.x -= SHIFTING;
+                        if (self.sprite.position.x - SHIFTING >= 0) {
+                            self.sprite.position.x -= SHIFTING;
+                        }
                         break;
                     case ArrowKeyCode.Up:
-                        self.sprite.position.y -= SHIFTING;
+                        if (self.sprite.position.y - SHIFTING >= 0) {
+                            self.sprite.position.y -= SHIFTING;
+                        }
                         break;
 
                     case ArrowKeyCode.Right:
-                        self.sprite.position.x += SHIFTING;
+                        if (self.sprite.position.x + SHIFTING <= FroggerJS.Constants.WINDOW_WIDTH) {
+                            self.sprite.position.x += SHIFTING;
+                        }
                         break;
                     case ArrowKeyCode.Down:
-                        self.sprite.position.y += SHIFTING;
+                        if (self.sprite.position.y + SHIFTING <= FroggerJS.Constants.WINDOW_HEIGHT) {
+                            self.sprite.position.y += SHIFTING;
+                        }
                         break;
                 }
                 self.deltaPosition = undefined; // Reset the delta position.

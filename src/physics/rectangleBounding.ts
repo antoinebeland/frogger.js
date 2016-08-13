@@ -70,7 +70,7 @@ namespace FroggerJS.Physics {
                         this.top.y < bounding.getTop().y + bounding.getHeight() &&
                         this.height + this.top.y > bounding.getTop().y;
 
-            } else if(bounding instanceof CircleBounding) {
+            } else if (bounding instanceof CircleBounding) {
                 return bounding.isCollide(this);
             }
             throw new Error("Unknown bounding.");

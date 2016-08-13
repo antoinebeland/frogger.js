@@ -78,7 +78,7 @@ namespace FroggerJS.Physics {
 
                 return (dx * dx + dy * dy <= (this.radius * this.radius));
 
-            } else if(bounding instanceof CircleBounding) {
+            } else if (bounding instanceof CircleBounding) {
 
                 // Solution from MDN:
                 // https://developer.mozilla.org/en/docs/Games/Techniques/2D_collision_detection
