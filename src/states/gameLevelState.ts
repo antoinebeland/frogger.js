@@ -1,8 +1,8 @@
-/// <reference path="../state.ts" />
-/// <reference path="../stateManager.ts" />
-/// <reference path="../../game/gameManager.ts" />
-/// <reference path="../../graphics/ticker.ts" />
-/// <reference path="../../utils/logger.ts" />
+/// <reference path="state.ts" />
+/// <reference path="stateManager.ts" />
+/// <reference path="../game/gameManager.ts" />
+/// <reference path="../graphics/ticker.ts" />
+/// <reference path="../utils/logger.ts" />
 
 namespace FroggerJS.States {
 

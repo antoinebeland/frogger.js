@@ -1,5 +1,5 @@
-/// <reference path="../state.ts" />
-/// <reference path="../../utils/logger.ts" />
+/// <reference path="state.ts" />
+/// <reference path="../utils/logger.ts" />
 
 namespace FroggerJS.States {
 

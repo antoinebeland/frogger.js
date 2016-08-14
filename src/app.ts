@@ -4,9 +4,9 @@
 /// <reference path="./graphics/scene.ts" />
 /// <reference path="./game/gameManager.ts" />
 /// <reference path="./states/stateManager.ts" />
-/// <reference path="./states/concretes/mainMenuState.ts" />
-/// <reference path="./states/concretes/gameLevelState.ts" />
-/// <reference path="./states/concretes/endGameState.ts" />
+/// <reference path="./states/mainMenuState.ts" />
+/// <reference path="./states/gameLevelState.ts" />
+/// <reference path="./states/endGameState.ts" />
 /// <reference path="./utils/logger.ts" />
 
 namespace FroggerJS {
@@ -42,6 +42,11 @@ namespace FroggerJS {
             "frog",
             "frog-extend",
             "goal",
+            "menu-background",
+            "menu-button",
+            "menu-button-clicked",
+            "menu-logo",
+            "menu-stripe",
             "grass",
             "grass-water-top",
             "grass-water-bottom",
@@ -72,7 +77,7 @@ namespace FroggerJS {
                 let gameManager = new GameManager(loader, scene);
 
                 let stateManager = new StateManager();
-                stateManager.register("mainMenu", new MainMenuState(stateManager));
+                stateManager.register("mainMenu", new MainMenuState(scene, loader, stateManager));
                 stateManager.register("level1", new GameLevelState(gameManager, {level: 1, levelsCount: 2}, ticker, stateManager));
                 stateManager.register("level2", new GameLevelState(gameManager, {level: 2, levelsCount: 2}, ticker, stateManager));
                 stateManager.register("endGame", new EndGameState());
