@@ -6,8 +6,7 @@ namespace FroggerJS {
         WINDOW_HEIGHT: 1200,
         DISPLAY_BOUNDING: false, // For DEBUG purpose
         AVAILABLE_LIVES: 5,
-        DEFAULT_FONT: "bold 40px Arial",
-        DEFAULT_TEXT_COLOR: "black",
+        DEFAULT_TEXT_STYLE: { font : "bold 40px Arial", fill : "black" },
         DEFAULT_TEXT_MARGIN: 15
     };
 

@@ -70,10 +70,9 @@ namespace FroggerJS.Game {
             this.scene = scene;
             this.levelParser = new LevelParser(imageLoader);
 
-            const TEXT_STYLE = { font : FroggerJS.Constants.DEFAULT_FONT, fill : FroggerJS.Constants.DEFAULT_TEXT_COLOR };
             this.labels = {
-                livesCount: new PIXI.Text("", TEXT_STYLE),
-                currentLevel: new PIXI.Text("", TEXT_STYLE)
+                livesCount: new PIXI.Text("", FroggerJS.Constants.DEFAULT_TEXT_STYLE),
+                currentLevel: new PIXI.Text("", FroggerJS.Constants.DEFAULT_TEXT_STYLE)
             };
 
             // Setups the labels.
