@@ -70,6 +70,7 @@ namespace FroggerJS.Game {
             this.scene = scene;
             this.levelParser = new LevelParser(imageLoader);
 
+            // TODO: Think about the labels place... Maybe in the state?
             this.labels = {
                 livesCount: new PIXI.Text("", FroggerJS.Constants.DEFAULT_TEXT_STYLE),
                 currentLevel: new PIXI.Text("", FroggerJS.Constants.DEFAULT_TEXT_STYLE)
@@ -166,7 +167,7 @@ namespace FroggerJS.Game {
          */
         public update(deltaTime: number): void {
 
-            // Checks if there is a level loaded before to update anything.
+            // Checks if there is a level is loaded before to update anything.
             if (!this.isLevelLoaded) {
                 throw new Error("No level is loaded.");
             }
@@ -217,6 +218,7 @@ namespace FroggerJS.Game {
                         return goal.isAvailable();
                     }).length;
 
+                    // Centers the actor on the goal deck.
                     this.actor.getDisplayObject().x = goalDeck.getDisplayObject().x;
                     this.actor.getDisplayObject().y = goalDeck.getDisplayObject().y;
 
@@ -266,7 +268,7 @@ namespace FroggerJS.Game {
             let availableLives = Actor.getAvailableLives();
             Logger.logMessage(`One live lost. ${availableLives} live(s) remaining.`);
 
-            this.labels.livesCount.text = `LIVES: ${availableLives}`;
+            this.labels.livesCount.text = `LIVES: ${availableLives}`; // TODO: Avoid to repeat the same text two times...
             if(availableLives <= 0) {
                 this.onGameOver.invoke();
             }
