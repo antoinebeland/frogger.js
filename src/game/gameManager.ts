@@ -18,6 +18,15 @@ namespace FroggerJS.Game {
     import Updatable = FroggerJS.Graphics.Updatable;
     import Mobile = FroggerJS.Game.Objects.Mobile;
     import GoalDeck = FroggerJS.Game.Objects.GoalDeck;
+    import Container = PIXI.Container;
+
+    /**
+     * Defines the labels to display during the game.
+     */
+    type GameTextLabels = {
+        livesCount: PIXI.Text,
+        currentLevel: PIXI.Text
+    }
 
     /**
      * Defines the manager of the game.
@@ -27,6 +36,7 @@ namespace FroggerJS.Game {
         private imageLoader: ImageLoader;
         private scene : Scene;
         private levelParser: LevelParser;
+        private labels: GameTextLabels;
         private isLevelLoaded = false;
 
         private actor: Actor;
@@ -34,7 +44,18 @@ namespace FroggerJS.Game {
         private goals: GoalDeck[];
         private touchAllowedStatus: boolean[];
 
+        /**
+         * Occurred when the game is over.
+         *
+         * @type {Utils.Event<void>}
+         */
         public onGameOver = new Event<void>();
+
+        /**
+         * Occurred when the next level is reached.
+         *
+         * @type {Utils.Event<void>}
+         */
         public onNextLevel = new Event<void>();
 
         /**
@@ -49,6 +70,26 @@ namespace FroggerJS.Game {
             this.scene = scene;
             this.levelParser = new LevelParser(imageLoader);
 
+            const TEXT_STYLE = { font : FroggerJS.Constants.DEFAULT_FONT, fill : FroggerJS.Constants.DEFAULT_TEXT_COLOR };
+            this.labels = {
+                livesCount: new PIXI.Text("", TEXT_STYLE),
+                currentLevel: new PIXI.Text("", TEXT_STYLE)
+            };
+
+            // Setups the labels.
+            const VERTICAL_TEXT_POSITION = (FroggerJS.Constants.WINDOW_HEIGHT / FroggerJS.Constants.TILE_SIZE)
+                * FroggerJS.Constants.TILE_SIZE - FroggerJS.Constants.DEFAULT_TEXT_MARGIN;
+
+            this.labels.livesCount.anchor.x = 1;
+            this.labels.livesCount.anchor.y = 1;
+            this.labels.currentLevel.anchor.y = 1;
+
+            this.labels.livesCount.x = FroggerJS.Constants.WINDOW_WIDTH - FroggerJS.Constants.DEFAULT_TEXT_MARGIN;
+            this.labels.currentLevel.x = FroggerJS.Constants.DEFAULT_TEXT_MARGIN;
+            this.labels.livesCount.y = VERTICAL_TEXT_POSITION;
+            this.labels.currentLevel.y = VERTICAL_TEXT_POSITION;
+
+            // Sets the total of available lives for the actor.
             Actor.setAvailableLives(FroggerJS.Constants.AVAILABLE_LIVES);
         }
 
@@ -94,14 +135,15 @@ namespace FroggerJS.Game {
 
             this.generateActor();
 
-            var basicText = new PIXI.Text('LEVEL: 0', {font : '30px Arial', fill : 0xffffff});
-            basicText.x = 0;
-            basicText.y = 0;
+            // Initializes the labels.
+            this.labels.livesCount.text = `LIVES: ${Actor.getAvailableLives()}`;
+            this.labels.currentLevel.text = `LEVEL ${levelConfiguration["level"]}`;
 
-            this.scene.addChild(basicText);
+            this.scene.addChild(this.labels.livesCount);
+            this.scene.addChild(this.labels.currentLevel);
 
-
-            this.isLevelLoaded = true;  // Indicates that the level is loaded correctly.
+            // Indicates that the level is loaded correctly.
+            this.isLevelLoaded = true;
         }
 
         /**
@@ -225,6 +267,7 @@ namespace FroggerJS.Game {
             let availableLives = Actor.getAvailableLives();
             Logger.logMessage(`One live lost. ${availableLives} live(s) remaining.`);
 
+            this.labels.livesCount.text = `LIVES: ${availableLives}`;
             if(availableLives <= 0) {
                 this.onGameOver.invoke();
             }
