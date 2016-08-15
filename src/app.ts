@@ -83,7 +83,7 @@ namespace FroggerJS {
                 let gameManager = new GameManager(loader, scene);
 
                 let stateManager = new StateManager();
-                stateManager.register("mainMenu", new MainMenuState(scene, loader, stateManager));
+                stateManager.register("mainMenu", new MainMenuState(scene, loader, audioManager, stateManager));
                 stateManager.register("level1", new GameLevelState(gameManager, {level: 1, levelsCount: 2}, ticker, stateManager));
                 stateManager.register("level2", new GameLevelState(gameManager, {level: 2, levelsCount: 2}, ticker, stateManager));
                 stateManager.register("endGame", new EndGameState());
