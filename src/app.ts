@@ -1,4 +1,5 @@
 /// <reference path="config.ts" />
+/// <reference path="./audio/audioManager.ts" />
 /// <reference path="./graphics/imageLoader.ts" />
 /// <reference path="./graphics/ticker.ts" />
 /// <reference path="./graphics/scene.ts" />
@@ -11,6 +12,7 @@
 
 namespace FroggerJS {
 
+    import AudioManager = FroggerJS.Audio.AudioManager;
     declare var PIXI: any;
 
     import GraphicsLoader = FroggerJS.Graphics.ImageLoader;
@@ -65,7 +67,11 @@ namespace FroggerJS {
             Logger.logMessage("Initialize Frogger.js...", LogLevel.Info);
             Logger.logMessage("Loading resources...", LogLevel.Info);
 
-            let loader = new GraphicsLoader("assets");
+            // TODO: Loads sounds.
+            let audioManager = new AudioManager("assets/sounds");
+            audioManager.register("menu", "menu.wav");
+
+            let loader = new GraphicsLoader("assets/sprites");
             loader.register(App.resources);
 
             loader.onLoadingCompleted.register(function() {

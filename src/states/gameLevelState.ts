@@ -46,7 +46,7 @@ namespace FroggerJS.States {
         }
 
         private gameOverOccurred(): void {
-            this.stateManager.change("endGame");
+            this.stateManager.change("mainMenu");
         }
 
         private nextLevelOccurred(): void {

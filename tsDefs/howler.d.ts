@@ -2,6 +2,8 @@
 // Project: https://github.com/goldfire/howler.js
 // Definitions by: Pedro Casaubon <https://github.com/xperiments/>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
+//
+// Modifications by Antoine Béland to support some changes of the v2.0.0.
 
 declare class HowlerGlobal {
     mute(): HowlerGlobal;
@@ -56,8 +58,7 @@ interface Howl {
     play(callback?: (soundId: string) => void): Howl;
     pause(soundId?: string): Howl;
     stop(soundId?: string): Howl;
-    mute(soundId?: string): Howl;
-    unmute(soundId?: string): Howl;
+    mute(muted?: boolean, soundId?: string): Howl;
     fade(from: number, to: number, duration: number, callback?: Function, soundId?: string): Howl;
     loop(): boolean;
     loop(loop: boolean): Howl;
