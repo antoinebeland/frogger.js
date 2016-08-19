@@ -14,13 +14,27 @@ namespace FroggerJS.States {
     import AudioManager = FroggerJS.Audio.AudioManager;
     import MainMenuView = FroggerJS.Views.MainMenuView;
 
+    /**
+     * Defines the 'Main Menu State' of the application.
+     */
     export class MainMenuState implements State {
+
+        static SOUND_NAME = "menu";
+        static FADE_DURATION = 500;
 
         private scene: Scene;
         private stateManager: StateManager;
         private audioManager: AudioManager;
         private mainMenuView: MainMenuView;
 
+        /**
+         * Initializes a new instance of the MainMenuState class.
+         *
+         * @param scene             The scene to use.
+         * @param imageLoader       The image loader to use.
+         * @param audioManager      The audio manager to use.
+         * @param stateManager      The state manager to use.
+         */
         public constructor(scene: Scene, imageLoader: ImageLoader,
                            audioManager: AudioManager, stateManager: StateManager) {
 
@@ -34,15 +48,21 @@ namespace FroggerJS.States {
             }, this);
         }
 
+        /**
+         * Occurred when the application entered in the 'Main Menu State'.
+         */
         public entered(): void {
             Logger.logMessage("Entered in 'Main Menu State'.");
             this.scene.clear();
             this.scene.addChild(this.mainMenuView);
-            this.audioManager.fadeIn("menu", 500, true);
+            this.audioManager.fadeIn(MainMenuState.SOUND_NAME, MainMenuState.FADE_DURATION, true);
         }
 
+        /**
+         * Occurred when the application leaved the 'Main Menu State'.
+         */
         public leaving(): void {
-            this.audioManager.fadeOut("menu", 500);
+            this.audioManager.fadeOut(MainMenuState.SOUND_NAME, MainMenuState.FADE_DURATION);
             this.scene.clear();
             Logger.logMessage("Leaving the 'Main Menu State'.");
         }
