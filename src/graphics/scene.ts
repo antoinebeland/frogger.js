@@ -1,4 +1,5 @@
 /// <reference path="../config.ts" />
+/// <reference path="container.ts" />
 /// <reference path="renderable.ts" />
 /// <reference path="../physics/collidable.ts" />
 /// <reference path="../physics/rectangleBounding.ts" />
@@ -17,12 +18,11 @@ namespace FroggerJS.Graphics {
     /**
      * Defines the graphic scene.
      */
-    export class Scene implements Collidable, Updatable {
+    export class Scene extends Container implements Collidable, Updatable {
 
         private width: number;
         private height: number;
 
-        private stage: PIXI.Container;
         private bounding: Bounding;
         private renderer : PIXI.WebGLRenderer | PIXI.CanvasRenderer;
 
@@ -34,10 +34,11 @@ namespace FroggerJS.Graphics {
          */
         public constructor(width: number, height: number) {
 
+            super();
+
             this.width = width;
             this.height = height;
 
-            this.stage = new PIXI.Container();
             this.bounding = new RectangleBounding(new PIXI.Point(0, 0), this.width, this.height);
             this.renderer = PIXI.autoDetectRenderer(width, height, {
                 resolution: window.devicePixelRatio
@@ -65,7 +66,7 @@ namespace FroggerJS.Graphics {
          */
         public update(deltaTime: number): void {
             //noinspection TypeScriptValidateTypes
-            this.renderer.render(this.stage);
+            this.renderer.render(this.container);
         }
 
         /**
@@ -75,36 +76,12 @@ namespace FroggerJS.Graphics {
          */
         public addChild(object: PIXI.DisplayObject | Renderable | Collidable): void {
 
-            if (object instanceof PIXI.DisplayObject) {
-                this.stage.addChild(object);
-            } else {
-                this.stage.addChild((object as Renderable).getDisplayObject());
-
-                if (FroggerJS.Constants.DISPLAY_BOUNDING && isCollidable(object)) {
-                    this.stage.addChild((object as Collidable).getBounding().getDisplayObject());
-                }
+            if (object instanceof PIXI.DisplayObject || isRenderable(object)) {
+                super.addChild(object);
             }
-        }
-
-        /**
-         *  Removes the specified of the scene.
-         *
-         * @param object    The object to remove.
-         */
-        public removeChild(object: PIXI.DisplayObject | Renderable): void {
-            
-            if (object instanceof PIXI.DisplayObject) {
-                this.stage.removeChild(object);
-            } else {
-                this.stage.removeChild((object as Renderable).getDisplayObject());
+            if (FroggerJS.Constants.DISPLAY_BOUNDING && isCollidable(object)) {
+                this.container.addChild((object as Collidable).getBounding().getDisplayObject());
             }
-        }
-
-        /**
-         * Clears all the objects of the scene.
-         */
-        public clear() {
-            this.stage.removeChildren();
         }
 
         /**
@@ -114,7 +91,7 @@ namespace FroggerJS.Graphics {
          */
         private resize() {
             let ratio = Math.min(window.innerWidth / this.width, window.innerHeight / this.height);
-            this.stage.scale.x = this.stage.scale.y = ratio;
+            this.container.scale.x = this.container.scale.y = ratio;
             this.renderer.resize(Math.ceil(this.width * ratio), Math.ceil(this.height * ratio));
         }
     }

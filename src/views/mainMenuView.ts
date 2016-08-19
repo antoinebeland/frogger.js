@@ -1,4 +1,5 @@
 /// <reference path="../graphics/renderable.ts" />
+/// <reference path="../graphics/container.ts" />
 /// <reference path="../graphics/imageLoader.ts" />
 /// <reference path="../utils/event.ts" />
 /// <reference path="controls/button.ts" />
@@ -6,6 +7,7 @@
 namespace FroggerJS.Views {
 
     import Const = FroggerJS.Constants;
+    import Container = FroggerJS.Graphics.Container;
     import ImageLoader = FroggerJS.Graphics.ImageLoader;
     import Renderable = FroggerJS.Graphics.Renderable;
     import Button = FroggerJS.Views.Controls.Button;
@@ -16,7 +18,7 @@ namespace FroggerJS.Views {
      */
     export class MainMenuView implements Renderable {
 
-        private container: PIXI.Container;
+        private container: Container;
 
         /**
          * Occurred when the play button is clicked.
@@ -39,7 +41,7 @@ namespace FroggerJS.Views {
          */
         public constructor(imageLoader: ImageLoader) {
 
-            this.container = new PIXI.Container();
+            this.container = new Container();
 
             const STRIPE_HEIGHT = 250;
             const TEXT_STYLE = {font: "60px Arial", fill: "white"};
@@ -88,8 +90,8 @@ namespace FroggerJS.Views {
             this.container.addChild(background);
             this.container.addChild(stripe);
             this.container.addChild(logo);
-            this.container.addChild(startButtonSprite);
-            this.container.addChild(settingsButtonSprite);
+            this.container.addChild(startButton);
+            this.container.addChild(settingsButton);
         }
 
         /**
@@ -98,7 +100,7 @@ namespace FroggerJS.Views {
          * @returns {PIXI.Container}    The container that contains the main menu elements.
          */
         public getDisplayObject(): PIXI.DisplayObject {
-            return this.container;
+            return this.container.getDisplayObject();
         }
     }
 }
