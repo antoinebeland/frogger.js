@@ -14,6 +14,9 @@ namespace FroggerJS.States {
     import Ticker = FroggerJS.Graphics.Ticker;
     import Logger = Utils.Logger;
 
+    /**
+     * Defines the 'Game Level State' of the application.
+     */
     export class GameLevelState implements State {
 
         private scene: Scene;
@@ -24,6 +27,15 @@ namespace FroggerJS.States {
 
         private gameLevel : GameLevel;
 
+        /**
+         * Initializes a new instance of the GameLevelState class.
+         *
+         * @param scene                     The scene to use.
+         * @param imageLoader               The image loader to use.
+         * @param levelConfiguration        The level configuration to load.
+         * @param ticker                    The ticker to use.
+         * @param stateManager              The state manager to use.
+         */
         public constructor(scene: Scene, imageLoader: ImageLoader, levelConfiguration: any,
                            ticker: Ticker, stateManager: StateManager) {
 
@@ -34,6 +46,10 @@ namespace FroggerJS.States {
             this.stateManager = stateManager;
         }
 
+
+        /**
+         * Occurred when the application enters in the 'Game Level State'.
+         */
         public entered(): void {
 
             Logger.logMessage(`Entered in 'Game Level ${this.levelConfiguration["level"]} State'.`);
@@ -46,6 +62,9 @@ namespace FroggerJS.States {
             this.ticker.register(this.gameLevel);
         }
 
+        /**
+         * Occurred when the application leaves the 'Game Level State'.
+         */
         public leaving(): void {
 
             this.ticker.unregister(this.gameLevel);
@@ -57,10 +76,16 @@ namespace FroggerJS.States {
             Logger.logMessage(`Leaving the 'Game Level ${this.levelConfiguration["level"]} State'.`);
         }
 
+        /**
+         * Occurred on game over.
+         */
         private gameOverOccurred(): void {
             this.stateManager.change("mainMenu");
         }
 
+        /**
+         * Occurred when a next level is reached.
+         */
         private nextLevelOccurred(): void {
 
             let nextLevel = this.levelConfiguration["level"] + 1;
