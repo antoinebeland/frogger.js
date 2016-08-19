@@ -1,5 +1,6 @@
 /// <reference path="state.ts" />
 /// <reference path="stateManager.ts" />
+/// <reference path="../audio/audioManager.ts" />
 /// <reference path="../game/gameLevel.ts" />
 /// <reference path="../graphics/scene.ts" />
 /// <reference path="../graphics/imageLoader.ts" />
@@ -8,6 +9,7 @@
 
 namespace FroggerJS.States {
 
+    import AudioManager = FroggerJS.Audio.AudioManager;
     import GameLevel = FroggerJS.Game.GameLevel;
     import Scene = FroggerJS.Graphics.Scene;
     import ImageLoader = FroggerJS.Graphics.ImageLoader;
@@ -21,8 +23,9 @@ namespace FroggerJS.States {
 
         private scene: Scene;
         private imageLoader: ImageLoader;
-        private levelConfiguration: any;
         private ticker: Ticker;
+        private audioManager: AudioManager;
+        private levelConfiguration: any;
         private stateManager: StateManager;
 
         private gameLevel : GameLevel;
@@ -32,20 +35,21 @@ namespace FroggerJS.States {
          *
          * @param scene                     The scene to use.
          * @param imageLoader               The image loader to use.
-         * @param levelConfiguration        The level configuration to load.
          * @param ticker                    The ticker to use.
+         * @param audioManager              The audio manager to use.
+         * @param levelConfiguration        The level configuration to load.
          * @param stateManager              The state manager to use.
          */
-        public constructor(scene: Scene, imageLoader: ImageLoader, levelConfiguration: any,
-                           ticker: Ticker, stateManager: StateManager) {
+        public constructor(scene: Scene, imageLoader: ImageLoader, ticker: Ticker,
+                           audioManager: AudioManager, levelConfiguration: any, stateManager: StateManager) {
 
             this.scene = scene;
             this.imageLoader = imageLoader;
-            this.levelConfiguration = levelConfiguration;
             this.ticker = ticker;
+            this.audioManager = audioManager;
+            this.levelConfiguration = levelConfiguration;
             this.stateManager = stateManager;
         }
-
 
         /**
          * Occurred when the application enters in the 'Game Level State'.
@@ -89,7 +93,7 @@ namespace FroggerJS.States {
         private nextLevelOccurred(): void {
 
             let nextLevel = this.levelConfiguration["level"] + 1;
-            if (this.levelConfiguration["levelsCount"] >= nextLevel) {
+            if (this.levelConfiguration["levelsCount"] > nextLevel) {
                 this.stateManager.change("endGame");
             } else {
                 this.stateManager.change(`level${nextLevel}`);

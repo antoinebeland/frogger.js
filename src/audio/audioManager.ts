@@ -79,8 +79,10 @@ namespace FroggerJS.Audio {
                 throw new Error(`The specified '${identifier}' identifier doesn't exist.`);
             }
 
+            let sound = this.sounds[identifier];
+            sound.volume(0);
             this.play(identifier, inLoop);
-            this.sounds[identifier].fade(0, 1, duration);
+            sound.fade(0, 1, duration);
         }
 
         /**

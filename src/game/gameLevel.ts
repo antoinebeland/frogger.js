@@ -29,7 +29,7 @@ namespace FroggerJS.Game {
     }
 
     /**
-     * Defines the manager of the game.
+     * Defines a game level.
      */
     export class GameLevel implements Updatable {
 
