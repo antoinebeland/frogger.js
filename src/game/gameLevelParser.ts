@@ -13,7 +13,8 @@ namespace FroggerJS.Game {
     /**
      * Defines the parser result to return.
      */
-     type LevelParserResult = {
+     type GameLevelParserResult = {
+         level: number,
          tiles: PIXI.Sprite[][],
          mobiles: Mobile[][],
          goals: GoalDeck[],
@@ -23,13 +24,13 @@ namespace FroggerJS.Game {
     /**
      * Defines a parser for the levels.
      */
-    export class LevelParser {
+    export class GameLevelParser {
 
         private imageLoader: ImageLoader;
         private mobileFactory: MobileFactory;
 
         /**
-         * Initializes a new instance of the LevelParser class.
+         * Initializes a new instance of the GameLevelParser class.
          *
          * @param imageLoader   The image loader to use.
          */
@@ -46,10 +47,13 @@ namespace FroggerJS.Game {
          * @param levelConfiguration.goalsNumber        The number of goals to generate.
          * @param levelConfiguration.board              The board configuration to generate.
          *
-         * @return {LevelParserResult}      A LevelParserResult object associated with the specified data.
+         * @return {GameLevelParserResult}      A LevelParserResult object associated with the specified data.
          */
-        public parse(levelConfiguration: any): LevelParserResult {
+        public parse(levelConfiguration: any): GameLevelParserResult {
 
+            if (!levelConfiguration.hasOwnProperty("level")) {
+                throw new Error("Level property is missing.");
+            }
             if (!levelConfiguration.hasOwnProperty("goalsNumber")) {
                 throw new Error("'Goals Number' property is missing.");
             }
@@ -63,7 +67,8 @@ namespace FroggerJS.Game {
             }
 
             // Initialization of the result variable.
-            let result: LevelParserResult = {
+            let result: GameLevelParserResult = {
+                level: levelConfiguration["level"],
                 tiles: [],
                 mobiles: [],
                 goals: [],

@@ -12,6 +12,7 @@ namespace FroggerJS {
 
     export var Levels: any = [
         {
+            level: 1,
             goalsNumber: 5,
             board: [
                 { texture: "grass-water-top", touchAllowed: true },

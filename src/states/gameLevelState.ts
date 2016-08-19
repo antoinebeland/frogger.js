@@ -1,25 +1,34 @@
 /// <reference path="state.ts" />
 /// <reference path="stateManager.ts" />
-/// <reference path="../game/gameManager.ts" />
+/// <reference path="../game/gameLevel.ts" />
+/// <reference path="../graphics/scene.ts" />
+/// <reference path="../graphics/imageLoader.ts" />
 /// <reference path="../graphics/ticker.ts" />
 /// <reference path="../utils/logger.ts" />
 
 namespace FroggerJS.States {
 
-    import GameManager = FroggerJS.Game.GameManager;
+    import GameLevel = FroggerJS.Game.GameLevel;
+    import Scene = FroggerJS.Graphics.Scene;
+    import ImageLoader = FroggerJS.Graphics.ImageLoader;
     import Ticker = FroggerJS.Graphics.Ticker;
     import Logger = Utils.Logger;
 
     export class GameLevelState implements State {
 
-        private gameManager : GameManager;
-        private ticker: Ticker;
+        private scene: Scene;
+        private imageLoader: ImageLoader;
         private levelConfiguration: any;
+        private ticker: Ticker;
         private stateManager: StateManager;
 
-        public constructor(gameManager : GameManager, levelConfiguration: any, ticker: Ticker, stateManager: StateManager) {
+        private gameLevel : GameLevel;
 
-            this.gameManager = gameManager;
+        public constructor(scene: Scene, imageLoader: ImageLoader, levelConfiguration: any,
+                           ticker: Ticker, stateManager: StateManager) {
+
+            this.scene = scene;
+            this.imageLoader = imageLoader;
             this.levelConfiguration = levelConfiguration;
             this.ticker = ticker;
             this.stateManager = stateManager;
@@ -29,18 +38,21 @@ namespace FroggerJS.States {
 
             Logger.logMessage(`Entered in 'Game Level ${this.levelConfiguration["level"]} State'.`);
 
-            this.gameManager.onGameOver.register(this.gameOverOccurred, this);
-            this.gameManager.onNextLevel.register(this.nextLevelOccurred, this);
-            this.gameManager.setupLevel(this.levelConfiguration);
-            this.ticker.register(this.gameManager);
+            this.gameLevel = new GameLevel(this.imageLoader, this.levelConfiguration);
+            this.gameLevel.onGameOver.register(this.gameOverOccurred, this);
+            this.gameLevel.onNextLevel.register(this.nextLevelOccurred, this);
+
+            this.scene.addChild(this.gameLevel.getBoard());
+            this.ticker.register(this.gameLevel);
         }
 
         public leaving(): void {
 
-            this.ticker.unregister(this.gameManager);
-            this.gameManager.onGameOver.unregister(this.gameOverOccurred, this);
-            this.gameManager.onNextLevel.unregister(this.nextLevelOccurred, this);
-            this.gameManager.destroyLevel();
+            this.ticker.unregister(this.gameLevel);
+
+            this.gameLevel.onGameOver.unregister(this.gameOverOccurred, this);
+            this.gameLevel.onNextLevel.unregister(this.nextLevelOccurred, this);
+            this.gameLevel.destroy();
 
             Logger.logMessage(`Leaving the 'Game Level ${this.levelConfiguration["level"]} State'.`);
         }

@@ -3,7 +3,6 @@
 /// <reference path="./graphics/imageLoader.ts" />
 /// <reference path="./graphics/ticker.ts" />
 /// <reference path="./graphics/scene.ts" />
-/// <reference path="./game/gameManager.ts" />
 /// <reference path="./states/stateManager.ts" />
 /// <reference path="./states/mainMenuState.ts" />
 /// <reference path="./states/gameLevelState.ts" />
@@ -18,7 +17,6 @@ namespace FroggerJS {
     import GraphicsLoader = FroggerJS.Graphics.ImageLoader;
     import Scene = FroggerJS.Graphics.Scene;
     import Ticker = FroggerJS.Graphics.Ticker;
-    import GameManager = FroggerJS.Game.GameManager;
     import StateManager = FroggerJS.States.StateManager;
     import MainMenuState = FroggerJS.States.MainMenuState;
     import GameLevelState = FroggerJS.States.GameLevelState;
@@ -80,12 +78,11 @@ namespace FroggerJS {
 
                 let ticker = new Ticker();
                 let scene = new Scene(FroggerJS.Constants.WINDOW_WIDTH, FroggerJS.Constants.WINDOW_HEIGHT);
-                let gameManager = new GameManager(loader, scene);
 
                 let stateManager = new StateManager();
                 stateManager.register("mainMenu", new MainMenuState(scene, loader, audioManager, stateManager));
-                stateManager.register("level1", new GameLevelState(gameManager, {level: 1, levelsCount: 2}, ticker, stateManager));
-                stateManager.register("level2", new GameLevelState(gameManager, {level: 2, levelsCount: 2}, ticker, stateManager));
+                stateManager.register("level1", new GameLevelState(scene, loader, {level: 1, levelsCount: 2}, ticker, stateManager));
+                stateManager.register("level2", new GameLevelState(scene, loader, {level: 2, levelsCount: 2}, ticker, stateManager));
                 stateManager.register("endGame", new EndGameState());
                 
                 stateManager.change("mainMenu");

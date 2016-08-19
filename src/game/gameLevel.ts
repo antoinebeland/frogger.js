@@ -1,6 +1,6 @@
 /// <reference path="../config.ts" />
 /// <reference path="./actor.ts" />
-/// <reference path="./levelParser.ts" />
+/// <reference path="./gameLevelParser.ts" />
 /// <reference path="./objects/goalDeck.ts" />
 /// <reference path="../graphics/updatable.ts" />
 /// <reference path="../graphics/imageLoader.ts" />
@@ -31,13 +31,11 @@ namespace FroggerJS.Game {
     /**
      * Defines the manager of the game.
      */
-    export class GameManager implements Updatable {
+    export class GameLevel implements Updatable {
 
         private imageLoader: ImageLoader;
-        private scene : Scene;
-        private levelParser: LevelParser;
+        private board : Board;
         private labels: GameTextLabels;
-        private isLevelLoaded = false;
 
         private actor: Actor;
         private mobiles: Mobile[][];
@@ -59,24 +57,67 @@ namespace FroggerJS.Game {
         public onNextLevel = new Event<void>();
 
         /**
-         * Initializes a new instance of the GameManager class.
+         * Initializes a new instance of the GameLevel class.
          *
-         * @param imageLoader   The image loader to use.
-         * @param scene         The scene to use.
+         * @param imageLoader           The image loader to use.
+         * @param levelConfiguration    The level configuration to load.
          */
-        public constructor(imageLoader: ImageLoader, scene: Scene) {
+        public constructor(imageLoader: ImageLoader, levelConfiguration: any) {
 
             this.imageLoader = imageLoader;
-            this.scene = scene;
-            this.levelParser = new LevelParser(imageLoader);
+            this.board = new Board(FroggerJS.Constants.WINDOW_WIDTH, FroggerJS.Constants.WINDOW_HEIGHT);
 
-            // TODO: Think about the labels place... Maybe in the state?
-            this.labels = {
-                livesCount: new PIXI.Text("", FroggerJS.Constants.DEFAULT_TEXT_STYLE),
-                currentLevel: new PIXI.Text("", FroggerJS.Constants.DEFAULT_TEXT_STYLE)
-            };
+            this.setup(FroggerJS.Levels[0]);
+        }
 
+        /**
+         * Setups the specified level configuration.
+         *
+         * @param levelConfiguration    The level configuration to use.
+         */
+        private setup(levelConfiguration: any): void {
+
+            Logger.logMessage(`Initialize level ${levelConfiguration["level"]}...`);
+
+            let levelParser = new GameLevelParser(this.imageLoader);
+            let levelParserResult = levelParser.parse(levelConfiguration);
+
+            this.mobiles = levelParserResult.mobiles;
+            this.goals = levelParserResult.goals;
+            this.touchAllowedStatus = levelParserResult.touchAllowedStatus;
+
+            // Sets the total of available lives for the actor (for the first level only).
+            if (levelParserResult.level == 1) {
+                Actor.setAvailableLives(FroggerJS.Constants.AVAILABLE_LIVES);
+            }
+
+            // Adds the tiles to the scene.
+            for (let i = 0; i < levelParserResult.tiles.length; ++i) {
+                for (let j = 0; j < levelParserResult.tiles[i].length; ++j) {
+                    this.board.addChild(levelParserResult.tiles[i][j]);
+                }
+            }
+
+            // Adds the mobiles to the scene.
+            for (let i = 0; i < this.mobiles.length; ++i) {
+                for (let j = 0; j < this.mobiles[i].length; ++j) {
+                    this.board.addChild(this.mobiles[i][j]);
+                }
+            }
+
+            // Adds the goal decks to the scene.
+            for (let i = 0; i < this.goals.length; ++i) {
+                this.board.addChild(this.goals[i]);
+            }
+
+            this.generateActor();
+            
             // Setups the labels.
+            this.labels = {
+                livesCount: new PIXI.Text(`LIVES: ${Actor.getAvailableLives()}`, FroggerJS.Constants.DEFAULT_TEXT_STYLE),
+                currentLevel: new PIXI.Text(`LEVEL ${levelConfiguration["level"]}`, FroggerJS.Constants.DEFAULT_TEXT_STYLE)
+            };
+            
             const VERTICAL_TEXT_POSITION = (FroggerJS.Constants.WINDOW_HEIGHT / FroggerJS.Constants.TILE_SIZE)
                 * FroggerJS.Constants.TILE_SIZE - FroggerJS.Constants.DEFAULT_TEXT_MARGIN;
 
@@ -88,76 +129,27 @@ namespace FroggerJS.Game {
             this.labels.currentLevel.x = FroggerJS.Constants.DEFAULT_TEXT_MARGIN;
             this.labels.livesCount.y = VERTICAL_TEXT_POSITION;
             this.labels.currentLevel.y = VERTICAL_TEXT_POSITION;
-
-            // Sets the total of available lives for the actor.
-            Actor.setAvailableLives(FroggerJS.Constants.AVAILABLE_LIVES);
+            
+            this.board.addChild(this.labels.livesCount);
+            this.board.addChild(this.labels.currentLevel);
         }
 
         /**
-         * Setups the specified level configuration.
-         *
-         * @param levelConfiguration    The level configuration to use.
+         * Destroys the current level.
          */
-        public setupLevel(levelConfiguration: any): void {
-
-            // Checks if there is a level currently loaded before to load an other one.
-            if (this.isLevelLoaded) {
-                this.destroyLevel();
-            }
-
-            Logger.logMessage(`Initialize level ${levelConfiguration["level"]}...`);
-
-            let level: any = FroggerJS.Levels[0];   // TODO: Put with the level configuration.
-            let levelParserResult = this.levelParser.parse(level);
-
-            this.mobiles = levelParserResult.mobiles;
-            this.goals = levelParserResult.goals;
-            this.touchAllowedStatus = levelParserResult.touchAllowedStatus;
-
-            // Adds the tiles to the scene.
-            for (let i = 0; i < levelParserResult.tiles.length; ++i) {
-                for (let j = 0; j < levelParserResult.tiles[i].length; ++j) {
-                    this.scene.addChild(levelParserResult.tiles[i][j]);
-                }
-            }
-
-            // Adds the mobiles to the scene.
-            for (let i = 0; i < this.mobiles.length; ++i) {
-                for (let j = 0; j < this.mobiles[i].length; ++j) {
-                    this.scene.addChild(this.mobiles[i][j]);
-                }
-            }
-
-            // Adds the goal decks to the scene.
-            for (let i = 0; i < this.goals.length; ++i) {
-                this.scene.addChild(this.goals[i]);
-            }
-
-            this.generateActor();
-
-            // Initializes the labels.
-            this.labels.livesCount.text = `LIVES: ${Actor.getAvailableLives()}`;
-            this.labels.currentLevel.text = `LEVEL ${levelConfiguration["level"]}`;
-
-            this.scene.addChild(this.labels.livesCount);
-            this.scene.addChild(this.labels.currentLevel);
-
-            // Indicates that the level is loaded correctly.
-            this.isLevelLoaded = true;
-        }
-
-        /**
-         * Destroys the current loaded level.
-         */
-        public destroyLevel(): void {
-
-            if (!this.isLevelLoaded) {
-                return;
-            }
+        public destroy(): void {
 
             document.removeEventListener("keydown", this.actor.onKeyDown);
             document.removeEventListener("keyup", this.actor.onKeyUp);
-            this.isLevelLoaded = false;
+        }
+
+        /**
+         * Gets the board associated with the current level.
+         *
+         * @returns {Board} The board associated with the current level.
+         */
+        public getBoard(): Board {
+            return this.board;
         }
 
         /**
@@ -166,11 +158,6 @@ namespace FroggerJS.Game {
          * @param deltaTime     The delta time to use.
          */
         public update(deltaTime: number): void {
-
-            // Checks if there is a level is loaded before to update anything.
-            if (!this.isLevelLoaded) {
-                throw new Error("No level is loaded.");
-            }
 
             // Iterates over the mobiles.
             for (let i = 0; i < this.mobiles.length; ++i) {
@@ -192,7 +179,7 @@ namespace FroggerJS.Game {
                             if(mobileObject.canBeHit()) {
                                 this.actor.follow(mobileObject);
                             } else {
-                                this.restartLevel();
+                                this.restart();
                             }
                         }
                     }
@@ -201,7 +188,7 @@ namespace FroggerJS.Game {
                 /* Checks if there is a collision between the actor and the tile,
                    and if the collision is forbidden between the two. */
                 if (this.actor.getLinePosition() == i && !isCollide && !this.touchAllowedStatus[i]) {
-                    this.restartLevel();
+                    this.restart();
                 }
             }
 
@@ -233,8 +220,8 @@ namespace FroggerJS.Game {
             }
 
             // Checks if the actor is inside the scene.
-            if(!this.scene.getBounding().isCollide(this.actor.getBounding())) {
-                this.restartLevel();
+            if(!this.board.getBounding().isCollide(this.actor.getBounding())) {
+                this.restart();
             }
         }
 
@@ -254,13 +241,13 @@ namespace FroggerJS.Game {
             document.addEventListener("keydown", this.actor.onKeyDown);
             document.addEventListener("keyup", this.actor.onKeyUp);
 
-            this.scene.addChild(this.actor);
+            this.board.addChild(this.actor);
         }
 
         /**
-         * Restarts the current loaded level.
+         * Restarts the current level.
          */
-        private restartLevel() {
+        private restart() {
 
             Actor.loseLife();
             this.actor.startPosition();
