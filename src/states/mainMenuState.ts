@@ -49,7 +49,7 @@ namespace FroggerJS.States {
         }
 
         /**
-         * Occurred when the application entered in the 'Main Menu State'.
+         * Occurred when the application enters in the 'Main Menu State'.
          */
         public entered(): void {
             Logger.logMessage("Entered in 'Main Menu State'.");
@@ -59,7 +59,7 @@ namespace FroggerJS.States {
         }
 
         /**
-         * Occurred when the application leaved the 'Main Menu State'.
+         * Occurred when the application leaves the 'Main Menu State'.
          */
         public leaving(): void {
             this.audioManager.fadeOut(MainMenuState.SOUND_NAME, MainMenuState.FADE_DURATION);
