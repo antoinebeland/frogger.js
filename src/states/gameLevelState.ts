@@ -62,6 +62,7 @@ namespace FroggerJS.States {
             this.gameLevel.onGameOver.register(this.gameOverOccurred, this);
             this.gameLevel.onNextLevel.register(this.nextLevelOccurred, this);
 
+            this.scene.clear();
             this.scene.addChild(this.gameLevel.getBoard());
             this.ticker.register(this.gameLevel);
         }
@@ -84,7 +85,7 @@ namespace FroggerJS.States {
          * Occurred on game over.
          */
         private gameOverOccurred(): void {
-            this.stateManager.change("mainMenu");
+            this.stateManager.change("gameOver");
         }
 
         /**

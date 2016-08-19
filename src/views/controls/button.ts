@@ -9,13 +9,32 @@ namespace FroggerJS.Views.Controls {
     /**
      * Defines a button.
      */
-    export class Button implements Renderable {
+    export class Button extends PIXI.Sprite {
 
         private defaultTexture: PIXI.Texture;
-        private clickedTexture: PIXI.Texture;
+        private isHovered: boolean = false;
 
-        private sprite: PIXI.Sprite;
-        private text: PIXI.Text;
+        /**
+         * Gets or sets the hovered texture for the button.
+         *
+         * @type {PIXI.Texture}
+         */
+        public hoveredTexture: PIXI.Texture = undefined;
+
+        /**
+         * Gets or sets the clicked texture for the button.
+         *
+         * @type {PIXI.Texture}
+         */
+        public clickedTexture: PIXI.Texture = undefined;
+
+        /**
+         * Gets or sets the text of the button.
+         *
+         * @type {PIXI.Text}
+         */
+
+        public text: PIXI.Text;
 
         /**
          * Occurred when the button is clicked.
@@ -25,21 +44,28 @@ namespace FroggerJS.Views.Controls {
         public onClick = new Event<void>();
 
         /**
+         * Occurred when the button is hovered.
+         *
+         * @type {Utils.Event<void>}
+         */
+        public onHover = new Event<void>();
+
+        /**
          * Initializes a new instance of the Button class.
          *
          * @param defaultTexture    The default texture of the button.
-         * @param clickedTexture    The texture to display when the button is clicked.
          * @param [text]            The text to display with the button.
          * @param [style]           The text style to apply.
          */
-        public constructor(defaultTexture: PIXI.Texture, clickedTexture: PIXI.Texture, text: string = "", style?: any) {
+        public constructor(defaultTexture: PIXI.Texture, text: string = "", style?: any) {
 
+            super(defaultTexture);
+
+            this.interactive = true;
             this.defaultTexture = defaultTexture;
-            this.clickedTexture = clickedTexture;
 
-            this.sprite = new PIXI.Sprite(this.defaultTexture);
-            this.sprite.interactive = true;
-            this.sprite
+            this.on('mouseover', onMouseOver)
+                .on('mouseout', onMouseOut)
                 .on('mousedown', onButtonDown)
                 .on('mouseup', onButtonUp)
                 .on('mouseupoutside', onButtonUp)
@@ -50,46 +76,34 @@ namespace FroggerJS.Views.Controls {
             this.text = (style) ? new PIXI.Text(text, style) : new PIXI.Text(text);
             this.text.anchor.x = 0.5;
             this.text.anchor.y = 0.5;
-            this.text.position.y = this.sprite.height * 0.5;
+            this.text.position.y = this.height * 0.5;
 
-            this.sprite.addChild(this.text);
-
-            let self = this;
+            this.addChild(this.text);
+            
             function onButtonDown() {
-                this.texture = self.clickedTexture;
+                if (this.clickedTexture) {
+                    this.texture = this.clickedTexture;
+                }
             }
 
             function onButtonUp() {
-                self.onClick.invoke();
-                this.texture = self.defaultTexture;
+                if (this.isHovered) {
+                    this.onClick.invoke();
+                }
+                this.texture = this.defaultTexture;
             }
-        }
 
-        /**
-         * Gets the display object associated with the button.
-         *
-         * @returns {PIXI.Sprite}   The sprite associated with the button.
-         */
-        public getDisplayObject(): PIXI.DisplayObject {
-            return this.sprite;
-        }
+            function onMouseOver() {
+                this.isHovered = true;
+                if (this.hoveredTexture) {
+                    this.texture = this.hoveredTexture;
+                }
+            }
 
-        /**
-         * Sets the text to display with the button.
-         *
-         * @param text      The text to display.
-         */
-        public setText(text: string) {
-            this.text.text = text;
-        }
-
-        /**
-         * Sets the text style to apply.
-         *
-         * @param style     The style to apply.
-         */
-        public setTextStyle(style: any) {
-            this.text.style = style;
+            function onMouseOut() {
+                this.isHovered = false;
+                this.texture = this.defaultTexture;
+            }
         }
     }
 }

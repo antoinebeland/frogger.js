@@ -110,8 +110,6 @@ namespace FroggerJS.Game {
                 this.board.addChild(this.goals[i]);
             }
 
-            this.generateActor();
-            
             // Setups the labels.
             this.labels = {
                 livesCount: new PIXI.Text(`LIVES: ${Actor.getAvailableLives()}`, FroggerJS.Constants.DEFAULT_TEXT_STYLE),
@@ -132,6 +130,9 @@ namespace FroggerJS.Game {
             
             this.board.addChild(this.labels.livesCount);
             this.board.addChild(this.labels.currentLevel);
+
+            // Generates the actor.
+            this.generateActor();
         }
 
         /**
@@ -249,14 +250,14 @@ namespace FroggerJS.Game {
          */
         private restart() {
 
-            Actor.loseLife();
             this.actor.startPosition();
+            Actor.loseLife();
 
             let availableLives = Actor.getAvailableLives();
             Logger.logMessage(`One live lost. ${availableLives} live(s) remaining.`);
 
             this.labels.livesCount.text = `LIVES: ${availableLives}`; // TODO: Avoid to repeat the same text two times...
-            if(availableLives <= 0) {
+            if (availableLives <= 0) {
                 this.onGameOver.invoke();
             }
         }

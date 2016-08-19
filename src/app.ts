@@ -6,14 +6,16 @@
 /// <reference path="./states/stateManager.ts" />
 /// <reference path="./states/mainMenuState.ts" />
 /// <reference path="./states/gameLevelState.ts" />
+/// <reference path="./states/gameOverState.ts" />
 /// <reference path="./states/endGameState.ts" />
 /// <reference path="./utils/logger.ts" />
 
 namespace FroggerJS {
 
-    import AudioManager = FroggerJS.Audio.AudioManager;
+    import GameOverState = FroggerJS.States.GameOverState;
     declare var PIXI: any;
 
+    import AudioManager = FroggerJS.Audio.AudioManager;
     import GraphicsLoader = FroggerJS.Graphics.ImageLoader;
     import Scene = FroggerJS.Graphics.Scene;
     import Ticker = FroggerJS.Graphics.Ticker;
@@ -44,6 +46,7 @@ namespace FroggerJS {
             "goal",
             "menu-background",
             "menu-button",
+            "menu-button-hovered",
             "menu-button-clicked",
             "menu-logo",
             "menu-stripe",
@@ -54,7 +57,10 @@ namespace FroggerJS {
             "road-top",
             "road-middle-top",
             "road-middle-bottom",
-            "road-bottom"
+            "road-bottom",
+            "panel-button",
+            "panel-button-hovered",
+            "panel-button-clicked",
         ];
 
         public static initialize() {
@@ -68,6 +74,8 @@ namespace FroggerJS {
             // TODO: Loads sounds.
             let audioManager = new AudioManager("assets/sounds");
             audioManager.register("menu", "menu.wav");
+
+            audioManager.mute(FroggerJS.Constants.AUDIO_MUTED);
 
             let loader = new GraphicsLoader("assets/sprites");
             loader.register(App.resources);
@@ -83,6 +91,7 @@ namespace FroggerJS {
                 stateManager.register("mainMenu", new MainMenuState(scene, loader, audioManager, stateManager));
                 stateManager.register("level1", new GameLevelState(scene, loader, ticker, audioManager, {level: 1, levelsCount: 2}, stateManager));
                 stateManager.register("level2", new GameLevelState(scene, loader, ticker, audioManager, {level: 2, levelsCount: 2}, stateManager));
+                stateManager.register("gameOver", new GameOverState(scene, loader, audioManager, stateManager));
                 stateManager.register("endGame", new EndGameState());
                 
                 stateManager.change("mainMenu");
