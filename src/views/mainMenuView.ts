@@ -1,6 +1,5 @@
 /// <reference path="controls/button.ts" />
 /// <reference path="../graphics/renderable.ts" />
-/// <reference path="../graphics/container.ts" />
 /// <reference path="../graphics/imageLoader.ts" />
 /// <reference path="../utils/event.ts" />
 

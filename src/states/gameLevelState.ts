@@ -12,11 +12,11 @@ namespace FroggerJS.States {
 
     import AudioManager = FroggerJS.Audio.AudioManager;
     import GameLevel = FroggerJS.Game.GameLevel;
-    import Scene = FroggerJS.Graphics.Scene;
-    import ImageLoader = FroggerJS.Graphics.ImageLoader;
-    import Ticker = FroggerJS.Graphics.Ticker;
-    import Logger = Utils.Logger;
     import GameLevelView = FroggerJS.Views.GameLevelView;
+    import ImageLoader = FroggerJS.Graphics.ImageLoader;
+    import Logger = Utils.Logger;
+    import Scene = FroggerJS.Graphics.Scene;
+    import Ticker = FroggerJS.Graphics.Ticker;
 
     /**
      * Defines the 'Game Level State' of the application.

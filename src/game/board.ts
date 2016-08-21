@@ -4,13 +4,13 @@
 
 namespace FroggerJS.Game {
 
+    import Bounding = FroggerJS.Physics.Bounding;
     import Collidable = FroggerJS.Physics.Collidable;
     import Container = FroggerJS.Graphics.Container;
-    import Bounding = FroggerJS.Physics.Bounding;
-    import Renderable = FroggerJS.Graphics.Renderable;
-    import RectangleBounding = FroggerJS.Physics.RectangleBounding;
     import isCollidable = FroggerJS.Physics.isCollidable;
     import isRenderable = FroggerJS.Graphics.isRenderable;
+    import RectangleBounding = FroggerJS.Physics.RectangleBounding;
+    import Renderable = FroggerJS.Graphics.Renderable;
 
     /**
      * Defines the game board.

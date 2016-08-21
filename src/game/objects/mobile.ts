@@ -1,15 +1,15 @@
-/// <reference path="../../config.ts" />
 /// <reference path="orientation.ts" />
+/// <reference path="../../config.ts" />
 /// <reference path="../../graphics/renderable.ts" />
 /// <reference path="../../graphics/updatable.ts" />
 /// <reference path="../../physics/collidable.ts" />
 
 namespace FroggerJS.Game.Objects {
 
-    import Renderable = FroggerJS.Graphics.Renderable;
-    import Collidable = FroggerJS.Physics.Collidable;
-    import Updatable = FroggerJS.Graphics.Updatable;
     import Bounding = FroggerJS.Physics.Bounding;
+    import Collidable = FroggerJS.Physics.Collidable;
+    import Renderable = FroggerJS.Graphics.Renderable;
+    import Updatable = FroggerJS.Graphics.Updatable;
 
     /**
      * Defines the base class for a mobile object (an object that moves automatically).

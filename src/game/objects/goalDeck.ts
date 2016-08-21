@@ -1,15 +1,15 @@
+/// <reference path="../../graphics/imageLoader.ts" />
 /// <reference path="../../graphics/renderable.ts" />
 /// <reference path="../../physics/collidable.ts" />
-/// <reference path="../../graphics/imageLoader.ts" />
 /// <reference path="../../physics/circleBounding.ts" />
 
 namespace FroggerJS.Game.Objects {
 
-    import Renderable = FroggerJS.Graphics.Renderable;
-    import Collidable = FroggerJS.Physics.Collidable;
-    import ImageLoader = FroggerJS.Graphics.ImageLoader;
     import Bounding = FroggerJS.Physics.Bounding;
     import CircleBounding = FroggerJS.Physics.CircleBounding;
+    import Collidable = FroggerJS.Physics.Collidable;
+    import ImageLoader = FroggerJS.Graphics.ImageLoader;
+    import Renderable = FroggerJS.Graphics.Renderable;
 
     /**
      * Defines the goal deck.

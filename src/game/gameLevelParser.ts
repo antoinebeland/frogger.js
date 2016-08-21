@@ -1,15 +1,15 @@
+/// <reference path="objects/goalDeck.ts" />
+/// <reference path="objects/mobileFactory.ts" />
 /// <reference path="../config.ts" />
-/// <reference path="./objects/goalDeck.ts" />
-/// <reference path="./objects/mobileFactory.ts" />
 /// <reference path="../graphics/imageLoader.ts" />
 
 namespace FroggerJS.Game {
 
+    import GoalDeck = FroggerJS.Game.Objects.GoalDeck;
     import ImageLoader = FroggerJS.Graphics.ImageLoader;
     import Mobile = FroggerJS.Game.Objects.Mobile;
     import MobileFactory = FroggerJS.Game.Objects.MobileFactory;
-    import GoalDeck = FroggerJS.Game.Objects.GoalDeck;
-    
+
     /**
      * Defines the parser result to return.
      */

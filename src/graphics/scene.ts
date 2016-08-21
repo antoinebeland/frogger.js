@@ -1,6 +1,6 @@
-/// <reference path="../config.ts" />
 /// <reference path="container.ts" />
 /// <reference path="renderable.ts" />
+/// <reference path="../config.ts" />
 
 namespace FroggerJS.Graphics {
 

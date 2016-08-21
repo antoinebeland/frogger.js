@@ -1,5 +1,5 @@
-/// <reference path="car.ts" />
 /// <reference path="boat.ts" />
+/// <reference path="car.ts" />
 /// <reference path="orientation.ts" />
 /// <reference path="../../graphics/imageLoader.ts" />
 

@@ -1,7 +1,7 @@
 /// <reference path="panelFactory.ts" />
 /// <reference path="controls/button.ts" />
-/// <reference path="../graphics/renderable.ts" />
 /// <reference path="../graphics/imageLoader.ts" />
+/// <reference path="../graphics/renderable.ts" />
 /// <reference path="../utils/event.ts" />
 
 namespace FroggerJS.Views {

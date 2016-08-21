@@ -8,11 +8,11 @@
 
 namespace FroggerJS.States {
 
-    import Scene = FroggerJS.Graphics.Scene;
-    import ImageLoader = FroggerJS.Graphics.ImageLoader;
     import AudioManager = FroggerJS.Audio.AudioManager;
     import GameOverView = FroggerJS.Views.GameOverView;
+    import ImageLoader = FroggerJS.Graphics.ImageLoader;
     import Logger = Utils.Logger;
+    import Scene = FroggerJS.Graphics.Scene;
 
     export class GameOverState implements State {
 

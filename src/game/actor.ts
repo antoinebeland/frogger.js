@@ -1,19 +1,19 @@
+/// <reference path="objects/mobile.ts" />
 /// <reference path="../config.ts" />
-/// <reference path="./objects/mobile.ts" />
 /// <reference path="../graphics/renderable.ts" />
 /// <reference path="../graphics/imageLoader.ts" />
-/// <reference path="../physics/collidable.ts" />
 /// <reference path="../physics/circleBounding.ts" />
+/// <reference path="../physics/collidable.ts" />
 
 namespace FroggerJS.Game {
 
     import AudioManager = FroggerJS.Audio.AudioManager;
-    import ImageLoader = FroggerJS.Graphics.ImageLoader;
-    import Renderable = FroggerJS.Graphics.Renderable;
-    import Collidable = FroggerJS.Physics.Collidable;
-    import Mobile = FroggerJS.Game.Objects.Mobile;
     import Bounding = FroggerJS.Physics.Bounding;
     import CircleBounding = FroggerJS.Physics.CircleBounding;
+    import Collidable = FroggerJS.Physics.Collidable;
+    import ImageLoader = FroggerJS.Graphics.ImageLoader;
+    import Mobile = FroggerJS.Game.Objects.Mobile;
+    import Renderable = FroggerJS.Graphics.Renderable;
 
     /**
      * Defines the key codes associated with the arrow keys.
@@ -108,7 +108,7 @@ namespace FroggerJS.Game {
                     self.sprite.texture = self.keyDownTexture;
                 }
             };
-            
+
             /**
              * Occurred when a key is up.
              *

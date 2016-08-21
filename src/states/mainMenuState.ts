@@ -8,11 +8,11 @@
 
 namespace FroggerJS.States {
 
-    import Scene = FroggerJS.Graphics.Scene;
-    import ImageLoader = FroggerJS.Graphics.ImageLoader;
     import AudioManager = FroggerJS.Audio.AudioManager;
-    import MainMenuView = FroggerJS.Views.MainMenuView;
+    import ImageLoader = FroggerJS.Graphics.ImageLoader;
     import Logger = Utils.Logger;
+    import MainMenuView = FroggerJS.Views.MainMenuView;
+    import Scene = FroggerJS.Graphics.Scene;
 
     /**
      * Defines the 'Main Menu State' of the application.

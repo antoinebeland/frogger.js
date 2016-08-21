@@ -1,13 +1,13 @@
 /// <reference path="config.ts" />
 /// <reference path="./audio/audioManager.ts" />
 /// <reference path="./graphics/imageLoader.ts" />
-/// <reference path="./graphics/ticker.ts" />
 /// <reference path="./graphics/scene.ts" />
-/// <reference path="./states/stateManager.ts" />
-/// <reference path="./states/mainMenuState.ts" />
+/// <reference path="./graphics/ticker.ts" />
+/// <reference path="./states/endGameState.ts" />
 /// <reference path="./states/gameLevelState.ts" />
 /// <reference path="./states/gameOverState.ts" />
-/// <reference path="./states/endGameState.ts" />
+/// <reference path="./states/mainMenuState.ts" />
+/// <reference path="./states/stateManager.ts" />
 /// <reference path="./utils/logger.ts" />
 
 namespace FroggerJS {
@@ -15,16 +15,16 @@ namespace FroggerJS {
     declare var PIXI: any;
 
     import AudioManager = FroggerJS.Audio.AudioManager;
-    import ImageLoader = FroggerJS.Graphics.ImageLoader;
-    import Scene = FroggerJS.Graphics.Scene;
-    import Ticker = FroggerJS.Graphics.Ticker;
-    import StateManager = FroggerJS.States.StateManager;
-    import MainMenuState = FroggerJS.States.MainMenuState;
+    import EndGameState = FroggerJS.States.EndGameState;
     import GameLevelState = FroggerJS.States.GameLevelState;
     import GameOverState = FroggerJS.States.GameOverState;
-    import EndGameState = FroggerJS.States.EndGameState;
+    import ImageLoader = FroggerJS.Graphics.ImageLoader;
     import Logger = Utils.Logger;
     import LogLevel = Utils.LogLevel;
+    import MainMenuState = FroggerJS.States.MainMenuState;
+    import Scene = FroggerJS.Graphics.Scene;
+    import StateManager = FroggerJS.States.StateManager;
+    import Ticker = FroggerJS.Graphics.Ticker;
 
     export class App {
 

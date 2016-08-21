@@ -5,8 +5,8 @@
 
 namespace FroggerJS.Game.Objects {
 
-    import ImageLoader = FroggerJS.Graphics.ImageLoader;
     import Bounding = FroggerJS.Physics.Bounding;
+    import ImageLoader = FroggerJS.Graphics.ImageLoader;
     import RectangleBounding = FroggerJS.Physics.RectangleBounding;
 
     /**
