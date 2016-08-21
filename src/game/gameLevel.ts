@@ -152,7 +152,6 @@ namespace FroggerJS.Game {
          * Destroys the current level.
          */
         public destroy(): void {
-
             document.removeEventListener("keydown", this.actor.onKeyDown);
             document.removeEventListener("keyup", this.actor.onKeyUp);
         }

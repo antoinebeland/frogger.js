@@ -1,4 +1,4 @@
-/// <reference path="graphicsFactory.ts" />
+/// <reference path="panelFactory.ts" />
 /// <reference path="../graphics/renderable.ts" />
 /// <reference path="../graphics/updatable.ts" />
 
@@ -8,6 +8,9 @@ namespace FroggerJS.Views {
     import Renderable = FroggerJS.Graphics.Renderable;
     import Updatable = FroggerJS.Graphics.Updatable;
 
+    /**
+     * Defines the panel to display before to start the level.
+     */
     export class GameLevelView implements Renderable, Updatable {
 
         private static PANEL_WIDTH = 600;
@@ -20,12 +23,17 @@ namespace FroggerJS.Views {
         private animatedLabel: PIXI.Text;
         private animationFactor: number = -1;
 
+        /**
+         * Initializes a new instance of the GameLevelView class.
+         *
+         * @param level     The level number to display in the panel.
+         */
         public constructor(level: number) {
 
             const HALF_PANEL_WIDTH = GameLevelView.PANEL_WIDTH * 0.5;
 
             this.container = new PIXI.Container();
-            let panel = GraphicsFactory.createPanel(GameLevelView.PANEL_WIDTH, GameLevelView.PANEL_HEIGHT);
+            let panel = PanelFactory.createPanel(GameLevelView.PANEL_WIDTH, GameLevelView.PANEL_HEIGHT);
 
             let title = new PIXI.Text("LEVEL " + level, {font: "60px Arial", fill: "white"});
             title.anchor.x = 0.5;
@@ -39,14 +47,24 @@ namespace FroggerJS.Views {
             this.animatedLabel.y = 140;
             panel.addChild(this.animatedLabel);
 
-            this.container.addChild(GraphicsFactory.createBackgroundPane());
+            this.container.addChild(PanelFactory.createBackgroundPanel());
             this.container.addChild(panel);
         }
 
+        /**
+         * Gets the display object associated with the game level panel.
+         *
+         * @returns {PIXI.Container}    The container that contains the visual elements of the panel.
+         */
         public getDisplayObject(): PIXI.DisplayObject {
             return this.container;
         }
 
+        /**
+         * Updates the alpha of the animated label.
+         *
+         * @param deltaTime             The delta time to use.
+         */
         public update(deltaTime: number): void {
 
             let alphaToApply = this.animatedLabel.alpha +
