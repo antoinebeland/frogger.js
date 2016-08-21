@@ -11,7 +11,6 @@ namespace FroggerJS.Graphics {
 
         private loader: PIXI.loaders.Loader;
         private baseResourcesPath : string;
-        private imageExtension : string;
 
         /**
          * Occurred when the images loading is completed.
@@ -24,13 +23,11 @@ namespace FroggerJS.Graphics {
          * Initializes a new instance of the ImageLoader class.
          *
          * @param baseResourcesPath     The base path where the resources are stored.
-         * @param [imageExtension]      The image extension to use.
          */
-        public constructor(baseResourcesPath: string, imageExtension: string = "png") {
+        public constructor(baseResourcesPath: string) {
 
             this.loader = PIXI.loader;
             this.baseResourcesPath = baseResourcesPath;
-            this.imageExtension = imageExtension;
 
             let self = this;
             this.loader.once("complete", function () {
@@ -39,19 +36,27 @@ namespace FroggerJS.Graphics {
         }
 
         /**
-         * Registers one or many images to load.
+         * Registers the specified image with the specified name.
          *
-         * @param element   The element can be a string or a list of strings. 
-         *                  The specified string must be the name of the resource.
+         * @param name      The name to associate with the image.
+         * @param fileName  The image file name to register.
          */
-        public register(element: string|string[]): void {
+        public register(name: string, fileName: string): void {
 
-            if(element instanceof Array) {
-                for(let i = 0; i < element.length; ++i) {
-                    this.registerSingleElement(element[i]);
-                }
-            } else {
-                this.registerSingleElement(element as string);
+            if (this.loader.resources[name]) {
+                throw new Error(`An image is already registered with the '${name}' identifier.`);
+            }
+            this.loader.add(name, `${this.baseResourcesPath}/${fileName}`);
+        }
+
+        /**
+         * Registers the specified maps.
+         *
+         * @param map   The map to register.
+         */
+        public registerMap(map: { name: string; fileName: string; }[]) {
+            for (let entry of map) {
+                this.register(entry.name, entry.fileName);
             }
         }
 
@@ -74,15 +79,6 @@ namespace FroggerJS.Graphics {
          */
         public load(): void {
             this.loader.load();
-        }
-
-        /**
-         * Registers an element to load.
-         *
-         * @param name      The name of the resource to load.
-         */
-        private registerSingleElement(name: string): void {
-            this.loader.add(name, `${this.baseResourcesPath}/${name}.${this.imageExtension}`);
         }
     }
 }

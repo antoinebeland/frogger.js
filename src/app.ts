@@ -15,7 +15,7 @@ namespace FroggerJS {
     declare var PIXI: any;
 
     import AudioManager = FroggerJS.Audio.AudioManager;
-    import GraphicsLoader = FroggerJS.Graphics.ImageLoader;
+    import ImageLoader = FroggerJS.Graphics.ImageLoader;
     import Scene = FroggerJS.Graphics.Scene;
     import Ticker = FroggerJS.Graphics.Ticker;
     import StateManager = FroggerJS.States.StateManager;
@@ -28,40 +28,47 @@ namespace FroggerJS {
 
     export class App {
 
-        private static resources = [
-            "boat-red-left",
-            "boat-red-right",
-            "boat-yellow-left",
-            "boat-yellow-right",
-            "car-blue-left",
-            "car-blue-right",
-            "car-green-left",
-            "car-green-right",
-            "car-red-left",
-            "car-red-right",
-            "car-white-left",
-            "car-white-right",
-            "frog",
-            "frog-extend",
-            "goal",
-            "menu-background",
-            "menu-button",
-            "menu-button-hovered",
-            "menu-button-clicked",
-            "menu-logo",
-            "menu-stripe",
-            "grass",
-            "grass-water-top",
-            "grass-water-bottom",
-            "water",
-            "road-top",
-            "road-middle-top",
-            "road-middle-bottom",
-            "road-bottom",
-            "panel-button",
-            "panel-button-hovered",
-            "panel-button-clicked",
-        ];
+        private static resources = {
+            sprites: [
+                { name: "boat-red-left",        fileName: "boat-red-left.png"           },
+                { name: "boat-red-right",       fileName: "boat-red-right.png"          },
+                { name: "boat-yellow-left",     fileName: "boat-yellow-left.png"        },
+                { name: "boat-yellow-right",    fileName: "boat-yellow-right.png"       },
+                { name: "car-blue-left",        fileName: "car-blue-left.png"           },
+                { name: "car-blue-right",       fileName: "car-blue-right.png"          },
+                { name: "car-green-left",       fileName: "car-green-left.png"          },
+                { name: "car-green-right",      fileName: "car-green-right.png"         },
+                { name: "car-red-left",         fileName: "car-red-left.png"            },
+                { name: "car-red-right",        fileName: "car-red-right.png"           },
+                { name: "car-white-left",       fileName: "car-white-left.png"          },
+                { name: "car-white-right",      fileName: "car-white-right.png"         },
+                { name: "frog",                 fileName: "frog.png"                    },
+                { name: "frog-extend",          fileName: "frog-extend.png"             },
+                { name: "goal",                 fileName: "goal.png"                    },
+                { name: "menu-background",      fileName: "menu-background.png"         },
+                { name: "menu-button",          fileName: "menu-button.png"             },
+                { name: "menu-button-hovered",  fileName: "menu-button-hovered.png"     },
+                { name: "menu-button-clicked",  fileName: "menu-button-clicked.png"     },
+                { name: "menu-logo",            fileName: "menu-logo.png"               },
+                { name: "menu-stripe",          fileName: "menu-stripe.png"             },
+                { name: "grass",                fileName: "grass.png"                   },
+                { name: "grass-water-top",      fileName: "grass-water-top.png"         },
+                { name: "grass-water-bottom",   fileName: "grass-water-bottom.png"      },
+                { name: "water",                fileName: "water.png"                   },
+                { name: "road-top",             fileName: "road-top.png"                },
+                { name: "road-middle-top",      fileName: "road-middle-top.png"         },
+                { name: "road-middle-bottom",   fileName: "road-middle-bottom.png"      },
+                { name: "road-bottom",          fileName: "road-bottom.png"             },
+                { name: "panel-button",         fileName: "panel-button.png"            },
+                { name: "panel-button-hovered", fileName: "panel-button-hovered.png"    },
+                { name: "panel-button-clicked", fileName: "panel-button-clicked.png"    },
+            ],
+            sounds: [
+                { name: "menu", fileName: "menu.wav" },
+                { name: "game", fileName: "game.wav" },
+                { name: "jump", fileName: "jump.mp3" },
+            ]
+        };
 
         public static initialize() {
 
@@ -71,17 +78,13 @@ namespace FroggerJS {
             Logger.logMessage("Initialize Frogger.js...", LogLevel.Info);
             Logger.logMessage("Loading resources...", LogLevel.Info);
 
-            // TODO: Loads sounds.
             let audioManager = new AudioManager("assets/sounds");
-            audioManager.register("menu", "menu.wav");
-            audioManager.register("game", "game.wav");
-
+            audioManager.registerMap(App.resources.sounds);
             audioManager.mute(FroggerJS.Constants.AUDIO_MUTED);
 
-            let loader = new GraphicsLoader("assets/sprites");
-            loader.register(App.resources);
-
-            loader.onLoadingCompleted.register(function() {
+            let imageLoader = new ImageLoader("assets/sprites");
+            imageLoader.registerMap(App.resources.sprites);
+            imageLoader.onLoadingCompleted.register(function() {
 
                 Logger.logMessage("Resources loaded.", LogLevel.Info);
 
@@ -89,10 +92,10 @@ namespace FroggerJS {
                 let scene = new Scene(FroggerJS.Constants.WINDOW_WIDTH, FroggerJS.Constants.WINDOW_HEIGHT);
 
                 let stateManager = new StateManager();
-                stateManager.register("mainMenu", new MainMenuState(scene, loader, audioManager, stateManager));
-                stateManager.register("level1", new GameLevelState(scene, loader, ticker, audioManager, {level: 1, levelsCount: 2}, stateManager));
-                stateManager.register("level2", new GameLevelState(scene, loader, ticker, audioManager, {level: 2, levelsCount: 2}, stateManager));
-                stateManager.register("gameOver", new GameOverState(scene, loader, audioManager, stateManager));
+                stateManager.register("mainMenu", new MainMenuState(scene, imageLoader, audioManager, stateManager));
+                stateManager.register("level1", new GameLevelState(scene, imageLoader, ticker, audioManager, {level: 1, levelsCount: 2}, stateManager));
+                stateManager.register("level2", new GameLevelState(scene, imageLoader, ticker, audioManager, {level: 2, levelsCount: 2}, stateManager));
+                stateManager.register("gameOver", new GameOverState(scene, imageLoader, audioManager, stateManager));
                 stateManager.register("endGame", new EndGameState());
                 
                 stateManager.change("mainMenu");
@@ -100,7 +103,7 @@ namespace FroggerJS {
                 ticker.register(scene);
                 ticker.start();
             });
-            loader.load();
+            imageLoader.load();
         }
     }
 }

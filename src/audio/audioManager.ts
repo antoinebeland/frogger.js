@@ -11,7 +11,7 @@ namespace FroggerJS.Audio {
         /**
          * Initializes a new instance of the AudioManager class.
          *
-         * @param basePath  The base path where the sound files are located.
+         * @param basePath  The base path where the audio files are located.
          */
         public constructor(basePath: string) {
             this.basePath = basePath;
@@ -19,7 +19,7 @@ namespace FroggerJS.Audio {
         }
 
         /**
-         * Registers the specified sound with the specified key.
+         * Registers the specified file name with the specified key.
          *
          * @param identifier    The identifier associated with the sound file name.
          * @param fileName      The sound file name to load.
@@ -29,16 +29,26 @@ namespace FroggerJS.Audio {
             if (this.sounds[identifier]) {
                 throw new Error(`A sound is already registered with the '${identifier}' identifier.`);
             }
-
             this.sounds[identifier] = new Howl({
                 src: `${this.basePath}/${fileName}`
             });
         }
 
         /**
+         * Registers the specified maps.
+         *
+         * @param map   The map to register.
+         */
+        public registerMap(map: { name: string; fileName: string; }[]) {
+            for (let entry of map) {
+                this.register(entry.name, entry.fileName);
+            }
+        }
+
+        /**
          * Plays the sound associated with the specified identifier.
          *
-         * @param identifier    The identifier associated with the sound to play.
+         * @param identifier    The identifier associated with the file name to play.
          * @param [inLoop]      Indicates if the sound must be played in loop. The default value is FALSE.
          */
         public play(identifier: string, inLoop: boolean = false): void {
