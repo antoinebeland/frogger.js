@@ -7,6 +7,7 @@
 
 namespace FroggerJS.Game {
 
+    import AudioManager = FroggerJS.Audio.AudioManager;
     import ImageLoader = FroggerJS.Graphics.ImageLoader;
     import Renderable = FroggerJS.Graphics.Renderable;
     import Collidable = FroggerJS.Physics.Collidable;
@@ -62,9 +63,10 @@ namespace FroggerJS.Game {
         /**
          * Initializes a new instance of the Actor class.
          *
-         * @param imageLoader   The image loader to used to load the textures.
+         * @param imageLoader       The image loader to use to load the textures.
+         * @param audioManager      The audio manager to use.
          */
-        public constructor(imageLoader: ImageLoader) {
+        public constructor(imageLoader: ImageLoader, audioManager: AudioManager) {
 
             this.keyUpTexture = imageLoader.get("frog");
             this.keyDownTexture = imageLoader.get("frog-extend");
@@ -77,10 +79,15 @@ namespace FroggerJS.Game {
             this.bounding = new CircleBounding(this.sprite.position, this.sprite.width * BOUNDING_FACTOR);
 
             let self = this;
-            // TODO: Bind the context this!!!
+
+            /**
+             * Occurred when a key is down.
+             *
+             * @param event     The keyboard event associated.
+             */
             this.onKeyDown = function (event: KeyboardEvent) {
 
-                let rotation: number;
+                let rotation: number = undefined;
                 switch (event.keyCode) {
                     case ArrowKeyCode.Left:
                         rotation = Rotation.Left;
@@ -96,15 +103,20 @@ namespace FroggerJS.Game {
                         break;
                 }
 
-                self.sprite.rotation = rotation;
-                self.sprite.texture = self.keyDownTexture;
+                if (rotation !== undefined) {
+                    self.sprite.rotation = rotation;
+                    self.sprite.texture = self.keyDownTexture;
+                }
             };
-
+            
+            /**
+             * Occurred when a key is up.
+             *
+             * @param event     The keyboard event associated.
+             */
             this.onKeyUp = function (event: KeyboardEvent) {
 
                 const SHIFTING = FroggerJS.Constants.TILE_SIZE;
-                self.sprite.texture = self.keyUpTexture;
-
                 switch (event.keyCode) {
                     case ArrowKeyCode.Left:
                         if (self.sprite.position.x - SHIFTING >= 0) {
@@ -133,6 +145,11 @@ namespace FroggerJS.Game {
                 // Checks if the actor has changed of tile.
                 if (event.keyCode == ArrowKeyCode.Up || event.keyCode == ArrowKeyCode.Down) {
                     self.updateTilePosition();
+                }
+                // Checks if the texture was modified.
+                if (self.sprite.texture == self.keyDownTexture) {
+                    self.sprite.texture = self.keyUpTexture;
+                    audioManager.play("jump");
                 }
             };
         }

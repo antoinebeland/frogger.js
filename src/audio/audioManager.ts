@@ -50,8 +50,9 @@ namespace FroggerJS.Audio {
          *
          * @param identifier    The identifier associated with the file name to play.
          * @param [inLoop]      Indicates if the sound must be played in loop. The default value is FALSE.
+         * @param [volume]      The volume of the sound.
          */
-        public play(identifier: string, inLoop: boolean = false): void {
+        public play(identifier: string, inLoop: boolean = false, volume: number = 1): void {
 
             if (!this.sounds[identifier]) {
                 throw new Error(`The specified '${identifier}' identifier doesn't exist.`);
@@ -59,6 +60,7 @@ namespace FroggerJS.Audio {
 
             let sound = this.sounds[identifier];
             sound.off("fade");
+            sound.volume(volume);
             sound.loop(inLoop);
             sound.play();
         }
@@ -82,17 +84,16 @@ namespace FroggerJS.Audio {
          * @param identifier    The identifier associated with the sound to fade in.
          * @param duration      The duration of the fade in.
          * @param [inLoop]      Indicates if the sound must be played in loop. The default value is FALSE.
+         * @param [volume]      The volume of the sound at the end of the fade out.
          */
-        public fadeIn(identifier: string, duration: number, inLoop: boolean = false): void {
+        public fadeIn(identifier: string, duration: number, inLoop: boolean = false, volume: number = 1): void {
 
             if (!this.sounds[identifier]) {
                 throw new Error(`The specified '${identifier}' identifier doesn't exist.`);
             }
 
-            let sound = this.sounds[identifier];
-            sound.volume(0);
-            this.play(identifier, inLoop);
-            sound.fade(0, 1, duration);
+            this.play(identifier, inLoop, 0);
+            this.sounds[identifier].fade(0, volume, duration);
         }
 
         /**

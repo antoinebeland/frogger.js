@@ -1,7 +1,8 @@
+/// <reference path="actor.ts" />
+/// <reference path="gameLevelParser.ts" />
+/// <reference path="objects/goalDeck.ts" />
 /// <reference path="../config.ts" />
-/// <reference path="./actor.ts" />
-/// <reference path="./gameLevelParser.ts" />
-/// <reference path="./objects/goalDeck.ts" />
+/// <reference path="../audio/audioManager.ts" />
 /// <reference path="../graphics/updatable.ts" />
 /// <reference path="../graphics/imageLoader.ts" />
 /// <reference path="../graphics/scene.ts" />
@@ -9,16 +10,17 @@
 /// <reference path="../utils/logger.ts" />
 
 namespace FroggerJS.Game {
-    
-    import ImageLoader = FroggerJS.Graphics.ImageLoader;
-    import Scene = FroggerJS.Graphics.Scene;
+
     import Actor = FroggerJS.Game.Actor;
-    import Event = Utils.Event;
-    import Logger = Utils.Logger;
-    import Updatable = FroggerJS.Graphics.Updatable;
-    import Mobile = FroggerJS.Game.Objects.Mobile;
-    import GoalDeck = FroggerJS.Game.Objects.GoalDeck;
+    import AudioManager = FroggerJS.Audio.AudioManager;
+    import Constants = FroggerJS.Constants;
     import Container = PIXI.Container;
+    import Event = Utils.Event;
+    import GoalDeck = FroggerJS.Game.Objects.GoalDeck;
+    import ImageLoader = FroggerJS.Graphics.ImageLoader;
+    import Logger = Utils.Logger;
+    import Mobile = FroggerJS.Game.Objects.Mobile;
+    import Updatable = FroggerJS.Graphics.Updatable;
 
     /**
      * Defines the labels to display during the game.
@@ -33,17 +35,21 @@ namespace FroggerJS.Game {
      */
     export class GameLevel implements Updatable {
 
+        private static SOUNDTRACK_FADE_DURATION = 500;
+        private static SOUNDTRACK_VOLUME = 0.35;
         private static LIVES_BASE_TEXT = "\u2764 \u00D7";
 
         private imageLoader: ImageLoader;
+        private audioManager: AudioManager;
         private board : Board;
         private labels: GameTextLabels;
+        private isStarted = false;
 
         private actor: Actor;
         private mobiles: Mobile[][];
         private goals: GoalDeck[];
         private touchAllowedStatus: boolean[];
-        private isStarted = false;
+        private soundtrack: string;
 
         /**
          * Occurred when the game is over.
@@ -63,14 +69,15 @@ namespace FroggerJS.Game {
          * Initializes a new instance of the GameLevel class.
          *
          * @param imageLoader           The image loader to use.
+         * @param audioManager          The audio manager to use.
          * @param levelConfiguration    The level configuration to load.
          */
-        public constructor(imageLoader: ImageLoader, levelConfiguration: any) {
+        public constructor(imageLoader: ImageLoader, audioManager: AudioManager, levelConfiguration: any) {
 
             this.imageLoader = imageLoader;
-            this.board = new Board(FroggerJS.Constants.WINDOW_WIDTH, FroggerJS.Constants.WINDOW_HEIGHT);
-
-            this.setup(FroggerJS.Levels[0]);
+            this.audioManager = audioManager;
+            this.board = new Board(Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
+            this.setup(levelConfiguration);
         }
 
         /**
@@ -85,13 +92,14 @@ namespace FroggerJS.Game {
             let levelParser = new GameLevelParser(this.imageLoader);
             let levelParserResult = levelParser.parse(levelConfiguration);
 
+            this.soundtrack = levelParserResult.soundtrack;
             this.mobiles = levelParserResult.mobiles;
             this.goals = levelParserResult.goals;
             this.touchAllowedStatus = levelParserResult.touchAllowedStatus;
 
             // Sets the total of available lives for the actor (for the first level only).
             if (levelParserResult.level == 1) {
-                Actor.setAvailableLives(FroggerJS.Constants.AVAILABLE_LIVES);
+                Actor.setAvailableLives(Constants.AVAILABLE_LIVES);
             }
 
             // Adds the tiles to the scene.
@@ -116,20 +124,20 @@ namespace FroggerJS.Game {
             // Setups the labels.
             this.labels = {
                 livesCount: new PIXI.Text(`${GameLevel.LIVES_BASE_TEXT} ${Actor.getAvailableLives()}`,
-                    FroggerJS.Constants.DEFAULT_TEXT_STYLE),
+                    Constants.DEFAULT_TEXT_STYLE),
 
-                currentLevel: new PIXI.Text(`LEVEL ${levelConfiguration["level"]}`, FroggerJS.Constants.DEFAULT_TEXT_STYLE)
+                currentLevel: new PIXI.Text(`LEVEL ${levelConfiguration["level"]}`, Constants.DEFAULT_TEXT_STYLE)
             };
             
-            const VERTICAL_TEXT_POSITION = (FroggerJS.Constants.WINDOW_HEIGHT / FroggerJS.Constants.TILE_SIZE)
-                * FroggerJS.Constants.TILE_SIZE - FroggerJS.Constants.DEFAULT_TEXT_MARGIN;
+            const VERTICAL_TEXT_POSITION = (Constants.WINDOW_HEIGHT / Constants.TILE_SIZE)
+                * Constants.TILE_SIZE - Constants.DEFAULT_TEXT_MARGIN;
 
             this.labels.livesCount.anchor.x = 1;
             this.labels.livesCount.anchor.y = 1;
             this.labels.currentLevel.anchor.y = 1;
 
-            this.labels.livesCount.x = FroggerJS.Constants.WINDOW_WIDTH - FroggerJS.Constants.DEFAULT_TEXT_MARGIN;
-            this.labels.currentLevel.x = FroggerJS.Constants.DEFAULT_TEXT_MARGIN;
+            this.labels.livesCount.x = Constants.WINDOW_WIDTH - Constants.DEFAULT_TEXT_MARGIN;
+            this.labels.currentLevel.x = Constants.DEFAULT_TEXT_MARGIN;
             this.labels.livesCount.y = VERTICAL_TEXT_POSITION;
             this.labels.currentLevel.y = VERTICAL_TEXT_POSITION;
             
@@ -138,22 +146,32 @@ namespace FroggerJS.Game {
 
             // Generates the actor.
             this.generateActor();
+
+            Logger.logMessage("Level initialized.");
         }
 
         /**
          * Starts the level.
          */
         public start() {
+
             this.bindEventListener();
+            this.audioManager.fadeIn(this.soundtrack,
+                GameLevel.SOUNDTRACK_FADE_DURATION, true, GameLevel.SOUNDTRACK_VOLUME);
+
             this.isStarted = true;
         }
 
+        public pause() {
+
+        }
+
         /**
-         * Destroys the current level.
+         * Disposes the current level.
          */
-        public destroy(): void {
-            document.removeEventListener("keydown", this.actor.onKeyDown);
-            document.removeEventListener("keyup", this.actor.onKeyUp);
+        public dispose(): void {
+            this.audioManager.fadeOut(this.soundtrack, GameLevel.SOUNDTRACK_FADE_DURATION);
+            this.unbindEventListener();
         }
 
         /**
@@ -244,11 +262,10 @@ namespace FroggerJS.Game {
         private generateActor() {
 
             if (this.actor) {
-                document.removeEventListener("keydown", this.actor.onKeyDown);
-                document.removeEventListener("keyup", this.actor.onKeyUp);
+                this.unbindEventListener();
             }
 
-            this.actor = new Actor(this.imageLoader);
+            this.actor = new Actor(this.imageLoader, this.audioManager);
             this.actor.startPosition();
 
             if (this.isStarted) {
@@ -259,11 +276,19 @@ namespace FroggerJS.Game {
         }
 
         /**
-         * Binds the key listener to the actor.
+         * Binds the key listeners to the actor.
          */
         private bindEventListener() {
             document.addEventListener("keydown", this.actor.onKeyDown);
             document.addEventListener("keyup", this.actor.onKeyUp);
+        }
+
+        /**
+         * Unbinds the key listeners to the actor.
+         */
+        private unbindEventListener() {
+            document.removeEventListener("keydown", this.actor.onKeyDown);
+            document.removeEventListener("keyup", this.actor.onKeyUp);
         }
 
         /**

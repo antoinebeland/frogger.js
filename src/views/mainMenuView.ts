@@ -1,16 +1,16 @@
+/// <reference path="controls/button.ts" />
 /// <reference path="../graphics/renderable.ts" />
 /// <reference path="../graphics/container.ts" />
 /// <reference path="../graphics/imageLoader.ts" />
 /// <reference path="../utils/event.ts" />
-/// <reference path="controls/button.ts" />
 
 namespace FroggerJS.Views {
 
+    import Button = FroggerJS.Views.Controls.Button;
     import Constants = FroggerJS.Constants;
+    import Event = Utils.Event;
     import ImageLoader = FroggerJS.Graphics.ImageLoader;
     import Renderable = FroggerJS.Graphics.Renderable;
-    import Button = FroggerJS.Views.Controls.Button;
-    import Event = Utils.Event;
 
     /**
      * Defines the main menu view.
@@ -36,7 +36,7 @@ namespace FroggerJS.Views {
         /**
          * Initializes a new instance of the MainMenuView class.
          *
-         * @param imageLoader   The image loader to use.
+         * @param imageLoader       The image loader to use.
          */
         public constructor(imageLoader: ImageLoader) {
 
@@ -69,25 +69,19 @@ namespace FroggerJS.Views {
             let startButton = new Button(defaultTexture, "PLAY", TEXT_STYLE);
             startButton.hoveredTexture = hoveredTexture;
             startButton.clickedTexture = clickedTexture;
+            startButton.onClick = this.onPlayClicked;
             startButton.anchor.x = 0.5;
             startButton.x = HALF_WINDOW_WIDTH;
             startButton.y = 550;
-
-            startButton.onClick.register(function () {
-                this.onPlayClicked.invoke();
-            }, this);
 
             // Initializes the settings button.
             let settingsButton = new Button(defaultTexture, "SETTINGS", TEXT_STYLE);
             settingsButton.hoveredTexture = hoveredTexture;
             settingsButton.clickedTexture = clickedTexture;
+            settingsButton.onClick = this.onSettingsClicked;
             settingsButton.anchor.x = 0.5;
             settingsButton.x = HALF_WINDOW_WIDTH;
             settingsButton.y = 700;
-
-            settingsButton.onClick.register(function () {
-                this.onSettingsClicked.invoke();
-            }, this);
 
             this.container.addChild(background);
             this.container.addChild(stripe);

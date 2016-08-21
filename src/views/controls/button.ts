@@ -3,8 +3,8 @@
 
 namespace FroggerJS.Views.Controls {
 
-    import Renderable = FroggerJS.Graphics.Renderable;
     import Event = Utils.Event;
+    import Renderable = FroggerJS.Graphics.Renderable;
 
     /**
      * Defines a button.
@@ -94,6 +94,7 @@ namespace FroggerJS.Views.Controls {
             }
 
             function onMouseOver() {
+                this.onHover.invoke();
                 this.isHovered = true;
                 if (this.hoveredTexture) {
                     this.texture = this.hoveredTexture;

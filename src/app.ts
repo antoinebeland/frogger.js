@@ -64,9 +64,13 @@ namespace FroggerJS {
                 { name: "panel-button-clicked", fileName: "panel-button-clicked.png"    },
             ],
             sounds: [
-                { name: "menu", fileName: "menu.wav" },
-                { name: "game", fileName: "game.wav" },
-                { name: "jump", fileName: "jump.mp3" },
+                { name: "menu",         fileName: "menu.wav"        },
+                { name: "game1",        fileName: "game1.wav"       },
+                { name: "game2",        fileName: "game2.wav"       },
+                { name: "game3",        fileName: "game3.wav"       },
+                { name: "game4",        fileName: "game4.wav"       },
+                { name: "jump",         fileName: "jump.mp3"        },
+                { name: "game-over",    fileName: "game-over.wav"   },
             ]
         };
 
@@ -93,11 +97,20 @@ namespace FroggerJS {
 
                 let stateManager = new StateManager();
                 stateManager.register("mainMenu", new MainMenuState(scene, imageLoader, audioManager, stateManager));
-                stateManager.register("level1", new GameLevelState(scene, imageLoader, ticker, audioManager, {level: 1, levelsCount: 2}, stateManager));
-                stateManager.register("level2", new GameLevelState(scene, imageLoader, ticker, audioManager, {level: 2, levelsCount: 2}, stateManager));
                 stateManager.register("gameOver", new GameOverState(scene, imageLoader, audioManager, stateManager));
                 stateManager.register("endGame", new EndGameState());
-                
+
+                let level = 1;
+                for (var levelConfiguration of FroggerJS.Levels) {
+
+                    levelConfiguration.level = level;
+                    levelConfiguration.levelsCount = FroggerJS.Levels.count;
+
+                    stateManager.register(`level${level}`,
+                        new GameLevelState(scene, imageLoader, ticker, audioManager, levelConfiguration, stateManager));
+
+                    ++level;
+                }
                 stateManager.change("mainMenu");
 
                 ticker.register(scene);

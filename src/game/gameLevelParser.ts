@@ -15,6 +15,7 @@ namespace FroggerJS.Game {
      */
      type GameLevelParserResult = {
          level: number,
+         soundtrack: string,
          tiles: PIXI.Sprite[][],
          mobiles: Mobile[][],
          goals: GoalDeck[],
@@ -57,6 +58,9 @@ namespace FroggerJS.Game {
             if (!levelConfiguration.hasOwnProperty("goalsNumber")) {
                 throw new Error("'Goals Number' property is missing.");
             }
+            if (!levelConfiguration.hasOwnProperty("soundtrack")) {
+                throw new Error("Soundtrack property is missing.");
+            }
             if (!levelConfiguration.hasOwnProperty("board")) {
                 throw new Error("Board property is missing.");
             }
@@ -69,6 +73,7 @@ namespace FroggerJS.Game {
             // Initialization of the result variable.
             let result: GameLevelParserResult = {
                 level: levelConfiguration["level"],
+                soundtrack: levelConfiguration["soundtrack"],
                 tiles: [],
                 mobiles: [],
                 goals: [],

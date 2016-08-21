@@ -1,0 +1,8 @@
+Sound attributions
+------------------
+game1.wav 	==> 	Test Your Skills (http://www.playonloop.com/2015-music-loops/test-your-skills/)
+game2.wav	==>	Cyber Factory (http://www.playonloop.com/2010-music-loops/cyber-factory/)
+game3.wav	==>	Police Station (http://www.playonloop.com/2015-music-loops/police-station/)
+game4.wav	==>	Stealth Mode (http://www.playonloop.com/2015-music-loops/stealth-mode/)
+jump.mp3 	==> 	coup 9 (http://www.sound-fishing.net/bruitages/toon)
+menu.wav 	==> 	Funky Cruise (http://www.playonloop.com/2013-music-loops/funky-cruise/)

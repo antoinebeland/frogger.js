@@ -59,20 +59,20 @@ namespace FroggerJS.States {
          */
         public entered(): void {
 
-            Logger.logMessage(`Entered in 'Game Level ${this.levelConfiguration["level"]} State'.`);
+            Logger.logMessage(`Entered in 'Game Level ${this.levelConfiguration.level} State'.`);
 
-            this.gameLevelView = new GameLevelView(this.levelConfiguration["level"]);
-
-            this.gameLevel = new GameLevel(this.imageLoader, this.levelConfiguration);
+            this.gameLevel = new GameLevel(this.imageLoader, this.audioManager, this.levelConfiguration);
             this.gameLevel.onGameOver.register(this.gameOverOccurred, this);
             this.gameLevel.onNextLevel.register(this.nextLevelOccurred, this);
+
+            this.gameLevelView = new GameLevelView(this.levelConfiguration.level);
 
             this.scene.clear();
             this.scene.addChild(this.gameLevel.getBoard());
             this.scene.addChild(this.gameLevelView);
 
-            this.ticker.register(this.gameLevelView);
             this.ticker.register(this.gameLevel);
+            this.ticker.register(this.gameLevelView);
 
             // Initializes the key listeners before to start the game.
             let self = this;
@@ -84,7 +84,6 @@ namespace FroggerJS.States {
             function onKeyUp(event: KeyboardEvent) {
                 document.removeEventListener("keyup", onKeyUp);
                 self.gameLevel.start();
-                self.audioManager.fadeIn("game", 500, true);    // `TODO: Check where to start the sound!!!!!
             }
 
             document.addEventListener("keydown", onKeyDown);
@@ -100,11 +99,9 @@ namespace FroggerJS.States {
 
             this.gameLevel.onGameOver.unregister(this.gameOverOccurred, this);
             this.gameLevel.onNextLevel.unregister(this.nextLevelOccurred, this);
-            this.gameLevel.destroy();
+            this.gameLevel.dispose();
 
-            this.audioManager.fadeOut("game", 500);
-
-            Logger.logMessage(`Leaving the 'Game Level ${this.levelConfiguration["level"]} State'.`);
+            Logger.logMessage(`Leaving the 'Game Level ${this.levelConfiguration.level} State'.`);
         }
 
         /**
@@ -119,8 +116,8 @@ namespace FroggerJS.States {
          */
         private nextLevelOccurred(): void {
 
-            let nextLevel = this.levelConfiguration["level"] + 1;
-            if (this.levelConfiguration["levelsCount"] > nextLevel) {
+            let nextLevel = this.levelConfiguration.level + 1;
+            if (this.levelConfiguration.levelsCount > nextLevel) {
                 this.stateManager.change("endGame");
             } else {
                 this.stateManager.change(`level${nextLevel}`);

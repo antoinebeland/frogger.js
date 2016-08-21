@@ -16,6 +16,9 @@ namespace FroggerJS.States {
 
     export class GameOverState implements State {
 
+        private static SOUND_NAME = "game-over";
+        private static SOUND_VOLUME = 0.7;
+
         private scene: Scene;
         private audioManager: AudioManager;
         private stateManager: StateManager;
@@ -36,7 +39,9 @@ namespace FroggerJS.States {
 
             this.gameOverView.onReplayClicked.register(this.replayOccurred, this);
             this.gameOverView.onBackToMenuClicked.register(this.backToMenuOccurred, this);
+
             this.scene.addChild(this.gameOverView);
+            this.audioManager.play(GameOverState.SOUND_NAME, false, GameOverState.SOUND_VOLUME);
         }
 
         public leaving(): void {

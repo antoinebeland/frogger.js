@@ -5,12 +5,12 @@
 /// <reference path="../utils/event.ts" />
 
 namespace FroggerJS.Views {
-
+    
+    import Button = FroggerJS.Views.Controls.Button;
     import Constants = FroggerJS.Constants;
+    import Event = Utils.Event;
     import ImageLoader = FroggerJS.Graphics.ImageLoader;
     import Renderable = FroggerJS.Graphics.Renderable;
-    import Button = FroggerJS.Views.Controls.Button;
-    import Event = Utils.Event;
 
     /**
      * Defines the view to display when the game is over.

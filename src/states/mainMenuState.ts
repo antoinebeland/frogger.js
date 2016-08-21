@@ -20,7 +20,8 @@ namespace FroggerJS.States {
     export class MainMenuState implements State {
 
         static SOUND_NAME = "menu";
-        static FADE_DURATION = 500;
+        static SOUND_FADE_DURATION = 500;
+        static SOUND_VOLUME = 0.6;
 
         private scene: Scene;
         private stateManager: StateManager;
@@ -52,18 +53,23 @@ namespace FroggerJS.States {
          * Occurred when the application enters in the 'Main Menu State'.
          */
         public entered(): void {
+
             Logger.logMessage("Entered in 'Main Menu State'.");
+
             this.scene.clear();
             this.scene.addChild(this.mainMenuView);
-            this.audioManager.fadeIn(MainMenuState.SOUND_NAME, MainMenuState.FADE_DURATION, true);
+            this.audioManager.fadeIn(MainMenuState.SOUND_NAME,
+                MainMenuState.SOUND_FADE_DURATION, true, MainMenuState.SOUND_VOLUME);
         }
 
         /**
          * Occurred when the application leaves the 'Main Menu State'.
          */
         public leaving(): void {
-            this.audioManager.fadeOut(MainMenuState.SOUND_NAME, MainMenuState.FADE_DURATION);
+
+            this.audioManager.fadeOut(MainMenuState.SOUND_NAME, MainMenuState.SOUND_FADE_DURATION);
             this.scene.clear();
+
             Logger.logMessage("Leaving the 'Main Menu State'.");
         }
     }
