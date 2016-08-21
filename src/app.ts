@@ -74,6 +74,7 @@ namespace FroggerJS {
             // TODO: Loads sounds.
             let audioManager = new AudioManager("assets/sounds");
             audioManager.register("menu", "menu.wav");
+            audioManager.register("game", "game.wav");
 
             audioManager.mute(FroggerJS.Constants.AUDIO_MUTED);
 

@@ -84,6 +84,7 @@ namespace FroggerJS.States {
             function onKeyUp(event: KeyboardEvent) {
                 document.removeEventListener("keyup", onKeyUp);
                 self.gameLevel.start();
+                self.audioManager.fadeIn("game", 500, true);    // `TODO: Check where to start the sound!!!!!
             }
 
             document.addEventListener("keydown", onKeyDown);
@@ -100,6 +101,8 @@ namespace FroggerJS.States {
             this.gameLevel.onGameOver.unregister(this.gameOverOccurred, this);
             this.gameLevel.onNextLevel.unregister(this.nextLevelOccurred, this);
             this.gameLevel.destroy();
+
+            this.audioManager.fadeOut("game", 500);
 
             Logger.logMessage(`Leaving the 'Game Level ${this.levelConfiguration["level"]} State'.`);
         }
