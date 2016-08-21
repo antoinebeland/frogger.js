@@ -6,6 +6,7 @@
 /// <reference path="../graphics/imageLoader.ts" />
 /// <reference path="../graphics/ticker.ts" />
 /// <reference path="../utils/logger.ts" />
+/// <reference path="../views/gameLevelView.ts" />
 
 namespace FroggerJS.States {
 
@@ -15,6 +16,7 @@ namespace FroggerJS.States {
     import ImageLoader = FroggerJS.Graphics.ImageLoader;
     import Ticker = FroggerJS.Graphics.Ticker;
     import Logger = Utils.Logger;
+    import GameLevelView = FroggerJS.Views.GameLevelView;
 
     /**
      * Defines the 'Game Level State' of the application.
@@ -28,7 +30,8 @@ namespace FroggerJS.States {
         private levelConfiguration: any;
         private stateManager: StateManager;
 
-        private gameLevel : GameLevel;
+        private gameLevelView: GameLevelView = undefined;
+        private gameLevel : GameLevel = undefined;
 
         /**
          * Initializes a new instance of the GameLevelState class.
@@ -58,13 +61,33 @@ namespace FroggerJS.States {
 
             Logger.logMessage(`Entered in 'Game Level ${this.levelConfiguration["level"]} State'.`);
 
+            this.gameLevelView = new GameLevelView(this.levelConfiguration["level"]);
+
             this.gameLevel = new GameLevel(this.imageLoader, this.levelConfiguration);
             this.gameLevel.onGameOver.register(this.gameOverOccurred, this);
             this.gameLevel.onNextLevel.register(this.nextLevelOccurred, this);
 
             this.scene.clear();
             this.scene.addChild(this.gameLevel.getBoard());
+            this.scene.addChild(this.gameLevelView);
+
+            this.ticker.register(this.gameLevelView);
             this.ticker.register(this.gameLevel);
+
+            // Initializes the key listeners before to start the game.
+            let self = this;
+            function onKeyDown(event: KeyboardEvent) {
+                document.removeEventListener("keydown", onKeyDown);
+                self.scene.removeChild(self.gameLevelView);
+                self.ticker.unregister(self.gameLevelView);
+            }
+            function onKeyUp(event: KeyboardEvent) {
+                document.removeEventListener("keyup", onKeyUp);
+                self.gameLevel.start();
+            }
+
+            document.addEventListener("keydown", onKeyDown);
+            document.addEventListener("keyup", onKeyUp);
         }
 
         /**

@@ -1,8 +1,8 @@
+/// <reference path="graphicsFactory.ts" />
+/// <reference path="controls/button.ts" />
 /// <reference path="../graphics/renderable.ts" />
-/// <reference path="../graphics/container.ts" />
 /// <reference path="../graphics/imageLoader.ts" />
 /// <reference path="../utils/event.ts" />
-/// <reference path="controls/button.ts" />
 
 namespace FroggerJS.Views {
 
@@ -14,55 +14,51 @@ namespace FroggerJS.Views {
 
     export class GameOverView implements Renderable {
 
+        private static PANEL_WIDTH = 600;
+        private static PANEL_HEIGHT = 400;
+
         private container: PIXI.Container;
 
         public onReplayClicked = new Event<void>();
         public onBackToMenuClicked = new Event<void>();
 
-        public constructor(imageLoader?: ImageLoader) {
+        public constructor(imageLoader: ImageLoader) {
+
+            const HALF_PANEL_WIDTH = GameOverView.PANEL_WIDTH * 0.5;
+            const TEXT_STYLE = {font: "45px Arial", fill: "white"};
 
             this.container = new PIXI.Container();
+            let panel = GraphicsFactory.createPanel(GameOverView.PANEL_WIDTH, GameOverView.PANEL_HEIGHT);
 
-            let background = new PIXI.Graphics();
-            background.beginFill(0xFFFFFF, 0.5);
-            background.drawRect(0, 0, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
-            background.endFill();
-
-            let panel = new PIXI.Graphics();
-            panel.beginFill(0x0D7EB4);
-            panel.lineStyle(4, 0x000000);
-            panel.drawRect(0, 0, 600, 400);
-            panel.endFill();
-
-            panel.x = Constants.WINDOW_WIDTH * 0.5 - 300;
-            panel.y = Constants.WINDOW_HEIGHT * 0.5 - 200;
-
+            // Creates the title label.
             let title = new PIXI.Text("GAME OVER", {font: "60px Arial", fill: "white"});
             title.anchor.x = 0.5;
-            title.x = 300;
-            title.y = 60;
+            title.x = HALF_PANEL_WIDTH;
+            title.y = 50;
             panel.addChild(title);
 
             let defaultTexture = imageLoader.get("panel-button");
             let hoveredTexture = imageLoader.get("panel-button-hovered");
             let clickedTexture = imageLoader.get("panel-button-clicked");
-            
-            let replayButton = new Button(defaultTexture, "REPLAY", {font: "45px Arial", fill: "white"});
+
+            // Initializes the replay button.
+            let replayButton = new Button(defaultTexture, "REPLAY", TEXT_STYLE);
             replayButton.hoveredTexture = hoveredTexture;
             replayButton.clickedTexture = clickedTexture;
             replayButton.anchor.x = 0.5;
-            replayButton.x = 300;
+            replayButton.x = HALF_PANEL_WIDTH;
             replayButton.y = 170;
 
             replayButton.onClick.register(function () {
                 this.onReplayClicked.invoke();
             }, this);
 
-            let menuButton = new Button(defaultTexture, "MENU", {font: "45px Arial", fill: "white"});
+            // Initializes the menu button.
+            let menuButton = new Button(defaultTexture, "MENU", TEXT_STYLE);
             menuButton.hoveredTexture = hoveredTexture;
             menuButton.clickedTexture = clickedTexture;
             menuButton.anchor.x = 0.5;
-            menuButton.x = 300;
+            menuButton.x = HALF_PANEL_WIDTH;
             menuButton.y = 275;
 
             menuButton.onClick.register(function () {
@@ -73,7 +69,7 @@ namespace FroggerJS.Views {
             panel.addChild(menuButton);
             panel.addChild(replayButton);
 
-            this.container.addChild(background);
+            this.container.addChild(GraphicsFactory.createBackgroundPane());
             this.container.addChild(panel);
         }
 

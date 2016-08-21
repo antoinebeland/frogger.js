@@ -12,7 +12,6 @@
 
 namespace FroggerJS {
 
-    import GameOverState = FroggerJS.States.GameOverState;
     declare var PIXI: any;
 
     import AudioManager = FroggerJS.Audio.AudioManager;
@@ -22,6 +21,7 @@ namespace FroggerJS {
     import StateManager = FroggerJS.States.StateManager;
     import MainMenuState = FroggerJS.States.MainMenuState;
     import GameLevelState = FroggerJS.States.GameLevelState;
+    import GameOverState = FroggerJS.States.GameOverState;
     import EndGameState = FroggerJS.States.EndGameState;
     import Logger = Utils.Logger;
     import LogLevel = Utils.LogLevel;

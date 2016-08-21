@@ -8,7 +8,8 @@ namespace FroggerJS {
         DISPLAY_BOUNDING: false, // For DEBUG purpose
         AVAILABLE_LIVES: 5,
         DEFAULT_TEXT_STYLE: { font : "40px Arial", fill : "white" },
-        DEFAULT_TEXT_MARGIN: 15
+        DEFAULT_TEXT_MARGIN: 15,
+        PANEL_COLOR: 0x0D7EB4
     };
 
     export var Levels: any = [

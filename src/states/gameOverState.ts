@@ -3,8 +3,8 @@
 /// <reference path="../audio/audioManager.ts" />
 /// <reference path="../graphics/scene.ts" />
 /// <reference path="../graphics/imageLoader.ts" />
-/// <reference path="../views/gameOverView.ts" />
 /// <reference path="../utils/logger.ts" />
+/// <reference path="../views/gameOverView.ts" />
 
 namespace FroggerJS.States {
 

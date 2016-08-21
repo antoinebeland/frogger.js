@@ -33,6 +33,8 @@ namespace FroggerJS.Game {
      */
     export class GameLevel implements Updatable {
 
+        private static LIVES_BASE_TEXT = "\u2764 \u00D7";
+
         private imageLoader: ImageLoader;
         private board : Board;
         private labels: GameTextLabels;
@@ -41,6 +43,7 @@ namespace FroggerJS.Game {
         private mobiles: Mobile[][];
         private goals: GoalDeck[];
         private touchAllowedStatus: boolean[];
+        private isStarted = false;
 
         /**
          * Occurred when the game is over.
@@ -112,7 +115,9 @@ namespace FroggerJS.Game {
 
             // Setups the labels.
             this.labels = {
-                livesCount: new PIXI.Text(`LIVES: ${Actor.getAvailableLives()}`, FroggerJS.Constants.DEFAULT_TEXT_STYLE),
+                livesCount: new PIXI.Text(`${GameLevel.LIVES_BASE_TEXT} ${Actor.getAvailableLives()}`,
+                    FroggerJS.Constants.DEFAULT_TEXT_STYLE),
+
                 currentLevel: new PIXI.Text(`LEVEL ${levelConfiguration["level"]}`, FroggerJS.Constants.DEFAULT_TEXT_STYLE)
             };
             
@@ -133,6 +138,14 @@ namespace FroggerJS.Game {
 
             // Generates the actor.
             this.generateActor();
+        }
+
+        /**
+         * Starts the level.
+         */
+        public start() {
+            this.bindEventListener();
+            this.isStarted = true;
         }
 
         /**
@@ -239,10 +252,19 @@ namespace FroggerJS.Game {
             this.actor = new Actor(this.imageLoader);
             this.actor.startPosition();
 
-            document.addEventListener("keydown", this.actor.onKeyDown);
-            document.addEventListener("keyup", this.actor.onKeyUp);
+            if (this.isStarted) {
+                this.bindEventListener();
+            }
 
             this.board.addChild(this.actor);
+        }
+
+        /**
+         * Binds the key listener to the actor.
+         */
+        private bindEventListener() {
+            document.addEventListener("keydown", this.actor.onKeyDown);
+            document.addEventListener("keyup", this.actor.onKeyUp);
         }
 
         /**
@@ -256,7 +278,7 @@ namespace FroggerJS.Game {
             let availableLives = Actor.getAvailableLives();
             Logger.logMessage(`One live lost. ${availableLives} live(s) remaining.`);
 
-            this.labels.livesCount.text = `LIVES: ${availableLives}`; // TODO: Avoid to repeat the same text two times...
+            this.labels.livesCount.text = `${GameLevel.LIVES_BASE_TEXT} ${Actor.getAvailableLives()}`;
             if (availableLives <= 0) {
                 this.onGameOver.invoke();
             }
