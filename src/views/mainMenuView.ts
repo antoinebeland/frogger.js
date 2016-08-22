@@ -41,6 +41,7 @@ namespace FroggerJS.Views {
 
             this.container = new PIXI.Container();
 
+            const MARGIN = 20;
             const STRIPE_HEIGHT = 250;
             const TEXT_STYLE = {font: "60px Arial", fill: "white"};
             const HALF_WINDOW_WIDTH = Constants.WINDOW_WIDTH * 0.5;
@@ -82,11 +83,19 @@ namespace FroggerJS.Views {
             directionsButton.x = HALF_WINDOW_WIDTH;
             directionsButton.y = 700;
 
+            let version = new PIXI.Text(`v${Constants.VERSION}`, { font: "28px Arial", fill: "white" });
+            version.alpha = 0.7;
+            version.anchor.x = 1;
+            version.anchor.y = 1;
+            version.x = Constants.WINDOW_WIDTH - MARGIN;
+            version.y = Constants.WINDOW_HEIGHT - MARGIN;
+
             this.container.addChild(background);
             this.container.addChild(stripe);
             this.container.addChild(logo);
             this.container.addChild(startButton);
             this.container.addChild(directionsButton);
+            this.container.addChild(version);
         }
 
         /**
