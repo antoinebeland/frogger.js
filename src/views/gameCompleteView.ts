@@ -25,12 +25,14 @@ namespace FroggerJS.Views {
             const STRIPE_HEIGHT = 250;
             const HALF_WINDOW_WIDTH = Constants.WINDOW_WIDTH * 0.5;
 
-            let stripe = new PIXI.extras.TilingSprite(imageLoader.get("stripe"), Constants.WINDOW_WIDTH, STRIPE_HEIGHT);
-            stripe.y = 155;
-
             // Generates the background.
             let background = new PIXI.extras.TilingSprite(imageLoader.get("background"),
                 Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
+
+            background.alpha = 0.9;
+
+            let stripe = new PIXI.extras.TilingSprite(imageLoader.get("stripe"), Constants.WINDOW_WIDTH, STRIPE_HEIGHT);
+            stripe.y = 155;
 
             // Loads the heading.
             let heading = new PIXI.Sprite(imageLoader.get("congrats"));

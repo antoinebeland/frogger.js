@@ -39,8 +39,7 @@ namespace FroggerJS.States {
         public entered(): void {
 
             Logger.logMessage("Entered in 'End Game State'.");
-
-            this.scene.clear();
+            
             this.scene.addChild(this.endGameView);
             this.ticker.register(this.endGameView);
 

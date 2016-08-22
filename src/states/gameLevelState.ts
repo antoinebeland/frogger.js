@@ -10,6 +10,8 @@
 
 namespace FroggerJS.States {
 
+    declare let Timer: any;
+
     import AudioManager = FroggerJS.Audio.AudioManager;
     import GameLevel = FroggerJS.Game.GameLevel;
     import GameLevelView = FroggerJS.Views.GameLevelView;
@@ -22,6 +24,8 @@ namespace FroggerJS.States {
      * Defines the 'Game Level State' of the application.
      */
     export class GameLevelState implements State {
+
+        private static NEXT_LEVEL_SOUND_NAME = "next-level";
 
         private scene: Scene;
         private imageLoader: ImageLoader;
@@ -59,13 +63,14 @@ namespace FroggerJS.States {
          */
         public entered(): void {
 
-            Logger.logMessage(`Entered in 'Game Level ${this.levelConfiguration.level} State'.`);
+            let level = this.levelConfiguration.level;
+            Logger.logMessage(`Entered in 'Game Level ${level} State'.`);
 
             this.gameLevel = new GameLevel(this.imageLoader, this.audioManager, this.levelConfiguration);
             this.gameLevel.onGameOver.register(this.gameOverOccurred, this);
             this.gameLevel.onNextLevel.register(this.nextLevelOccurred, this);
 
-            this.gameLevelView = new GameLevelView(this.levelConfiguration.level);
+            this.gameLevelView = new GameLevelView(level);
 
             this.scene.clear();
             this.scene.addChild(this.gameLevel.getBoard());
@@ -88,6 +93,11 @@ namespace FroggerJS.States {
 
             document.addEventListener("keydown", onKeyDown);
             document.addEventListener("keyup", onKeyUp);
+
+            // Plays the sound only for the levels higher than 1.
+            if (level > 1) {
+                this.audioManager.play(GameLevelState.NEXT_LEVEL_SOUND_NAME);
+            }
         }
 
         /**
