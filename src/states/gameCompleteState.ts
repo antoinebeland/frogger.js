@@ -16,6 +16,9 @@ namespace FroggerJS.States {
     import Scene = FroggerJS.Graphics.Scene;
     import Ticker = FroggerJS.Graphics.Ticker;
 
+    /**
+     * Defines the 'Game Complete State' for the application.
+     */
     export class GameCompleteState implements State {
 
         private static SOUND_NAME = "win";
@@ -26,6 +29,15 @@ namespace FroggerJS.States {
         private stateManager: StateManager;
         private endGameView: EndGameView;
 
+        /**
+         * Initializes a new instance of the GameCompleteState class.
+         *
+         * @param scene             The scene to use.
+         * @param imageLoader       The image loader to use.
+         * @param ticker            The ticker to use.
+         * @param audioManager      The audio manager to use.
+         * @param stateManager      The state manager to use.
+         */
         public constructor(scene: Scene, imageLoader: ImageLoader, ticker: Ticker,
                            audioManager: AudioManager, stateManager: StateManager) {
 
@@ -36,10 +48,13 @@ namespace FroggerJS.States {
             this.endGameView = new EndGameView(imageLoader);
         }
 
+        /**
+         * Occurred when the application enters in the 'Game Complete State'.
+         */
         public entered(): void {
 
             Logger.logMessage("Entered in 'End Game State'.");
-            
+
             this.scene.addChild(this.endGameView);
             this.ticker.register(this.endGameView);
 
@@ -53,6 +68,9 @@ namespace FroggerJS.States {
             this.audioManager.play(GameCompleteState.SOUND_NAME);
         }
 
+        /**
+         * Occurred when the application leaves the 'Game Complete State'.
+         */
         public leaving(): void {
 
             this.ticker.unregister(this.endGameView);

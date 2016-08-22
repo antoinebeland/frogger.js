@@ -4,6 +4,9 @@ namespace FroggerJS.Views.Controls {
 
     import Updatable = FroggerJS.Graphics.Updatable;
 
+    /**
+     * Defines an animated text that changes his alpha value.
+     */
     export class AnimatedText extends PIXI.Text implements Updatable {
 
         private static LABEL_ALPHA_FACTOR = 0.012;
@@ -12,10 +15,21 @@ namespace FroggerJS.Views.Controls {
 
         private animationFactor = 1;
 
+        /**
+         * Initializes a new instance of the AnimatedText class.
+         *
+         * @param text      The text to display.
+         * @param [style]   The style to apply with the text.
+         */
         public constructor(text: string, style?: any) {
             super(text, style);
         }
-        
+
+        /**
+         * Updates the alpha of the animated label.
+         * 
+         * @param deltaTime     The delta time to use.
+         */
         public update(deltaTime: number): void {
 
             let alphaToApply = this.alpha +

@@ -59,7 +59,7 @@ namespace FroggerJS.Views {
         }
 
         /**
-         * Updates the alpha of the animated label.
+         * Updates the animated label.
          *
          * @param deltaTime             The delta time to use.
          */

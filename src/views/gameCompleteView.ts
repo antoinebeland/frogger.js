@@ -18,6 +18,11 @@ namespace FroggerJS.Views {
         private container: PIXI.Container;
         private animatedLabel: AnimatedText;
 
+        /**
+         * Initializes a new instance of the EndGameView class.
+         *
+         * @param imageLoader   The image loader to use.
+         */
         public constructor(imageLoader: ImageLoader) {
 
             this.container = new PIXI.Container();
@@ -31,20 +36,23 @@ namespace FroggerJS.Views {
 
             background.alpha = 0.9;
 
+            // Generates the stripe.
             let stripe = new PIXI.extras.TilingSprite(imageLoader.get("stripe"), Constants.WINDOW_WIDTH, STRIPE_HEIGHT);
             stripe.y = 155;
 
-            // Loads the heading.
-            let heading = new PIXI.Sprite(imageLoader.get("congrats"));
-            heading.anchor.x = 0.5;
-            heading.x = HALF_WINDOW_WIDTH;
-            heading.y = 215;
+            // Loads the congrats image.
+            let congrats = new PIXI.Sprite(imageLoader.get("congrats"));
+            congrats.anchor.x = 0.5;
+            congrats.x = HALF_WINDOW_WIDTH;
+            congrats.y = 215;
 
+            // Loads the cup image.
             let cup = new PIXI.Sprite(imageLoader.get("cup"));
             cup.anchor.x = 0.5;
             cup.x = HALF_WINDOW_WIDTH;
             cup.y = 555;
 
+            // Creates the animates label.
             this.animatedLabel = new AnimatedText("PRESS ANY KEY TO CONTINUE", {font: "40px Arial", fill: "white"});
             this.animatedLabel.anchor.x = 0.5;
             this.animatedLabel.x = HALF_WINDOW_WIDTH;
@@ -52,15 +60,25 @@ namespace FroggerJS.Views {
 
             this.container.addChild(background);
             this.container.addChild(stripe);
-            this.container.addChild(heading);
+            this.container.addChild(congrats);
             this.container.addChild(cup);
             this.container.addChild(this.animatedLabel);
         }
 
+        /**
+         * Gets the display object associated with the game complete view.
+         *
+         * @returns {PIXI.Container}    The container that contains the elements of the view.
+         */
         public getDisplayObject(): PIXI.DisplayObject {
             return this.container;
         }
 
+        /**
+         * Updates the animated label in the current view.
+         *
+         * @param deltaTime             The delta time to use.
+         */
         public update(deltaTime: number): void {
             this.animatedLabel.update(deltaTime);
         }
