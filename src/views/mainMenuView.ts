@@ -26,11 +26,11 @@ namespace FroggerJS.Views {
         public onPlayClicked = new Event<void>();
 
         /**
-         * Occurred when the setting button is clicked.
+         * Occurred when the directions button is clicked.
          *
          * @type {Utils.Event<void>}
          */
-        public onSettingsClicked = new Event<void>();
+        public onDirectionsClicked = new Event<void>();
 
         /**
          * Initializes a new instance of the MainMenuView class.
@@ -74,19 +74,19 @@ namespace FroggerJS.Views {
             startButton.y = 550;
 
             // Initializes the settings button.
-            let settingsButton = new Button(defaultTexture, "SETTINGS", TEXT_STYLE);
-            settingsButton.hoveredTexture = hoveredTexture;
-            settingsButton.clickedTexture = clickedTexture;
-            settingsButton.onClick = this.onSettingsClicked;
-            settingsButton.anchor.x = 0.5;
-            settingsButton.x = HALF_WINDOW_WIDTH;
-            settingsButton.y = 700;
+            let directionsButton = new Button(defaultTexture, "DIRECTIONS", TEXT_STYLE);
+            directionsButton.hoveredTexture = hoveredTexture;
+            directionsButton.clickedTexture = clickedTexture;
+            directionsButton.onClick = this.onDirectionsClicked;
+            directionsButton.anchor.x = 0.5;
+            directionsButton.x = HALF_WINDOW_WIDTH;
+            directionsButton.y = 700;
 
             this.container.addChild(background);
             this.container.addChild(stripe);
             this.container.addChild(logo);
             this.container.addChild(startButton);
-            this.container.addChild(settingsButton);
+            this.container.addChild(directionsButton);
         }
 
         /**

@@ -35,10 +35,11 @@ namespace FroggerJS.Game {
      */
     export class GameLevel implements Updatable {
 
+        private static FALL_SOUND_NAME = "drop";
         private static HIT_SOUND_NAME = "hit";
+        private static LIVES_BASE_TEXT = "\u2764 \u00D7";
         private static SOUNDTRACK_FADE_DURATION = 500;
         private static SOUNDTRACK_VOLUME = 0.35;
-        private static LIVES_BASE_TEXT = "\u2764 \u00D7";
 
         private imageLoader: ImageLoader;
         private audioManager: AudioManager;
@@ -163,10 +164,6 @@ namespace FroggerJS.Game {
             this.isStarted = true;
         }
 
-        public pause() {
-
-        }
-
         /**
          * Disposes the current level.
          */
@@ -221,6 +218,7 @@ namespace FroggerJS.Game {
                 /* Checks if there is a collision between the actor and the tile,
                    and if the collision is forbidden between the two. */
                 if (this.actor.getLinePosition() == i && !isCollide && !this.touchAllowedStatus[i]) {
+                    this.audioManager.play(GameLevel.FALL_SOUND_NAME);
                     this.restart();
                 }
             }

@@ -66,6 +66,7 @@ namespace FroggerJS {
                 { name: "panel-button-clicked", fileName: "panel-button-clicked.png"    },
             ],
             sounds: [
+                { name: "drop",         fileName: "drop.mp3"        },
                 { name: "game1",        fileName: "game1.wav"       },
                 { name: "game2",        fileName: "game2.wav"       },
                 { name: "game3",        fileName: "game3.wav"       },
