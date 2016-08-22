@@ -53,21 +53,19 @@ namespace FroggerJS.Views {
             let replayButton = new Button(defaultTexture, "REPLAY", TEXT_STYLE);
             replayButton.hoveredTexture = hoveredTexture;
             replayButton.clickedTexture = clickedTexture;
+            replayButton.onClick = this.onReplayClicked;
             replayButton.anchor.x = 0.5;
             replayButton.x = HALF_PANEL_WIDTH;
             replayButton.y = 170;
-
-            replayButton.onClick = this.onReplayClicked;
 
             // Initializes the menu button.
             let menuButton = new Button(defaultTexture, "MENU", TEXT_STYLE);
             menuButton.hoveredTexture = hoveredTexture;
             menuButton.clickedTexture = clickedTexture;
+            menuButton.onClick = this.onBackToMenuClicked;
             menuButton.anchor.x = 0.5;
             menuButton.x = HALF_PANEL_WIDTH;
             menuButton.y = 275;
-
-            menuButton.onClick = this.onBackToMenuClicked;
 
             panel.addChild(replayButton);
             panel.addChild(menuButton);

@@ -41,7 +41,10 @@ namespace FroggerJS.States {
             this.scene = scene;
             this.audioManager = audioManager;
             this.stateManager = stateManager;
+
             this.gameOverView = new GameOverView(imageLoader);
+            this.gameOverView.onReplayClicked.register(this.replayOccurred, this);
+            this.gameOverView.onBackToMenuClicked.register(this.backToMenuOccurred, this);
         }
 
         /**
@@ -50,9 +53,6 @@ namespace FroggerJS.States {
         public entered(): void {
 
             Logger.logMessage("Entered in the 'Game Over State'.");
-
-            this.gameOverView.onReplayClicked.register(this.replayOccurred, this);
-            this.gameOverView.onBackToMenuClicked.register(this.backToMenuOccurred, this);
 
             this.scene.addChild(this.gameOverView);
             this.audioManager.play(GameOverState.SOUND_NAME, false, GameOverState.SOUND_VOLUME);
@@ -64,9 +64,6 @@ namespace FroggerJS.States {
         public leaving(): void {
 
             this.scene.clear();
-            this.gameOverView.onReplayClicked.unregister(this.replayOccurred, this);
-            this.gameOverView.onBackToMenuClicked.unregister(this.backToMenuOccurred, this);
-
             Logger.logMessage("Leaving the 'Game Over State'.");
         }
 

@@ -54,9 +54,9 @@ namespace FroggerJS.Graphics {
          *
          * @param map   The map to register.
          */
-        public registerMap(map: { name: string; fileName: string; }[]) {
+        public registerMap(map: { name: string; file: string; }[]) {
             for (let entry of map) {
-                this.register(entry.name, entry.fileName);
+                this.register(entry.name, entry.file);
             }
         }
 

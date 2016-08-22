@@ -252,6 +252,7 @@ namespace FroggerJS.Game {
 
             // Checks if the actor is inside the scene.
             if(!this.board.getBounding().isCollide(this.actor.getBounding())) {
+                // TODO: Add sound here!
                 this.restart();
             }
         }

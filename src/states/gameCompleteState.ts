@@ -21,6 +21,7 @@ namespace FroggerJS.States {
      */
     export class GameCompleteState implements State {
 
+        private static DELAY = 500;
         private static SOUND_NAME = "win";
 
         private scene: Scene;
@@ -64,7 +65,9 @@ namespace FroggerJS.States {
                 self.stateManager.change("mainMenu");
             }
 
-            document.addEventListener("keydown", onKeyDown);
+            setTimeout(function() {
+                document.addEventListener("keydown", onKeyDown);
+            }, GameCompleteState.DELAY);
             this.audioManager.play(GameCompleteState.SOUND_NAME);
         }
 

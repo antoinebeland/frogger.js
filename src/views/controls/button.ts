@@ -75,7 +75,6 @@ namespace FroggerJS.Views.Controls {
             this.text.anchor.x = 0.5;
             this.text.anchor.y = 0.5;
             this.text.position.y = this.height * 0.5;
-
             this.addChild(this.text);
             
             function onButtonDown() {

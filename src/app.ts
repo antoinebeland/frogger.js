@@ -4,6 +4,7 @@
 /// <reference path="./graphics/scene.ts" />
 /// <reference path="./graphics/ticker.ts" />
 /// <reference path="./states/gameCompleteState.ts" />
+/// <reference path="./states/gameDirectionsState.ts" />
 /// <reference path="./states/gameLevelState.ts" />
 /// <reference path="./states/gameOverState.ts" />
 /// <reference path="./states/mainMenuState.ts" />
@@ -16,6 +17,7 @@ namespace FroggerJS {
 
     import AudioManager = FroggerJS.Audio.AudioManager;
     import GameCompleteState = FroggerJS.States.GameCompleteState;
+    import GameDirectionsState = FroggerJS.States.GameDirectionsState;
     import GameLevelState = FroggerJS.States.GameLevelState;
     import GameOverState = FroggerJS.States.GameOverState;
     import ImageLoader = FroggerJS.Graphics.ImageLoader;
@@ -30,53 +32,58 @@ namespace FroggerJS {
 
         private static resources = {
             sprites: [
-                { name: "boat-red-left",        fileName: "boat-red-left.png"           },
-                { name: "boat-red-right",       fileName: "boat-red-right.png"          },
-                { name: "boat-yellow-left",     fileName: "boat-yellow-left.png"        },
-                { name: "boat-yellow-right",    fileName: "boat-yellow-right.png"       },
-                { name: "car-blue-left",        fileName: "car-blue-left.png"           },
-                { name: "car-blue-right",       fileName: "car-blue-right.png"          },
-                { name: "car-green-left",       fileName: "car-green-left.png"          },
-                { name: "car-green-right",      fileName: "car-green-right.png"         },
-                { name: "car-red-left",         fileName: "car-red-left.png"            },
-                { name: "car-red-right",        fileName: "car-red-right.png"           },
-                { name: "car-white-left",       fileName: "car-white-left.png"          },
-                { name: "car-white-right",      fileName: "car-white-right.png"         },
-                { name: "congrats",             fileName: "congrats.png"                },
-                { name: "cup",                  fileName: "cup.png"                     },
-                { name: "frog",                 fileName: "frog.png"                    },
-                { name: "frog-extend",          fileName: "frog-extend.png"             },
-                { name: "goal",                 fileName: "goal.png"                    },
-                { name: "background",           fileName: "background.png"              },
-                { name: "menu-button",          fileName: "menu-button.png"             },
-                { name: "menu-button-hovered",  fileName: "menu-button-hovered.png"     },
-                { name: "menu-button-clicked",  fileName: "menu-button-clicked.png"     },
-                { name: "menu-logo",            fileName: "menu-logo.png"               },
-                { name: "stripe",               fileName: "stripe.png"                  },
-                { name: "grass",                fileName: "grass.png"                   },
-                { name: "grass-water-top",      fileName: "grass-water-top.png"         },
-                { name: "grass-water-bottom",   fileName: "grass-water-bottom.png"      },
-                { name: "water",                fileName: "water.png"                   },
-                { name: "road-top",             fileName: "road-top.png"                },
-                { name: "road-middle-top",      fileName: "road-middle-top.png"         },
-                { name: "road-middle-bottom",   fileName: "road-middle-bottom.png"      },
-                { name: "road-bottom",          fileName: "road-bottom.png"             },
-                { name: "panel-button",         fileName: "panel-button.png"            },
-                { name: "panel-button-hovered", fileName: "panel-button-hovered.png"    },
-                { name: "panel-button-clicked", fileName: "panel-button-clicked.png"    },
+                { name: "arrow-keys-down",      file: "arrow-keys-down.png"         },
+                { name: "arrow-keys-left",      file: "arrow-keys-left.png"         },
+                { name: "arrow-keys-right",     file: "arrow-keys-right.png"        },
+                { name: "arrow-keys-up",        file: "arrow-keys-up.png"           },
+                { name: "boat-red-left",        file: "boat-red-left.png"           },
+                { name: "boat-red-right",       file: "boat-red-right.png"          },
+                { name: "boat-yellow-left",     file: "boat-yellow-left.png"        },
+                { name: "boat-yellow-right",    file: "boat-yellow-right.png"       },
+                { name: "car-blue-left",        file: "car-blue-left.png"           },
+                { name: "car-blue-right",       file: "car-blue-right.png"          },
+                { name: "car-green-left",       file: "car-green-left.png"          },
+                { name: "car-green-right",      file: "car-green-right.png"         },
+                { name: "car-red-left",         file: "car-red-left.png"            },
+                { name: "car-red-right",        file: "car-red-right.png"           },
+                { name: "car-white-left",       file: "car-white-left.png"          },
+                { name: "car-white-right",      file: "car-white-right.png"         },
+                { name: "congrats",             file: "congrats.png"                },
+                { name: "cup",                  file: "cup.png"                     },
+                { name: "frog",                 file: "frog.png"                    },
+                { name: "frog-extend",          file: "frog-extend.png"             },
+                { name: "goal",                 file: "goal.png"                    },
+                { name: "background",           file: "background.png"              },
+                { name: "menu-button",          file: "menu-button.png"             },
+                { name: "menu-button-hovered",  file: "menu-button-hovered.png"     },
+                { name: "menu-button-clicked",  file: "menu-button-clicked.png"     },
+                { name: "menu-logo",            file: "menu-logo.png"               },
+                { name: "small-stripe",         file: "small-stripe.png"            },
+                { name: "stripe",               file: "stripe.png"                  },
+                { name: "grass",                file: "grass.png"                   },
+                { name: "grass-water-top",      file: "grass-water-top.png"         },
+                { name: "grass-water-bottom",   file: "grass-water-bottom.png"      },
+                { name: "water",                file: "water.png"                   },
+                { name: "road-top",             file: "road-top.png"                },
+                { name: "road-middle-top",      file: "road-middle-top.png"         },
+                { name: "road-middle-bottom",   file: "road-middle-bottom.png"      },
+                { name: "road-bottom",          file: "road-bottom.png"             },
+                { name: "panel-button",         file: "panel-button.png"            },
+                { name: "panel-button-hovered", file: "panel-button-hovered.png"    },
+                { name: "panel-button-clicked", file: "panel-button-clicked.png"    },
             ],
             sounds: [
-                { name: "drop",         fileName: "drop.mp3"        },
-                { name: "game1",        fileName: "game1.wav"       },
-                { name: "game2",        fileName: "game2.wav"       },
-                { name: "game3",        fileName: "game3.wav"       },
-                { name: "game4",        fileName: "game4.wav"       },
-                { name: "game-over",    fileName: "game-over.wav"   },
-                { name: "hit",          fileName: "hit.mp3"         },
-                { name: "jump",         fileName: "jump.mp3"        },
-                { name: "menu",         fileName: "menu.wav"        },
-                { name: "next-level",   fileName: "next-level.wav"  },
-                { name: "win",          fileName: "win.wav"         },
+                { name: "drop",         file: "drop.mp3"        },
+                { name: "game1",        file: "game1.wav"       },
+                { name: "game2",        file: "game2.wav"       },
+                { name: "game3",        file: "game3.wav"       },
+                { name: "game4",        file: "game4.wav"       },
+                { name: "game-over",    file: "game-over.wav"   },
+                { name: "hit",          file: "hit.mp3"         },
+                { name: "jump",         file: "jump.mp3"        },
+                { name: "menu",         file: "menu.wav"        },
+                { name: "next-level",   file: "next-level.wav"  },
+                { name: "win",          file: "win.wav"         },
             ]
         };
 
@@ -103,6 +110,7 @@ namespace FroggerJS {
 
                 let stateManager = new StateManager();
                 stateManager.register("mainMenu", new MainMenuState(scene, imageLoader, audioManager, stateManager));
+                stateManager.register("gameDirections", new GameDirectionsState(scene, imageLoader, ticker, audioManager, stateManager));
                 stateManager.register("gameOver", new GameOverState(scene, imageLoader, audioManager, stateManager));
                 stateManager.register("gameComplete", new GameCompleteState(scene, imageLoader, ticker, audioManager, stateManager));
 

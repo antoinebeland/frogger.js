@@ -47,6 +47,9 @@ namespace FroggerJS.States {
             this.mainMenuView.onPlayClicked.register(function () {
                 this.stateManager.change("level1");
             }, this);
+            this.mainMenuView.onDirectionsClicked.register(function () {
+                this.stateManager.change("gameDirections");
+            }, this);
         }
 
         /**
