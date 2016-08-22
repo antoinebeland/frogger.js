@@ -52,7 +52,7 @@ namespace FroggerJS.Views {
             cup.x = HALF_WINDOW_WIDTH;
             cup.y = 555;
 
-            // Creates the animates label.
+            // Creates the animated label.
             this.animatedLabel = new AnimatedText("PRESS ANY KEY TO CONTINUE", {font: "40px Arial", fill: "white"});
             this.animatedLabel.anchor.x = 0.5;
             this.animatedLabel.x = HALF_WINDOW_WIDTH;

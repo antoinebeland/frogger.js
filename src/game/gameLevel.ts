@@ -35,6 +35,7 @@ namespace FroggerJS.Game {
      */
     export class GameLevel implements Updatable {
 
+        private static HIT_SOUND_NAME = "hit";
         private static SOUNDTRACK_FADE_DURATION = 500;
         private static SOUNDTRACK_VOLUME = 0.35;
         private static LIVES_BASE_TEXT = "\u2764 \u00D7";
@@ -210,6 +211,7 @@ namespace FroggerJS.Game {
                             if(mobileObject.canBeHit()) {
                                 this.actor.follow(mobileObject);
                             } else {
+                                this.audioManager.play(GameLevel.HIT_SOUND_NAME);
                                 this.restart();
                             }
                         }

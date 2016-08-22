@@ -71,6 +71,7 @@ namespace FroggerJS {
                 { name: "game3",        fileName: "game3.wav"       },
                 { name: "game4",        fileName: "game4.wav"       },
                 { name: "game-over",    fileName: "game-over.wav"   },
+                { name: "hit",          fileName: "hit.mp3"         },
                 { name: "jump",         fileName: "jump.mp3"        },
                 { name: "menu",         fileName: "menu.wav"        },
                 { name: "next-level",   fileName: "next-level.wav"  },

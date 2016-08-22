@@ -4,6 +4,7 @@ game1.wav 	==> 	Test Your Skills (http://www.playonloop.com/2015-music-loops/tes
 game2.wav	==>	Cyber Factory (http://www.playonloop.com/2010-music-loops/cyber-factory/)
 game3.wav	==>	Police Station (http://www.playonloop.com/2015-music-loops/police-station/)
 game4.wav	==>	Stealth Mode (http://www.playonloop.com/2015-music-loops/stealth-mode/)
+hit.mp3		==>	Metal Clang by Mike Koenig (http://soundbible.com/1217-Metal-Clang.html)
 jump.mp3 	==> 	coup 9 (http://www.sound-fishing.net/bruitages/toon)
 menu.wav 	==> 	Funky Cruise (http://www.playonloop.com/2013-music-loops/funky-cruise/)
 win.wav		==>	Ta Da sound recorded by Mike Koenig (http://soundbible.com/1003-Ta-Da.html)
