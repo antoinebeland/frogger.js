@@ -10,8 +10,6 @@
 
 namespace FroggerJS.States {
 
-    declare let Timer: any;
-
     import AudioManager = FroggerJS.Audio.AudioManager;
     import GameLevel = FroggerJS.Game.GameLevel;
     import GameLevelView = FroggerJS.Views.GameLevelView;
