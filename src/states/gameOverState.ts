@@ -14,6 +14,9 @@ namespace FroggerJS.States {
     import Logger = Utils.Logger;
     import Scene = FroggerJS.Graphics.Scene;
 
+    /**
+     * Defines the 'Game Over State' of the application.
+     */
     export class GameOverState implements State {
 
         private static SOUND_NAME = "game-over";
@@ -24,6 +27,14 @@ namespace FroggerJS.States {
         private stateManager: StateManager;
         private gameOverView: GameOverView;
 
+        /**
+         * Initializes a new instance of the GameOverState class.
+         *
+         * @param scene             The scene to use.
+         * @param imageLoader       The image loader to use.
+         * @param audioManager      The audio manager to use.
+         * @param stateManager      The state manager to use.
+         */
         public constructor(scene: Scene, imageLoader: ImageLoader,
                            audioManager: AudioManager, stateManager: StateManager) {
 
@@ -33,6 +44,9 @@ namespace FroggerJS.States {
             this.gameOverView = new GameOverView(imageLoader);
         }
 
+        /**
+         * Occurred when the application enters in the 'Game Over State'.
+         */
         public entered(): void {
 
             Logger.logMessage("Entered in the 'Game Over State'.");
@@ -44,6 +58,9 @@ namespace FroggerJS.States {
             this.audioManager.play(GameOverState.SOUND_NAME, false, GameOverState.SOUND_VOLUME);
         }
 
+        /**
+         * Occurred when the application leaved the 'Game Over State'.
+         */
         public leaving(): void {
 
             this.scene.clear();
@@ -53,10 +70,16 @@ namespace FroggerJS.States {
             Logger.logMessage("Leaving the 'Game Over State'.");
         }
 
+        /**
+         * Occurred when the replay button is clicked.
+         */
         private replayOccurred() {
             this.stateManager.change("level1");
         }
 
+        /**
+         * Occurred when the menu button is clicked.
+         */
         private backToMenuOccurred() {
             this.stateManager.change("mainMenu");
         }

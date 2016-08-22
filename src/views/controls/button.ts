@@ -1,10 +1,8 @@
-/// <reference path="../../graphics/renderable.ts" />
 /// <reference path="../../utils/event.ts" />
 
 namespace FroggerJS.Views.Controls {
 
     import Event = Utils.Event;
-    import Renderable = FroggerJS.Graphics.Renderable;
 
     /**
      * Defines a button.

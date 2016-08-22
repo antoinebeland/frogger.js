@@ -14,7 +14,7 @@ namespace FroggerJS {
 
     export var Levels: any = [
         {
-            goalsNumber: 5,
+            goalsNumber: 1/*5*/,
             soundtrack: "game1",
             board: [
                 { texture: "grass-water-top", touchAllowed: true },
@@ -30,12 +30,12 @@ namespace FroggerJS {
             ]
         },
         {
-            goalsNumber: 5,
+            goalsNumber: 1/*5*/,
             soundtrack: "game2",
             board: [
                 { texture: "grass-water-top", touchAllowed: true },
-                { texture: "water", touchAllowed: false, mobile: { type: "boat", orientation: "left", speed: 1.5 } },
-                { texture: "water", touchAllowed: false, mobile: { type: "boat", orientation: "left", speed: 2 } },
+                { texture: "water", touchAllowed: false, mobile: { type: "boat", orientation: "left", speed: 1 } },
+                { texture: "water", touchAllowed: false, mobile: { type: "boat", orientation: "left", speed: 2.5 } },
                 { texture: "water", touchAllowed: false, mobile: { type: "boat", orientation: "right", speed: 1 } },
                 { texture: "grass-water-bottom", touchAllowed: true},
                 { texture: "road-top", touchAllowed: true, mobile: { type: "car", orientation: "left", speed: 1 } },

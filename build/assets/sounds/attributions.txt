@@ -6,3 +6,4 @@ game3.wav	==>	Police Station (http://www.playonloop.com/2015-music-loops/police-
 game4.wav	==>	Stealth Mode (http://www.playonloop.com/2015-music-loops/stealth-mode/)
 jump.mp3 	==> 	coup 9 (http://www.sound-fishing.net/bruitages/toon)
 menu.wav 	==> 	Funky Cruise (http://www.playonloop.com/2013-music-loops/funky-cruise/)
+win.wav		==>	Ta Da sound recorded by Mike Koenig (http://soundbible.com/1003-Ta-Da.html)

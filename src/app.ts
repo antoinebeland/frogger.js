@@ -3,7 +3,7 @@
 /// <reference path="./graphics/imageLoader.ts" />
 /// <reference path="./graphics/scene.ts" />
 /// <reference path="./graphics/ticker.ts" />
-/// <reference path="./states/endGameState.ts" />
+/// <reference path="./states/gameCompleteState.ts" />
 /// <reference path="./states/gameLevelState.ts" />
 /// <reference path="./states/gameOverState.ts" />
 /// <reference path="./states/mainMenuState.ts" />
@@ -15,7 +15,7 @@ namespace FroggerJS {
     declare var PIXI: any;
 
     import AudioManager = FroggerJS.Audio.AudioManager;
-    import EndGameState = FroggerJS.States.EndGameState;
+    import GameCompleteState = FroggerJS.States.GameCompleteState;
     import GameLevelState = FroggerJS.States.GameLevelState;
     import GameOverState = FroggerJS.States.GameOverState;
     import ImageLoader = FroggerJS.Graphics.ImageLoader;
@@ -42,15 +42,17 @@ namespace FroggerJS {
                 { name: "car-red-right",        fileName: "car-red-right.png"           },
                 { name: "car-white-left",       fileName: "car-white-left.png"          },
                 { name: "car-white-right",      fileName: "car-white-right.png"         },
+                { name: "congrats",             fileName: "congrats.png"                },
+                { name: "cup",                  fileName: "cup.png"                     },
                 { name: "frog",                 fileName: "frog.png"                    },
                 { name: "frog-extend",          fileName: "frog-extend.png"             },
                 { name: "goal",                 fileName: "goal.png"                    },
-                { name: "menu-background",      fileName: "menu-background.png"         },
+                { name: "background",           fileName: "background.png"              },
                 { name: "menu-button",          fileName: "menu-button.png"             },
                 { name: "menu-button-hovered",  fileName: "menu-button-hovered.png"     },
                 { name: "menu-button-clicked",  fileName: "menu-button-clicked.png"     },
                 { name: "menu-logo",            fileName: "menu-logo.png"               },
-                { name: "menu-stripe",          fileName: "menu-stripe.png"             },
+                { name: "stripe",               fileName: "stripe.png"                  },
                 { name: "grass",                fileName: "grass.png"                   },
                 { name: "grass-water-top",      fileName: "grass-water-top.png"         },
                 { name: "grass-water-bottom",   fileName: "grass-water-bottom.png"      },
@@ -71,6 +73,7 @@ namespace FroggerJS {
                 { name: "game4",        fileName: "game4.wav"       },
                 { name: "jump",         fileName: "jump.mp3"        },
                 { name: "game-over",    fileName: "game-over.wav"   },
+                { name: "win",          fileName: "win.wav"   },
             ]
         };
 
@@ -98,14 +101,13 @@ namespace FroggerJS {
                 let stateManager = new StateManager();
                 stateManager.register("mainMenu", new MainMenuState(scene, imageLoader, audioManager, stateManager));
                 stateManager.register("gameOver", new GameOverState(scene, imageLoader, audioManager, stateManager));
-                stateManager.register("endGame", new EndGameState());
+                stateManager.register("gameComplete", new GameCompleteState(scene, imageLoader, ticker, audioManager, stateManager));
 
                 let level = 1;
                 for (var levelConfiguration of FroggerJS.Levels) {
 
                     levelConfiguration.level = level;
-                    levelConfiguration.levelsCount = FroggerJS.Levels.count;
-
+                    levelConfiguration.levelsCount = FroggerJS.Levels.length;
                     stateManager.register(`level${level}`,
                         new GameLevelState(scene, imageLoader, ticker, audioManager, levelConfiguration, stateManager));
 

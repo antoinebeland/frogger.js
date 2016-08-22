@@ -76,12 +76,12 @@ namespace FroggerJS.States {
 
             // Initializes the key listeners before to start the game.
             let self = this;
-            function onKeyDown(event: KeyboardEvent) {
+            function onKeyDown() {
                 document.removeEventListener("keydown", onKeyDown);
                 self.scene.removeChild(self.gameLevelView);
                 self.ticker.unregister(self.gameLevelView);
             }
-            function onKeyUp(event: KeyboardEvent) {
+            function onKeyUp() {
                 document.removeEventListener("keyup", onKeyUp);
                 self.gameLevel.start();
             }
@@ -117,8 +117,8 @@ namespace FroggerJS.States {
         private nextLevelOccurred(): void {
 
             let nextLevel = this.levelConfiguration.level + 1;
-            if (this.levelConfiguration.levelsCount > nextLevel) {
-                this.stateManager.change("endGame");
+            if (this.levelConfiguration.levelsCount < nextLevel) {
+                this.stateManager.change("gameComplete");
             } else {
                 this.stateManager.change(`level${nextLevel}`);
             }

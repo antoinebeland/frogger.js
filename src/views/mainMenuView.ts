@@ -46,11 +46,11 @@ namespace FroggerJS.Views {
             const HALF_WINDOW_WIDTH = Constants.WINDOW_WIDTH * 0.5;
 
             // Generates the background.
-            let background = new PIXI.extras.TilingSprite(imageLoader.get("menu-background"),
+            let background = new PIXI.extras.TilingSprite(imageLoader.get("background"),
                 Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
 
             // Generates the stripe under the logo.
-            let stripe = new PIXI.extras.TilingSprite(imageLoader.get("menu-stripe"), Constants.WINDOW_WIDTH, STRIPE_HEIGHT);
+            let stripe = new PIXI.extras.TilingSprite(imageLoader.get("stripe"), Constants.WINDOW_WIDTH, STRIPE_HEIGHT);
             stripe.y = 155;
 
             // Loads the logo.
