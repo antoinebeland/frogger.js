@@ -73,11 +73,13 @@ namespace FroggerJS {
                 { name: "panel-button-clicked", file: "panel-button-clicked.png"    },
             ],
             sounds: [
+                { name: "directions",   file: "directions.wav"  },
                 { name: "drop",         file: "drop.mp3"        },
                 { name: "game1",        file: "game1.wav"       },
                 { name: "game2",        file: "game2.wav"       },
                 { name: "game3",        file: "game3.wav"       },
                 { name: "game4",        file: "game4.wav"       },
+                { name: "game5",        file: "game5.wav"       },
                 { name: "game-over",    file: "game-over.wav"   },
                 { name: "hit",          file: "hit.mp3"         },
                 { name: "jump",         file: "jump.mp3"        },

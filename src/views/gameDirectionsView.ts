@@ -14,6 +14,9 @@ namespace FroggerJS.Views {
     import Renderable = FroggerJS.Graphics.Renderable;
     import Updatable = FroggerJS.Graphics.Updatable;
 
+    /**
+     * Defines the game directions view.
+     */
     export class GameDirectionsView implements Renderable, Updatable {
 
         private static DELAY = 120;
@@ -29,16 +32,33 @@ namespace FroggerJS.Views {
         private arrowKeysAnimation: PIXI.Sprite;
 
         private surfaceIndex: number = 0;
-        private timer: number = 0;
+        private timeSpent: number = 0;
 
+        /**
+         * Occurred when the play button is clicked.
+         *
+         * @type {Utils.Event<void>}
+         */
         public onPlayClicked = new Event<void>();
+
+        /**
+         * Occurred when the menu button is clicked.
+         *
+         * @type {Utils.Event<void>}
+         */
         public onBackToMenuClicked = new Event<void>();
 
+        /**
+         * Initializes a new instance of GameDirectionsView class.
+         *
+         * @param imageLoader       The image loader to use.
+         */
         public constructor(imageLoader: ImageLoader) {
 
             this.container = new PIXI.Container();
             this.imageLoader = imageLoader;
 
+            // Constants of the view.
             const HALF_WINDOW_WIDTH = Constants.WINDOW_WIDTH * 0.5;
             const STRIPE_HEIGHT = 133;
             const TEXT_WIDTH = 1200;
@@ -58,23 +78,28 @@ namespace FroggerJS.Views {
             let background = new PIXI.extras.TilingSprite(imageLoader.get("background"),
                 Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
 
+            // Generates the stripe.
             let stripe = new PIXI.extras.TilingSprite(imageLoader.get("small-stripe"), Constants.WINDOW_WIDTH, STRIPE_HEIGHT);
             stripe.y = 50;
 
+            // Initializes the title.
             let title = new PIXI.Text("DIRECTIONS",{ font: "70px Arial", fill: "black" });
             title.x = BORDER;
             title.y = 80;
 
+            // Initializes the directions text.
             let directions = new PIXI.Text(DIRECTIONS_STRING, DIRECTIONS_TEXT_STYLE);
             directions.anchor.x = 0.5;
             directions.x = HALF_WINDOW_WIDTH;
             directions.y = 250;
 
+            // Initializes the arrow keys animation.
             this.arrowKeysAnimation = new PIXI.Sprite(imageLoader.get("arrow-keys-up"));
             this.arrowKeysAnimation.anchor.x = 0.5;
             this.arrowKeysAnimation.x = HALF_WINDOW_WIDTH;
             this.arrowKeysAnimation.y = 645;
 
+            // Initializes the button textures.
             let defaultTexture = imageLoader.get("panel-button");
             let hoveredTexture = imageLoader.get("panel-button-hovered");
             let clickedTexture = imageLoader.get("panel-button-clicked");
@@ -82,6 +107,7 @@ namespace FroggerJS.Views {
             const HORIZONTAL_BORDER_BUTTON = BORDER + defaultTexture.width * 0.5;
             const VERTICAL_BORDER_BUTTON = Constants.WINDOW_HEIGHT - BORDER_BOTTOM - defaultTexture.height;
 
+            // Initializes the menu button.
             let menuButton = new Button(defaultTexture, "MENU", BUTTON_TEXT_STYLE);
             menuButton.hoveredTexture = hoveredTexture;
             menuButton.clickedTexture = clickedTexture;
@@ -90,6 +116,7 @@ namespace FroggerJS.Views {
             menuButton.x = HORIZONTAL_BORDER_BUTTON;
             menuButton.y = VERTICAL_BORDER_BUTTON;
 
+            // Initializes the play button.
             let playButton = new Button(defaultTexture, "PLAY", BUTTON_TEXT_STYLE);
             playButton.hoveredTexture = hoveredTexture;
             playButton.clickedTexture = clickedTexture;
@@ -107,19 +134,29 @@ namespace FroggerJS.Views {
             this.container.addChild(playButton);
         }
 
+        /**
+         * Gets the display object associated with the game direction view.
+         *
+         * @returns {PIXI.Container}    The container that contains the elements of current view.
+         */
         public getDisplayObject(): PIXI.DisplayObject {
             return this.container;
         }
 
+        /**
+         * Updates the arrow keys animation.
+         *
+         * @param deltaTime             The delta time to use.
+         */
         public update(deltaTime: number): void {
 
-            if (this.timer >= GameDirectionsView.DELAY) {
-                this.timer = 0;
+            if (this.timeSpent >= GameDirectionsView.DELAY) {
+                this.timeSpent = 0;
                 this.surfaceIndex = ++this.surfaceIndex % GameDirectionsView.ARROW_KEYS.length;
                 this.arrowKeysAnimation.texture =
                     this.imageLoader.get(`arrow-keys-${GameDirectionsView.ARROW_KEYS[this.surfaceIndex]}`);
             } else {
-                this.timer += deltaTime;
+                this.timeSpent += deltaTime;
             }
         }
     }

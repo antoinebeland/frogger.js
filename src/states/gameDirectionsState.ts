@@ -16,10 +16,14 @@ namespace FroggerJS.States {
     import Scene = FroggerJS.Graphics.Scene;
     import Ticker = FroggerJS.Graphics.Ticker;
 
+    /**
+     * Defines the 'Game Direction State' of the application.
+     */
     export class GameDirectionsState implements State {
 
-        private static SOUND_NAME = "game-over";
-        private static SOUND_VOLUME = 0.7;
+        private static SOUND_NAME = "directions";
+        private static SOUND_FADE_DURATION = 500;
+        private static SOUND_VOLUME = 0.35;
 
         private scene: Scene;
         private ticker: Ticker;
@@ -27,7 +31,15 @@ namespace FroggerJS.States {
         private stateManager: StateManager;
         private gameDirectionsView: GameDirectionsView;
 
-
+        /**
+         * Initializes a new instance of the GameDirectionsState class.
+         *
+         * @param scene             The scene to use.
+         * @param imageLoader       The image loader to use.
+         * @param ticker            The ticker to use.
+         * @param audioManager      The audio manager to use.
+         * @param stateManager      The state manager to use.
+         */
         public constructor(scene: Scene, imageLoader: ImageLoader, ticker: Ticker,
                            audioManager: AudioManager, stateManager: StateManager) {
 
@@ -54,6 +66,8 @@ namespace FroggerJS.States {
 
             this.scene.addChild(this.gameDirectionsView);
             this.ticker.register(this.gameDirectionsView);
+            this.audioManager.fadeIn(GameDirectionsState.SOUND_NAME,
+                GameDirectionsState.SOUND_FADE_DURATION, true, GameDirectionsState.SOUND_VOLUME);
         }
 
         /**
@@ -61,8 +75,9 @@ namespace FroggerJS.States {
          */
         public leaving(): void {
 
-            this.scene.clear();
+            this.audioManager.fadeOut(GameDirectionsState.SOUND_NAME, GameDirectionsState.SOUND_FADE_DURATION);
             this.ticker.unregister(this.gameDirectionsView);
+            this.scene.clear();
 
             Logger.logMessage("Leaving the 'Game Over State'.");
         }

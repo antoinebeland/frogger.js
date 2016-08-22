@@ -13,7 +13,10 @@ namespace FroggerJS.Views {
     import Renderable = FroggerJS.Graphics.Renderable;
     import Updatable = FroggerJS.Graphics.Updatable;
 
-    export class EndGameView implements Renderable, Updatable {
+    /**
+     * Defines the view to display when the game is completed.
+     */
+    export class GameCompleteView implements Renderable, Updatable {
 
         private container: PIXI.Container;
         private animatedLabel: AnimatedText;

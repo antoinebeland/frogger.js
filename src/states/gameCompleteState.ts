@@ -10,7 +10,7 @@
 namespace FroggerJS.States {
 
     import AudioManager = FroggerJS.Audio.AudioManager;
-    import EndGameView = FroggerJS.Views.EndGameView;
+    import GameCompleteView = FroggerJS.Views.GameCompleteView;
     import ImageLoader = FroggerJS.Graphics.ImageLoader;
     import Logger = Utils.Logger;
     import Scene = FroggerJS.Graphics.Scene;
@@ -28,7 +28,7 @@ namespace FroggerJS.States {
         private ticker: Ticker;
         private audioManager: AudioManager;
         private stateManager: StateManager;
-        private endGameView: EndGameView;
+        private gameCompleteView: GameCompleteView;
 
         /**
          * Initializes a new instance of the GameCompleteState class.
@@ -46,7 +46,7 @@ namespace FroggerJS.States {
             this.ticker = ticker;
             this.audioManager = audioManager;
             this.stateManager = stateManager;
-            this.endGameView = new EndGameView(imageLoader);
+            this.gameCompleteView = new GameCompleteView(imageLoader);
         }
 
         /**
@@ -56,8 +56,8 @@ namespace FroggerJS.States {
 
             Logger.logMessage("Entered in 'End Game State'.");
 
-            this.scene.addChild(this.endGameView);
-            this.ticker.register(this.endGameView);
+            this.scene.addChild(this.gameCompleteView);
+            this.ticker.register(this.gameCompleteView);
 
             let self = this;
             function onKeyDown() {
@@ -76,7 +76,7 @@ namespace FroggerJS.States {
          */
         public leaving(): void {
 
-            this.ticker.unregister(this.endGameView);
+            this.ticker.unregister(this.gameCompleteView);
             Logger.logMessage("Leaving the 'End Game State'.");
         }
     }

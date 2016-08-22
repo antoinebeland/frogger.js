@@ -19,9 +19,9 @@ namespace FroggerJS.States {
      */
     export class MainMenuState implements State {
 
-        static SOUND_NAME = "menu";
-        static SOUND_FADE_DURATION = 500;
-        static SOUND_VOLUME = 0.6;
+        private static SOUND_NAME = "menu";
+        private static SOUND_FADE_DURATION = 500;
+        private static SOUND_VOLUME = 0.6;
 
         private scene: Scene;
         private stateManager: StateManager;
