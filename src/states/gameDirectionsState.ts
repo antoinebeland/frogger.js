@@ -62,7 +62,7 @@ namespace FroggerJS.States {
          */
         public entered(): void {
 
-            Logger.logMessage("Entered in the 'Game Over State'.");
+            Logger.logMessage("Entered in the 'Game Directions State'.");
 
             this.scene.addChild(this.gameDirectionsView);
             this.ticker.register(this.gameDirectionsView);
@@ -79,7 +79,7 @@ namespace FroggerJS.States {
             this.ticker.unregister(this.gameDirectionsView);
             this.scene.clear();
 
-            Logger.logMessage("Leaving the 'Game Over State'.");
+            Logger.logMessage("Leaving the 'Game Directions State'.");
         }
     }
 }

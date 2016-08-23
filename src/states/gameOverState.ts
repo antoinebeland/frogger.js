@@ -43,8 +43,12 @@ namespace FroggerJS.States {
             this.stateManager = stateManager;
 
             this.gameOverView = new GameOverView(imageLoader);
-            this.gameOverView.onReplayClicked.register(this.replayOccurred, this);
-            this.gameOverView.onBackToMenuClicked.register(this.backToMenuOccurred, this);
+            this.gameOverView.onReplayClicked.register(function () {
+                this.stateManager.change("level1");
+            }, this);
+            this.gameOverView.onBackToMenuClicked.register(function () {
+                this.stateManager.change("mainMenu");
+            }, this);
         }
 
         /**
@@ -65,20 +69,6 @@ namespace FroggerJS.States {
 
             this.scene.clear();
             Logger.logMessage("Leaving the 'Game Over State'.");
-        }
-
-        /**
-         * Occurred when the replay button is clicked.
-         */
-        private replayOccurred() {
-            this.stateManager.change("level1");
-        }
-
-        /**
-         * Occurred when the menu button is clicked.
-         */
-        private backToMenuOccurred() {
-            this.stateManager.change("mainMenu");
         }
     }
 }

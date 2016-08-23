@@ -11,6 +11,7 @@ namespace FroggerJS.Views.Controls {
 
         private defaultTexture: PIXI.Texture;
         private isHovered: boolean = false;
+        private buttonPressed: boolean = false;
 
         /**
          * Gets or sets the hovered texture for the button.
@@ -78,15 +79,17 @@ namespace FroggerJS.Views.Controls {
             this.addChild(this.text);
             
             function onButtonDown() {
+                this.buttonPressed = true;
                 if (this.clickedTexture) {
                     this.texture = this.clickedTexture;
                 }
             }
 
             function onButtonUp() {
-                if (this.isHovered) {
+                if (this.isHovered && this.buttonPressed) {
                     this.onClick.invoke();
                 }
+                this.buttonPressed = false;
                 this.texture = this.defaultTexture;
             }
 

@@ -15,7 +15,7 @@ namespace FroggerJS {
 
     export var Levels: any = [
         {
-            goalsNumber: 1/*5*/,
+            goalsNumber: 1,
             soundtrack: "game1",
             board: [
                 { texture: "grass-water-top", touchAllowed: true },
@@ -31,7 +31,7 @@ namespace FroggerJS {
             ]
         },
         {
-            goalsNumber: 1/*5*/,
+            goalsNumber: 1,
             soundtrack: "game2",
             board: [
                 { texture: "grass-water-top", touchAllowed: true },

@@ -43,7 +43,7 @@ namespace FroggerJS.Views {
 
             const MARGIN = 20;
             const STRIPE_HEIGHT = 250;
-            const TEXT_STYLE = {font: "60px Arial", fill: "white"};
+            const BUTTON_TEXT_STYLE = {font: "60px Arial", fill: "white"};
             const HALF_WINDOW_WIDTH = Constants.WINDOW_WIDTH * 0.5;
 
             // Generates the background.
@@ -66,7 +66,7 @@ namespace FroggerJS.Views {
             let clickedTexture = imageLoader.get("menu-button-clicked");
 
             // Initializes the start button.
-            let startButton = new Button(defaultTexture, "PLAY", TEXT_STYLE);
+            let startButton = new Button(defaultTexture, "PLAY", BUTTON_TEXT_STYLE);
             startButton.hoveredTexture = hoveredTexture;
             startButton.clickedTexture = clickedTexture;
             startButton.onClick = this.onPlayClicked;
@@ -75,7 +75,7 @@ namespace FroggerJS.Views {
             startButton.y = 550;
 
             // Initializes the settings button.
-            let directionsButton = new Button(defaultTexture, "DIRECTIONS", TEXT_STYLE);
+            let directionsButton = new Button(defaultTexture, "DIRECTIONS", BUTTON_TEXT_STYLE);
             directionsButton.hoveredTexture = hoveredTexture;
             directionsButton.clickedTexture = clickedTexture;
             directionsButton.onClick = this.onDirectionsClicked;
@@ -83,6 +83,7 @@ namespace FroggerJS.Views {
             directionsButton.x = HALF_WINDOW_WIDTH;
             directionsButton.y = 700;
 
+            // Initializes the version text.
             let version = new PIXI.Text(`v${Constants.VERSION}`, { font: "28px Arial", fill: "white" });
             version.alpha = 0.7;
             version.anchor.x = 1;
