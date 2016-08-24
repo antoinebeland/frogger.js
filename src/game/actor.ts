@@ -42,6 +42,7 @@ namespace FroggerJS.Game {
      */
     export class Actor implements Renderable, Collidable {
 
+        // TODO: Put this in other class.
         private static availableLives = 5;
         private static score = 0;
 

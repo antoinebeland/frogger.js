@@ -1,5 +1,6 @@
 /// <reference path="bonus.ts" />
 /// <reference path="heart.ts" />
+/// <reference path="star.ts" />
 /// <reference path="../../graphics/imageLoader.ts" />
 
 namespace FroggerJS.Game.Objects {
@@ -33,6 +34,8 @@ namespace FroggerJS.Game.Objects {
             switch (bonusName.toLowerCase()) {
                 case Heart.TYPE:
                     return new Heart(this.imageLoader);
+                case Star.TYPE:
+                    return new Star(this.imageLoader);
             }
             throw new Error("The bonus name doesn't exist.");
         }

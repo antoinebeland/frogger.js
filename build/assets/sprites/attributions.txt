@@ -4,4 +4,4 @@ cup.png		==>		Icons made by Freepik from www.flaticon.co is licensed by CC 3.0 B
 				Modifications by Antoine Béland
 
 arrows-keys	==>		Arrow Keys Vectors by vecteezy.
-heart		==>		Image from walesmd/uda-frogger on GitHub.
+heart/star	==>		Image from walesmd/uda-frogger on GitHub.
