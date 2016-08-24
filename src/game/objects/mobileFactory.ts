@@ -31,7 +31,7 @@ namespace FroggerJS.Game.Objects {
          * @param speed         The speed of the mobile.
          * @returns {Mobile}    A new instance of a mobile based on the specified features.
          */
-        public createMobile(mobileName: string, orientation: Orientation, speed: number): Mobile {
+        public create(mobileName: string, orientation: Orientation, speed: number): Mobile {
 
             switch (mobileName.toLowerCase()) {
                 case Car.TYPE:

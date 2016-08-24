@@ -4,6 +4,7 @@
 /// <reference path="../graphics/imageLoader.ts" />
 /// <reference path="../physics/circleBounding.ts" />
 /// <reference path="../physics/collidable.ts" />
+/// <reference path="../utils/event.ts" />
 
 namespace FroggerJS.Game {
 
@@ -11,6 +12,7 @@ namespace FroggerJS.Game {
     import Bounding = FroggerJS.Physics.Bounding;
     import CircleBounding = FroggerJS.Physics.CircleBounding;
     import Collidable = FroggerJS.Physics.Collidable;
+    import Event = Utils.Event;
     import ImageLoader = FroggerJS.Graphics.ImageLoader;
     import Mobile = FroggerJS.Game.Objects.Mobile;
     import Renderable = FroggerJS.Graphics.Renderable;
@@ -49,6 +51,13 @@ namespace FroggerJS.Game {
 
         private tilePosition: number = undefined;
         private deltaPosition: number = undefined;
+
+        /**
+         * Occurred when the lives count changed.
+         *
+         * @type {Utils.Event<void>}
+         */
+        public static onLivesCountChanged = new Event<void>();
 
         /**
          * Occurred when a key is pressed.
@@ -161,6 +170,7 @@ namespace FroggerJS.Game {
             if (--Actor.availableLives < 0) {
                 throw new Error("Negative live count.");
             }
+            Actor.onLivesCountChanged.invoke();
         }
 
         /**
@@ -182,6 +192,7 @@ namespace FroggerJS.Game {
                 throw new Error("Negative live count.");
             }
             Actor.availableLives = availableLives;
+            Actor.onLivesCountChanged.invoke();
         }
 
         /**

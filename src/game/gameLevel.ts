@@ -1,5 +1,7 @@
 /// <reference path="actor.ts" />
 /// <reference path="gameLevelParser.ts" />
+/// <reference path="objects/mobile.ts" />
+/// <reference path="objects/bonus.ts" />
 /// <reference path="objects/goalDeck.ts" />
 /// <reference path="../config.ts" />
 /// <reference path="../audio/audioManager.ts" />
@@ -13,6 +15,7 @@ namespace FroggerJS.Game {
 
     import Actor = FroggerJS.Game.Actor;
     import AudioManager = FroggerJS.Audio.AudioManager;
+    import Bonus = FroggerJS.Game.Objects.Bonus;
     import Constants = FroggerJS.Constants;
     import Container = PIXI.Container;
     import Event = Utils.Event;
@@ -49,6 +52,7 @@ namespace FroggerJS.Game {
 
         private actor: Actor;
         private mobiles: Mobile[][];
+        private bonuses: Bonus[];
         private goals: GoalDeck[];
         private touchAllowedStatus: boolean[];
         private soundtrack: string;
@@ -96,6 +100,7 @@ namespace FroggerJS.Game {
 
             this.soundtrack = levelParserResult.soundtrack;
             this.mobiles = levelParserResult.mobiles;
+            this.bonuses = levelParserResult.bonuses;
             this.goals = levelParserResult.goals;
             this.touchAllowedStatus = levelParserResult.touchAllowedStatus;
 
@@ -118,6 +123,13 @@ namespace FroggerJS.Game {
                 }
             }
 
+            // Adds the bonuses to the scene.
+            for (let i = 0; i < this.bonuses.length; ++i) {
+                if (this.bonuses[i]) {
+                    this.board.addChild(this.bonuses[i]);
+                }
+            }
+
             // Adds the goal decks to the scene.
             for (let i = 0; i < this.goals.length; ++i) {
                 this.board.addChild(this.goals[i]);
@@ -130,7 +142,7 @@ namespace FroggerJS.Game {
 
                 currentLevel: new PIXI.Text(`LEVEL ${levelConfiguration["level"]}`, Constants.DEFAULT_TEXT_STYLE)
             };
-            
+
             const VERTICAL_TEXT_POSITION = (Constants.WINDOW_HEIGHT / Constants.TILE_SIZE)
                 * Constants.TILE_SIZE - Constants.DEFAULT_TEXT_MARGIN;
 
@@ -142,12 +154,13 @@ namespace FroggerJS.Game {
             this.labels.currentLevel.x = Constants.DEFAULT_TEXT_MARGIN;
             this.labels.livesCount.y = VERTICAL_TEXT_POSITION;
             this.labels.currentLevel.y = VERTICAL_TEXT_POSITION;
-            
+
             this.board.addChild(this.labels.livesCount);
             this.board.addChild(this.labels.currentLevel);
 
             // Generates the actor.
             this.generateActor();
+            Actor.onLivesCountChanged.register(this.updateLifeText, this);
 
             Logger.logMessage("Level initialized.");
         }
@@ -169,6 +182,7 @@ namespace FroggerJS.Game {
          */
         public dispose(): void {
             this.audioManager.fadeOut(this.soundtrack, GameLevel.SOUNDTRACK_FADE_DURATION);
+            Actor.onLivesCountChanged.unregister(this.updateLifeText, this);
             this.unbindEventListener();
         }
 
@@ -220,6 +234,17 @@ namespace FroggerJS.Game {
                 if (this.actor.getLinePosition() == i && !isCollide && !this.touchAllowedStatus[i]) {
                     this.audioManager.play(GameLevel.FALL_SOUND_NAME);
                     this.restart();
+                }
+            }
+
+            // Iterates over the bonuses.
+            for (let i = 0; i < this.bonuses.length; ++i) {
+                if (this.bonuses[i]) {
+                    let bonus = this.bonuses[i];
+                    bonus.update(deltaTime);
+                    if (bonus.isAvailable() && bonus.getBounding().isCollide(this.actor.getBounding())) {
+                        bonus.apply();
+                    }
                 }
             }
 
@@ -302,11 +327,17 @@ namespace FroggerJS.Game {
 
             let availableLives = Actor.getAvailableLives();
             Logger.logMessage(`One live lost. ${availableLives} live(s) remaining.`);
-
-            this.labels.livesCount.text = `${GameLevel.LIVES_BASE_TEXT} ${Actor.getAvailableLives()}`;
+            
             if (availableLives <= 0) {
                 this.onGameOver.invoke();
             }
+        }
+
+        /**
+         * Updates the life text on the screen.
+         */
+        private updateLifeText() {
+            this.labels.livesCount.text = `${GameLevel.LIVES_BASE_TEXT} ${Actor.getAvailableLives()}`;
         }
     }
 }

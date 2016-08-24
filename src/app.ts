@@ -53,6 +53,7 @@ namespace FroggerJS {
                 { name: "frog",                 file: "frog.png"                    },
                 { name: "frog-extend",          file: "frog-extend.png"             },
                 { name: "goal",                 file: "goal.png"                    },
+                { name: "heart",                file: "heart.png"                   },
                 { name: "background",           file: "background.png"              },
                 { name: "menu-button",          file: "menu-button.png"             },
                 { name: "menu-button-hovered",  file: "menu-button-hovered.png"     },
@@ -126,7 +127,7 @@ namespace FroggerJS {
 
                     ++level;
                 }
-                stateManager.change("mainMenu");
+                stateManager.change("level2");
 
                 ticker.register(scene);
                 ticker.start();
