@@ -1,7 +1,7 @@
 namespace FroggerJS {
 
     export var Constants: any = {
-        AUDIO_MUTED: true,
+        AUDIO_MUTED: false,
         AVAILABLE_LIVES: 5,
         DEFAULT_TEXT_MARGIN: 15,
         DEFAULT_TEXT_STYLE: { font : "40px Arial", fill : "white" },

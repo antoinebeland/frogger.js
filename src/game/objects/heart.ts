@@ -6,6 +6,7 @@
 namespace FroggerJS.Game.Objects {
 
     import Actor = FroggerJS.Game.Actor;
+    import AudioManager = FroggerJS.Audio.AudioManager;
     import Bounding = FroggerJS.Physics.Bounding;
     import CircleBounding = FroggerJS.Physics.CircleBounding;
     import ImageLoader = FroggerJS.Graphics.ImageLoader;
@@ -29,7 +30,8 @@ namespace FroggerJS.Game.Objects {
             this.sprite.anchor.x = 0.5;
             this.sprite.anchor.y = 0.5;
 
-            this.bounding = new CircleBounding(this.sprite.position, this.sprite.width * 0.5);
+            const BOUNDING_FACTOR = 0.3;
+            this.bounding = new CircleBounding(this.sprite.position, this.sprite.width * BOUNDING_FACTOR);
         }
 
         protected applyConcrete(): void {

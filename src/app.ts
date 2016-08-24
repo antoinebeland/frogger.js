@@ -74,6 +74,7 @@ namespace FroggerJS {
                 { name: "panel-button-clicked", file: "panel-button-clicked.png"    },
             ],
             sounds: [
+                { name: "bonus",        file: "bonus.wav"       },
                 { name: "directions",   file: "directions.wav"  },
                 { name: "drop",         file: "drop.mp3"        },
                 { name: "game1",        file: "game1.wav"       },
@@ -127,7 +128,7 @@ namespace FroggerJS {
 
                     ++level;
                 }
-                stateManager.change("level2");
+                stateManager.change("mainMenu");
 
                 ticker.register(scene);
                 ticker.start();

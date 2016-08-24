@@ -38,6 +38,7 @@ namespace FroggerJS.Game {
      */
     export class GameLevel implements Updatable {
 
+        private static BONUS_SOUND_NAME = "bonus";
         private static FALL_SOUND_NAME = "drop";
         private static HIT_SOUND_NAME = "hit";
         private static LIVES_BASE_TEXT = "\u2764 \u00D7";
@@ -244,6 +245,7 @@ namespace FroggerJS.Game {
                     bonus.update(deltaTime);
                     if (bonus.isAvailable() && bonus.getBounding().isCollide(this.actor.getBounding())) {
                         bonus.apply();
+                        this.audioManager.play(GameLevel.BONUS_SOUND_NAME);
                     }
                 }
             }
