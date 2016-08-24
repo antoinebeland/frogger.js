@@ -3,17 +3,19 @@
 /// <reference path="objects/mobileFactory.ts" />
 /// <reference path="../config.ts" />
 /// <reference path="../graphics/imageLoader.ts" />
+/// <reference path="../utils/random.ts" />
 
 namespace FroggerJS.Game {
 
     import Bonus = FroggerJS.Game.Objects.Bonus;
     import BonusFactory = FroggerJS.Game.Objects.BonusFactory;
     import Constants = FroggerJS.Constants;
+    import DisplayObject = PIXI.DisplayObject;
     import GoalDeck = FroggerJS.Game.Objects.GoalDeck;
     import ImageLoader = FroggerJS.Graphics.ImageLoader;
     import Mobile = FroggerJS.Game.Objects.Mobile;
     import MobileFactory = FroggerJS.Game.Objects.MobileFactory;
-    import DisplayObject = PIXI.DisplayObject;
+    import Random = Utils.Random;
 
     /**
      * Defines the parser result to return.
@@ -131,7 +133,7 @@ namespace FroggerJS.Game {
                     let bonus = this.bonusFactory.create(board[i].bonus);
 
                     let displayObject = bonus.getDisplayObject() as DisplayObject;
-                    displayObject.x = Math.floor((Math.random() * (Constants.WINDOW_WIDTH - BONUS_MARGIN)) + BONUS_MARGIN);
+                    displayObject.x = Random.getRandomIntInclusive(BONUS_MARGIN, Constants.WINDOW_WIDTH - BONUS_MARGIN);
                     displayObject.y = i * Constants.TILE_SIZE + HALF_TILE;
 
                     result.bonuses[i] = bonus;
@@ -194,7 +196,7 @@ namespace FroggerJS.Game {
 
                 // Generates the next position of the sprite.
                 spriteWidth = sprite.width;
-                nextPosition += spriteWidth + Math.floor((Math.random() * MAX_MOBILE_DISTANCE_FACTOR * spriteWidth) + spriteWidth);
+                nextPosition += spriteWidth + Random.getRandomIntInclusive(spriteWidth, MAX_MOBILE_DISTANCE_FACTOR * spriteWidth);
 
                 mobiles.push(mobileObject);
 
