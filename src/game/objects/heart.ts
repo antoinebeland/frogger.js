@@ -11,6 +11,9 @@ namespace FroggerJS.Game.Objects {
     import CircleBounding = FroggerJS.Physics.CircleBounding;
     import ImageLoader = FroggerJS.Graphics.ImageLoader;
 
+    /**
+     * Defines the 'Heart' bonus.
+     */
     export class Heart extends Bonus {
 
         public static TYPE = "heart";
@@ -23,6 +26,11 @@ namespace FroggerJS.Game.Objects {
         private bounding: Bounding;
         private animationSign: number = -1;
 
+        /**
+         * Initializes a new instance of the Heart class.
+         *
+         * @param imageLoader       The image loader to use.
+         */
         public constructor(imageLoader: ImageLoader) {
             super();
 
@@ -34,18 +42,36 @@ namespace FroggerJS.Game.Objects {
             this.bounding = new CircleBounding(this.sprite.position, this.sprite.width * BOUNDING_FACTOR);
         }
 
+        /**
+         * Applies the concrete bonus.
+         */
         protected applyConcrete(): void {
             Actor.setAvailableLives(Actor.getAvailableLives() + 1);
         }
 
+        /**
+         * Gets the display object associated with the heart.
+         *
+         * @returns {PIXI.Sprite}   The display object associated with the heart.
+         */
         public getDisplayObject(): PIXI.Sprite {
             return this.sprite;
         }
 
+        /**
+         * Gets the bounding associated with the heart.
+         *
+         * @returns {Bounding}      The bounding object associated with the heart.
+         */
         public getBounding(): Bounding {
             return this.bounding;
         }
 
+        /**
+         * Updates the scale of the heart based on the specified delta time.
+         *
+         * @param deltaTime         The delta time to use.
+         */
         public update(deltaTime: number): void {
             
             let scale = this.sprite.scale.x + this.animationSign * Heart.SCALE_FACTOR;
