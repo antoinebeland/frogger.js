@@ -43,6 +43,7 @@ namespace FroggerJS.Game {
     export class Actor implements Renderable, Collidable {
 
         private static availableLives = 5;
+        private static score = 0;
 
         private keyUpTexture: PIXI.Texture;
         private keyDownTexture: PIXI.Texture;
@@ -51,6 +52,7 @@ namespace FroggerJS.Game {
 
         private tilePosition: number = undefined;
         private deltaPosition: number = undefined;
+        private tileExploredPosition: number = 0;
 
         /**
          * Occurred when the lives count changed.
@@ -58,6 +60,14 @@ namespace FroggerJS.Game {
          * @type {Utils.Event<void>}
          */
         public static onLivesCountChanged = new Event<void>();
+
+        /**
+         * Occurred when the score changed.
+         *
+         * @type {Utils.Event<void>}
+         */
+        public static onScoreChanged = new Event<void>();
+
 
         /**
          * Occurred when a key is pressed.
@@ -154,6 +164,12 @@ namespace FroggerJS.Game {
                 // Checks if the actor has changed of tile.
                 if (event.keyCode == ArrowKeyCode.Up || event.keyCode == ArrowKeyCode.Down) {
                     self.updateTilePosition();
+
+                    // Checks if it's the fist time that the actor goes at these tile position.
+                    if (self.tilePosition < self.tileExploredPosition) {
+                        Actor.increaseScore(Constants.MOVE_SCORE);
+                        self.tileExploredPosition = self.tilePosition;
+                    }
                 }
                 // Checks if the texture was modified.
                 if (self.sprite.texture == self.keyDownTexture) {
@@ -196,6 +212,32 @@ namespace FroggerJS.Game {
         }
 
         /**
+         * Resets the score.
+         */
+        public static resetScore(): void {
+            Actor.score = 0;
+        }
+
+        /**
+         * Gets the score.
+         *
+         * @returns {number}    The total score.
+         */
+        public static getScore(): number {
+            return Actor.score;
+        }
+
+        /**
+         * Increases the score.
+         *
+         * @param scoreToAdd    The score to add.
+         */
+        public static increaseScore(scoreToAdd: number): void {
+            Actor.score += scoreToAdd;
+            Actor.onScoreChanged.invoke();
+        }
+
+        /**
          * Sets the position of the actor at the start position.
          */
         public startPosition(): void {
@@ -203,6 +245,7 @@ namespace FroggerJS.Game {
             this.sprite.position.x = FroggerJS.Constants.WINDOW_WIDTH / 2;
             this.sprite.position.y = FroggerJS.Constants.WINDOW_HEIGHT - (this.sprite.height / 2);
             this.updateTilePosition();
+            this.tileExploredPosition = this.tilePosition;
         }
 
         /**

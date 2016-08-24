@@ -30,7 +30,8 @@ namespace FroggerJS.Game {
      */
     type GameTextLabels = {
         livesCount: PIXI.Text,
-        currentLevel: PIXI.Text
+        currentLevel: PIXI.Text,
+        score: PIXI.Text;
     }
 
     /**
@@ -42,6 +43,7 @@ namespace FroggerJS.Game {
         private static FALL_SOUND_NAME = "drop";
         private static HIT_SOUND_NAME = "hit";
         private static LIVES_BASE_TEXT = "\u2764 \u00D7";
+        private static SCORE_BASE_TEXT = "SCORE:";
         private static SOUNDTRACK_FADE_DURATION = 500;
         private static SOUNDTRACK_VOLUME = 0.35;
 
@@ -105,9 +107,10 @@ namespace FroggerJS.Game {
             this.goals = levelParserResult.goals;
             this.touchAllowedStatus = levelParserResult.touchAllowedStatus;
 
-            // Sets the total of available lives for the actor (for the first level only).
+            // Sets the total of available lives for the actor ans resets the score (for the first level only).
             if (levelParserResult.level == 1) {
                 Actor.setAvailableLives(Constants.AVAILABLE_LIVES);
+                Actor.resetScore();
             }
 
             // Adds the tiles to the scene.
@@ -141,27 +144,36 @@ namespace FroggerJS.Game {
                 livesCount: new PIXI.Text(`${GameLevel.LIVES_BASE_TEXT} ${Actor.getAvailableLives()}`,
                     Constants.DEFAULT_TEXT_STYLE),
 
-                currentLevel: new PIXI.Text(`LEVEL ${levelConfiguration["level"]}`, Constants.DEFAULT_TEXT_STYLE)
+                currentLevel: new PIXI.Text(`LEVEL ${levelConfiguration["level"]}`, Constants.DEFAULT_TEXT_STYLE),
+                score: new PIXI.Text(`${GameLevel.SCORE_BASE_TEXT} ${Actor.getScore()}`, Constants.DEFAULT_TEXT_STYLE)
             };
 
             const VERTICAL_TEXT_POSITION = (Constants.WINDOW_HEIGHT / Constants.TILE_SIZE)
                 * Constants.TILE_SIZE - Constants.DEFAULT_TEXT_MARGIN;
 
             this.labels.livesCount.anchor.x = 1;
+            this.labels.score.anchor.x = 1;
             this.labels.livesCount.anchor.y = 1;
             this.labels.currentLevel.anchor.y = 1;
+            this.labels.score.anchor.y = 1;
 
             this.labels.livesCount.x = Constants.WINDOW_WIDTH - Constants.DEFAULT_TEXT_MARGIN;
             this.labels.currentLevel.x = Constants.DEFAULT_TEXT_MARGIN;
+            this.labels.score.x = Constants.WINDOW_WIDTH - 4 * Constants.DEFAULT_TEXT_MARGIN
+                - this.labels.livesCount.width;
+
             this.labels.livesCount.y = VERTICAL_TEXT_POSITION;
             this.labels.currentLevel.y = VERTICAL_TEXT_POSITION;
+            this.labels.score.y = VERTICAL_TEXT_POSITION;
 
             this.board.addChild(this.labels.livesCount);
             this.board.addChild(this.labels.currentLevel);
+            this.board.addChild(this.labels.score);
 
             // Generates the actor.
             this.generateActor();
             Actor.onLivesCountChanged.register(this.updateLifeText, this);
+            Actor.onScoreChanged.register(this.updateScoreText, this);
 
             Logger.logMessage("Level initialized.");
         }
@@ -182,8 +194,10 @@ namespace FroggerJS.Game {
          * Disposes the current level.
          */
         public dispose(): void {
+
             this.audioManager.fadeOut(this.soundtrack, GameLevel.SOUNDTRACK_FADE_DURATION);
             Actor.onLivesCountChanged.unregister(this.updateLifeText, this);
+            Actor.onScoreChanged.register(this.updateScoreText, this);
             this.unbindEventListener();
         }
 
@@ -340,6 +354,13 @@ namespace FroggerJS.Game {
          */
         private updateLifeText() {
             this.labels.livesCount.text = `${GameLevel.LIVES_BASE_TEXT} ${Actor.getAvailableLives()}`;
+        }
+
+        /**
+         * Updates the score text.
+         */
+        private updateScoreText() {
+            this.labels.score.text = `${GameLevel.SCORE_BASE_TEXT} ${Actor.getScore()}`;
         }
     }
 }

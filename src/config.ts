@@ -6,6 +6,7 @@ namespace FroggerJS {
         DEFAULT_TEXT_MARGIN: 15,
         DEFAULT_TEXT_STYLE: { font : "40px Arial", fill : "white" },
         DISPLAY_BOUNDING: false, // For DEBUG purpose
+        MOVE_SCORE: 10,
         PANEL_COLOR: 0x0D7EB4,
         TILE_SIZE: 120,
         VERSION: "1.0.0",
@@ -15,7 +16,7 @@ namespace FroggerJS {
 
     export var Levels: any = [
         {
-            goalsNumber: 1,
+            goalsNumber: 5,
             soundtrack: "game1",
             board: [
                 { texture: "grass-water-top", touchAllowed: true },
