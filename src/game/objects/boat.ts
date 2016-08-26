@@ -2,11 +2,13 @@
 /// <reference path="orientation.ts" />
 /// <reference path="../../graphics/imageLoader.ts" />
 /// <reference path="../../physics/rectangleBounding.ts" />
+/// <reference path="../../utils/random.ts" />
 
 namespace FroggerJS.Game.Objects {
 
     import Bounding = FroggerJS.Physics.Bounding;
     import ImageLoader = FroggerJS.Graphics.ImageLoader;
+    import Random = Utils.Random;
     import RectangleBounding = FroggerJS.Physics.RectangleBounding;
 
     /**
@@ -34,7 +36,7 @@ namespace FroggerJS.Game.Objects {
         public constructor(imageLoader: ImageLoader, orientation: Orientation, speed: number) {
             super(speed, orientation);
             
-            let colorIndex = Math.floor(Math.random() * Boat.availableColors.length);
+            let colorIndex = Random.getRandomInt(0, Boat.availableColors.length);
             let surface = imageLoader.get(`${Boat.TYPE}-${Boat.availableColors[colorIndex]}-${orientation}`);
 
             this.sprite = new PIXI.Sprite(surface);
