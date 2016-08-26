@@ -1,10 +1,10 @@
+/// <reference path="gameData.ts" />
 /// <reference path="objects/mobile.ts" />
 /// <reference path="../config.ts" />
 /// <reference path="../graphics/renderable.ts" />
 /// <reference path="../graphics/imageLoader.ts" />
 /// <reference path="../physics/circleBounding.ts" />
 /// <reference path="../physics/collidable.ts" />
-/// <reference path="../utils/event.ts" />
 
 namespace FroggerJS.Game {
 
@@ -12,7 +12,6 @@ namespace FroggerJS.Game {
     import Bounding = FroggerJS.Physics.Bounding;
     import CircleBounding = FroggerJS.Physics.CircleBounding;
     import Collidable = FroggerJS.Physics.Collidable;
-    import Event = Utils.Event;
     import ImageLoader = FroggerJS.Graphics.ImageLoader;
     import Mobile = FroggerJS.Game.Objects.Mobile;
     import Renderable = FroggerJS.Graphics.Renderable;
@@ -41,11 +40,7 @@ namespace FroggerJS.Game {
      * Defines the actor of the game.
      */
     export class Actor implements Renderable, Collidable {
-
-        // TODO: Put this in other class.
-        private static availableLives = 5;
-        private static score = 0;
-
+        
         private keyUpTexture: PIXI.Texture;
         private keyDownTexture: PIXI.Texture;
         private sprite: PIXI.Sprite;
@@ -54,22 +49,7 @@ namespace FroggerJS.Game {
         private tilePosition: number = undefined;
         private deltaPosition: number = undefined;
         private tileExploredPosition: number = 0;
-
-        /**
-         * Occurred when the lives count changed.
-         *
-         * @type {Utils.Event<void>}
-         */
-        public static onLivesCountChanged = new Event<void>();
-
-        /**
-         * Occurred when the score changed.
-         *
-         * @type {Utils.Event<void>}
-         */
-        public static onScoreChanged = new Event<void>();
-
-
+        
         /**
          * Occurred when a key is pressed.
          */
@@ -168,7 +148,7 @@ namespace FroggerJS.Game {
 
                     // Checks if it's the fist time that the actor goes at these tile position.
                     if (self.tilePosition < self.tileExploredPosition) {
-                        Actor.increaseScore(Constants.MOVE_SCORE);
+                        GameData.increaseScore(Constants.MOVE_SCORE);
                         self.tileExploredPosition = self.tilePosition;
                     }
                 }
@@ -179,65 +159,7 @@ namespace FroggerJS.Game {
                 }
             };
         }
-
-        /**
-         * Removes one live to the available lives of the actor.
-         */
-        public static loseLife(): void {
-            if (--Actor.availableLives < 0) {
-                throw new Error("Negative live count.");
-            }
-            Actor.onLivesCountChanged.invoke();
-        }
-
-        /**
-         * Gets the available lives of the actor.
-         *
-         * @returns {number}    The number of available lives.
-         */
-        public static getAvailableLives(): number {
-            return Actor.availableLives;
-        }
-
-        /**
-         * Sets the available lives of the actor.
-         *
-         * @param availableLives    The available lives to set.
-         */
-        public static setAvailableLives(availableLives: number): void {
-            if (availableLives < 0) {
-                throw new Error("Negative live count.");
-            }
-            Actor.availableLives = availableLives;
-            Actor.onLivesCountChanged.invoke();
-        }
-
-        /**
-         * Resets the score.
-         */
-        public static resetScore(): void {
-            Actor.score = 0;
-        }
-
-        /**
-         * Gets the score.
-         *
-         * @returns {number}    The total score.
-         */
-        public static getScore(): number {
-            return Actor.score;
-        }
-
-        /**
-         * Increases the score.
-         *
-         * @param scoreToAdd    The score to add.
-         */
-        public static increaseScore(scoreToAdd: number): void {
-            Actor.score += scoreToAdd;
-            Actor.onScoreChanged.invoke();
-        }
-
+        
         /**
          * Sets the position of the actor at the start position.
          */

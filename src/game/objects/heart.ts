@@ -1,11 +1,11 @@
 /// <reference path="bonus.ts" />
-/// <reference path="../actor.ts" />
+/// <reference path="../gameData.ts" />
 /// <reference path="../../graphics/imageLoader.ts" />
 /// <reference path="../../physics/circleBounding.ts" />
 
 namespace FroggerJS.Game.Objects {
 
-    import Actor = FroggerJS.Game.Actor;
+    import GameData = FroggerJS.Game.GameData;
     import AudioManager = FroggerJS.Audio.AudioManager;
     import Bounding = FroggerJS.Physics.Bounding;
     import CircleBounding = FroggerJS.Physics.CircleBounding;
@@ -46,7 +46,7 @@ namespace FroggerJS.Game.Objects {
          * Applies the concrete bonus.
          */
         protected applyConcrete(): void {
-            Actor.setAvailableLives(Actor.getAvailableLives() + 1);
+            GameData.setAvailableLives(GameData.getAvailableLives() + 1);
         }
 
         /**

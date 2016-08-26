@@ -1,4 +1,5 @@
 /// <reference path="actor.ts" />
+/// <reference path="gameData.ts" />
 /// <reference path="gameLevelParser.ts" />
 /// <reference path="objects/mobile.ts" />
 /// <reference path="objects/bonus.ts" />
@@ -107,10 +108,9 @@ namespace FroggerJS.Game {
             this.goals = levelParserResult.goals;
             this.touchAllowedStatus = levelParserResult.touchAllowedStatus;
 
-            // Sets the total of available lives for the actor ans resets the score (for the first level only).
+            // Sets the total of available lives and resets the score (for the first level only).
             if (levelParserResult.level == 1) {
-                Actor.setAvailableLives(Constants.AVAILABLE_LIVES);
-                Actor.resetScore();
+                GameData.reset();
             }
 
             // Adds the tiles to the scene.
@@ -141,11 +141,11 @@ namespace FroggerJS.Game {
 
             // Setups the labels.
             this.labels = {
-                livesCount: new PIXI.Text(`${GameLevel.LIVES_BASE_TEXT} ${Actor.getAvailableLives()}`,
+                livesCount: new PIXI.Text(`${GameLevel.LIVES_BASE_TEXT} ${GameData.getAvailableLives()}`,
                     Constants.DEFAULT_TEXT_STYLE),
 
                 currentLevel: new PIXI.Text(`LEVEL ${levelConfiguration["level"]}`, Constants.DEFAULT_TEXT_STYLE),
-                score: new PIXI.Text(`${GameLevel.SCORE_BASE_TEXT} ${Actor.getScore()}`, Constants.DEFAULT_TEXT_STYLE)
+                score: new PIXI.Text(`${GameLevel.SCORE_BASE_TEXT} ${GameData.getScore()}`, Constants.DEFAULT_TEXT_STYLE)
             };
 
             const VERTICAL_TEXT_POSITION = (Constants.WINDOW_HEIGHT / Constants.TILE_SIZE)
@@ -172,8 +172,8 @@ namespace FroggerJS.Game {
 
             // Generates the actor.
             this.generateActor();
-            Actor.onLivesCountChanged.register(this.updateLifeText, this);
-            Actor.onScoreChanged.register(this.updateScoreText, this);
+            GameData.onLivesCountChanged.register(this.updateLifeText, this);
+            GameData.onScoreChanged.register(this.updateScoreText, this);
 
             Logger.logMessage("Level initialized.");
         }
@@ -196,8 +196,8 @@ namespace FroggerJS.Game {
         public dispose(): void {
 
             this.audioManager.fadeOut(this.soundtrack, GameLevel.SOUNDTRACK_FADE_DURATION);
-            Actor.onLivesCountChanged.unregister(this.updateLifeText, this);
-            Actor.onScoreChanged.register(this.updateScoreText, this);
+            GameData.onLivesCountChanged.unregister(this.updateLifeText, this);
+            GameData.onScoreChanged.register(this.updateScoreText, this);
             this.unbindEventListener();
         }
 
@@ -339,9 +339,9 @@ namespace FroggerJS.Game {
         private restart() {
 
             this.actor.startPosition();
-            Actor.loseLife();
 
-            let availableLives = Actor.getAvailableLives();
+            let availableLives = GameData.getAvailableLives() - 1;
+            GameData.setAvailableLives(availableLives);
             Logger.logMessage(`One live lost. ${availableLives} live(s) remaining.`);
             
             if (availableLives <= 0) {
@@ -353,14 +353,14 @@ namespace FroggerJS.Game {
          * Updates the life text on the screen.
          */
         private updateLifeText() {
-            this.labels.livesCount.text = `${GameLevel.LIVES_BASE_TEXT} ${Actor.getAvailableLives()}`;
+            this.labels.livesCount.text = `${GameLevel.LIVES_BASE_TEXT} ${GameData.getAvailableLives()}`;
         }
 
         /**
          * Updates the score text.
          */
         private updateScoreText() {
-            this.labels.score.text = `${GameLevel.SCORE_BASE_TEXT} ${Actor.getScore()}`;
+            this.labels.score.text = `${GameLevel.SCORE_BASE_TEXT} ${GameData.getScore()}`;
         }
     }
 }
