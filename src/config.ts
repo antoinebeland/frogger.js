@@ -6,6 +6,7 @@ namespace FroggerJS {
         DEFAULT_TEXT_MARGIN: 15,
         DEFAULT_TEXT_STYLE: { font : "40px Arial", fill : "white" },
         DISPLAY_BOUNDING: false, // For DEBUG purpose
+        GOAL_SCORE: 100,
         MOVE_SCORE: 10,
         PANEL_COLOR: 0x0D7EB4,
         TILE_SIZE: 120,

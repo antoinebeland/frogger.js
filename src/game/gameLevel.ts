@@ -272,7 +272,7 @@ namespace FroggerJS.Game {
                 if (this.actor.getLinePosition() == 0 && goalDeck.isAvailable() &&
                     goalDeck.getBounding().isCollide(this.actor.getBounding())) {
 
-                    goalDeck.setAvailability(false);
+                    goalDeck.occupy();
                     let availableGoalsCount = this.goals.filter(function (goal) {
                         return goal.isAvailable();
                     }).length;
@@ -306,9 +306,7 @@ namespace FroggerJS.Game {
             if (this.actor) {
                 this.unbindEventListener();
             }
-
             this.actor = new Actor(this.imageLoader, this.audioManager);
-            this.actor.startPosition();
 
             if (this.isStarted) {
                 this.bindEventListener();

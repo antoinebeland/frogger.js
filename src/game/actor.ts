@@ -40,7 +40,9 @@ namespace FroggerJS.Game {
      * Defines the actor of the game.
      */
     export class Actor implements Renderable, Collidable {
-        
+
+        private static JUMP_SOUND_NAME = "jump";
+
         private keyUpTexture: PIXI.Texture;
         private keyDownTexture: PIXI.Texture;
         private sprite: PIXI.Sprite;
@@ -77,6 +79,9 @@ namespace FroggerJS.Game {
 
             const BOUNDING_FACTOR = 0.3;
             this.bounding = new CircleBounding(this.sprite.position, this.sprite.width * BOUNDING_FACTOR);
+
+            this.startPosition();
+            this.tileExploredPosition = this.tilePosition;
 
             let self = this;
 
@@ -155,7 +160,7 @@ namespace FroggerJS.Game {
                 // Checks if the texture was modified.
                 if (self.sprite.texture == self.keyDownTexture) {
                     self.sprite.texture = self.keyUpTexture;
-                    audioManager.play("jump");
+                    audioManager.play(Actor.JUMP_SOUND_NAME);
                 }
             };
         }
@@ -168,7 +173,6 @@ namespace FroggerJS.Game {
             this.sprite.position.x = FroggerJS.Constants.WINDOW_WIDTH / 2;
             this.sprite.position.y = FroggerJS.Constants.WINDOW_HEIGHT - (this.sprite.height / 2);
             this.updateTilePosition();
-            this.tileExploredPosition = this.tilePosition;
         }
 
         /**

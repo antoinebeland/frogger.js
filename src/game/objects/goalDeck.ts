@@ -1,3 +1,5 @@
+/// <reference path="../gameData.ts" />
+/// <reference path="../../config.ts" />
 /// <reference path="../../graphics/imageLoader.ts" />
 /// <reference path="../../graphics/renderable.ts" />
 /// <reference path="../../physics/collidable.ts" />
@@ -6,8 +8,10 @@
 namespace FroggerJS.Game.Objects {
 
     import Bounding = FroggerJS.Physics.Bounding;
+    import Constants = FroggerJS.Constants;
     import CircleBounding = FroggerJS.Physics.CircleBounding;
     import Collidable = FroggerJS.Physics.Collidable;
+    import GameData = FroggerJS.Game.GameData;
     import ImageLoader = FroggerJS.Graphics.ImageLoader;
     import Renderable = FroggerJS.Graphics.Renderable;
 
@@ -64,12 +68,15 @@ namespace FroggerJS.Game.Objects {
         }
 
         /**
-         * Sets the availability of the current goal deck.
-         *
-         * @param isAvailable   The boolean to set.
+         * Occupies the goal deck.
          */
-        public setAvailability(isAvailable: boolean): void {
-            this.availability = isAvailable;
+        public occupy(): void {
+
+            if (!this.availability) {
+                return;
+            }
+            this.availability = false;
+            GameData.increaseScore(Constants.GOAL_SCORE);
         }
     }
 }

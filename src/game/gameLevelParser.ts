@@ -93,6 +93,7 @@ namespace FroggerJS.Game {
                 touchAllowedStatus: []
             };
 
+            const BONUS_MARGIN = 2 * Constants.TILE_SIZE;
             const HALF_TILE = Constants.TILE_SIZE * 0.5;
             const WIDTH_SPRITES_NUMBER = Constants.WINDOW_WIDTH / Constants.TILE_SIZE;
 
@@ -106,8 +107,8 @@ namespace FroggerJS.Game {
                     throw new Error("TouchAllowed property is missing.");
                 }
 
-
                 result.touchAllowedStatus.push(board[i].touchAllowed);
+
                 // Generates the tiles.
                 result.tiles[i] = [];
                 let texture = this.imageLoader.get(board[i].texture);
@@ -128,7 +129,6 @@ namespace FroggerJS.Game {
                 }
 
                 // Generates the bonuses.
-                const BONUS_MARGIN = 2 * Constants.TILE_SIZE;
                 if (board[i].hasOwnProperty("bonus")) {
                     let bonus = this.bonusFactory.create(board[i].bonus);
 
