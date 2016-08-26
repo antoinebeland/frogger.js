@@ -2,12 +2,17 @@
 /// <reference path="../../config.ts" />
 /// <reference path="../../graphics/renderable.ts" />
 /// <reference path="../../graphics/updatable.ts" />
+/// <reference path="../../math/linearInterpolation.ts" />
 /// <reference path="../../physics/collidable.ts" />
 
 namespace FroggerJS.Game.Objects {
 
     import Bounding = FroggerJS.Physics.Bounding;
     import Collidable = FroggerJS.Physics.Collidable;
+    import Constants = FroggerJS.Constants;
+    import Interpolation = FroggerJS.Math.Interpolation;
+    import InterpolationRepetition = FroggerJS.Math.InterpolationRepetition;
+    import LinearInterpolation = FroggerJS.Math.LinearInterpolation;
     import Renderable = FroggerJS.Graphics.Renderable;
     import Updatable = FroggerJS.Graphics.Updatable;
 
@@ -17,14 +22,15 @@ namespace FroggerJS.Game.Objects {
     export abstract class Mobile implements Renderable, Collidable, Updatable {
 
         private speed: number;
-        private speedDecimal = 0;
+        private interpolation: Interpolation = undefined;
+
         protected orientation: Orientation;
 
         /**
          * Initializes a new instance of the Mobile class.
          *
-         * @param speed         The speed of the mobile.
-         * @param orientation   The orientation of the mobile.
+         * @param speed             The speed of the mobile.
+         * @param orientation       The orientation of the mobile.
          */
         constructor(speed: number, orientation: Orientation) {
 
@@ -54,20 +60,18 @@ namespace FroggerJS.Game.Objects {
          */
         public update(deltaTime: number): void {
 
-            this.speedDecimal += this.speed * deltaTime;
-            let speedToApply = Math.floor(this.speedDecimal);
-            this.speedDecimal = this.speedDecimal % 1;
-
             let sprite = this.getDisplayObject();
-            sprite.position.x += (this.orientation == "left") ? -speedToApply : speedToApply;
-
-            // Checks if the sprite is out of bound.
-            if (sprite.position.x > FroggerJS.Constants.WINDOW_WIDTH + sprite.width) {
-                sprite.position.x = -sprite.width;
-
-            } else if(sprite.position.x < -sprite.width) {
-                sprite.position.x = FroggerJS.Constants.WINDOW_WIDTH + sprite.width;
+            if (!this.interpolation) {
+                this.interpolation = new LinearInterpolation({
+                    minValue: -sprite.width,
+                    maxValue: Constants.WINDOW_WIDTH + sprite.width,
+                    increment: this.speed,
+                    sign: (this.orientation == "left") ? -1 : 1,
+                    initialValue: sprite.x,
+                    repetition: InterpolationRepetition.Same
+                });
             }
+            sprite.position.x = this.interpolation.next(deltaTime);
         }
     }
 }

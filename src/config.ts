@@ -1,7 +1,7 @@
 namespace FroggerJS {
 
     export var Constants: any = {
-        AUDIO_MUTED: false,
+        AUDIO_MUTED: true,
         AVAILABLE_LIVES: 5,
         DEFAULT_TEXT_MARGIN: 15,
         DEFAULT_TEXT_STYLE: { font : "40px Arial", fill : "white" },
@@ -24,7 +24,7 @@ namespace FroggerJS {
                 { texture: "water", touchAllowed: false, mobile: { type: "boat", orientation: "right", speed: 1 } },
                 { texture: "water", touchAllowed: false, mobile: { type: "boat", orientation: "left", speed: 1.5 } },
                 { texture: "water", touchAllowed: false, mobile: { type: "boat", orientation: "right", speed: 1 } },
-                { texture: "grass-water-bottom", touchAllowed: true, bonus: "star" },
+                { texture: "grass-water-bottom", touchAllowed: true, bonus: "star", mobile: { type: "snake", orientation: "right", speed: 2.5, repeated: false } },
                 { texture: "road-top", touchAllowed: true, mobile: { type: "car", orientation: "left", speed: 1 } },
                 { texture: "road-middle-top", touchAllowed: true, mobile: { type: "car", orientation: "left", speed: 1.5 } },
                 { texture: "road-middle-bottom", touchAllowed: true, mobile: { type: "car", orientation: "right", speed: 1.5 } },

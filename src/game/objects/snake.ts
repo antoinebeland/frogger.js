@@ -1,12 +1,16 @@
 /// <reference path="mobile.ts" />
 /// <reference path="orientation.ts" />
 /// <reference path="../../graphics/imageLoader.ts" />
+/// <reference path="../../math/linearInterpolation.ts" />
 /// <reference path="../../physics/rectangleBounding.ts" />
 
 namespace FroggerJS.Game.Objects {
 
     import Bounding = FroggerJS.Physics.Bounding;
     import ImageLoader = FroggerJS.Graphics.ImageLoader;
+    import Interpolation = FroggerJS.Math.Interpolation;
+    import InterpolationRepetition = FroggerJS.Math.InterpolationRepetition;
+    import LinearInterpolation = FroggerJS.Math.LinearInterpolation;
     import RectangleBounding = FroggerJS.Physics.RectangleBounding;
 
     /**
@@ -22,8 +26,7 @@ namespace FroggerJS.Game.Objects {
         private bounding: Bounding;
 
         private timeSpent: number = 0;
-        private lastImageIndex : number;
-        private imageIndex = 1;
+        private imageIndex : Interpolation;
 
         /**
          * Initializes a new instance of the Snake class.
@@ -38,6 +41,12 @@ namespace FroggerJS.Game.Objects {
             this.imageLoader = imageLoader;
             this.sprite = new PIXI.Sprite(imageLoader.get(`${Snake.TYPE}-1-${orientation}`));
             this.bounding = new RectangleBounding(this.sprite.position, this.sprite.width, this.sprite.height);
+            this.imageIndex = new LinearInterpolation({
+                minValue: 1,
+                maxValue: 3,
+                increment: 1,
+                repetition: InterpolationRepetition.Inverse
+            });
         }
 
         /**
@@ -77,18 +86,8 @@ namespace FroggerJS.Game.Objects {
 
             // Checks if the texture must be changed.
             if (this.timeSpent >= Snake.DELAY) {
-                if (this.imageIndex == 2) {
-                    if (this.lastImageIndex == 3) {
-                        this.imageIndex = 1;
-                    } else {
-                        this.imageIndex = 3;
-                    }
-                } else {
-                    this.lastImageIndex = this.imageIndex;
-                    this.imageIndex = 2;
-                }
+                this.sprite.texture = this.imageLoader.get(`${Snake.TYPE}-${this.imageIndex.next()}-${this.orientation}`);
                 this.timeSpent = 0;
-                this.sprite.texture = this.imageLoader.get(`${Snake.TYPE}-${this.imageIndex}-${this.orientation}`);
             } else {
                 this.timeSpent += deltaTime;
             }

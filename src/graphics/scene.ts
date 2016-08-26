@@ -4,6 +4,8 @@
 
 namespace FroggerJS.Graphics {
 
+    declare var Math: Math;
+
     import Sprite = PIXI.Sprite;
     import Updatable = FroggerJS.Graphics.Updatable;
 

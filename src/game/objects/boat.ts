@@ -38,7 +38,7 @@ namespace FroggerJS.Game.Objects {
             
             let colorIndex = Random.getRandomInt(0, Boat.availableColors.length);
             let surface = imageLoader.get(`${Boat.TYPE}-${Boat.availableColors[colorIndex]}-${orientation}`);
-
+            
             this.sprite = new PIXI.Sprite(surface);
             this.bounding = new RectangleBounding(this.sprite.position, this.sprite.width, this.sprite.height);
         }

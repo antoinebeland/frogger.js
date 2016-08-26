@@ -1,7 +1,9 @@
 /// <reference path="bonus.ts" />
 /// <reference path="../gameData.ts" />
 /// <reference path="../../graphics/imageLoader.ts" />
+/// <reference path="../../math/linearInterpolation.ts" />
 /// <reference path="../../physics/circleBounding.ts" />
+
 
 namespace FroggerJS.Game.Objects {
 
@@ -10,6 +12,9 @@ namespace FroggerJS.Game.Objects {
     import Bounding = FroggerJS.Physics.Bounding;
     import CircleBounding = FroggerJS.Physics.CircleBounding;
     import ImageLoader = FroggerJS.Graphics.ImageLoader;
+    import Interpolation = FroggerJS.Math.Interpolation;
+    import InterpolationRepetition = FroggerJS.Math.InterpolationRepetition;
+    import LinearInterpolation = FroggerJS.Math.LinearInterpolation;
 
     /**
      * Defines the 'Star' bonus.
@@ -18,14 +23,15 @@ namespace FroggerJS.Game.Objects {
 
         public static TYPE = "star";
 
+        private static BOUNDING_FACTOR = 0.3;
         private static MIN_SCALE = 0.85;
         private static MAX_SCALE = 1;
-        private static SCALE_FACTOR = 0.005;
+        private static SCALE_INCREMENT = 0.0025;
         private static SCORE_INCREMENT = 100;
 
         private sprite: PIXI.Sprite;
         private bounding: Bounding;
-        private animationSign: number = -1;
+        private interpolation: Interpolation;
 
         /**
          * Initializes a new instance of the Star class.
@@ -39,8 +45,13 @@ namespace FroggerJS.Game.Objects {
             this.sprite.anchor.x = 0.5;
             this.sprite.anchor.y = 0.5;
 
-            const BOUNDING_FACTOR = 0.3;
-            this.bounding = new CircleBounding(this.sprite.position, this.sprite.width * BOUNDING_FACTOR);
+            this.bounding = new CircleBounding(this.sprite.position, this.sprite.width * Star.BOUNDING_FACTOR);
+            this.interpolation = new LinearInterpolation({
+                minValue: Star.MIN_SCALE,
+                maxValue: Star.MAX_SCALE,
+                increment: Star.SCALE_INCREMENT,
+                repetition: InterpolationRepetition.Inverse
+            });
         }
 
         /**
@@ -75,15 +86,10 @@ namespace FroggerJS.Game.Objects {
          */
         public update(deltaTime: number): void {
 
-            // TODO: Changed this!
-            let scale = this.sprite.scale.x + this.animationSign * Star.SCALE_FACTOR;
-            if (scale >= Star.MAX_SCALE) {
-                this.animationSign = -1;
-                scale = Star.MAX_SCALE;
-            } else if (scale <= Star.MIN_SCALE) {
-                this.animationSign = 1;
-                scale = Star.MIN_SCALE;
+            if (!this.isAvailable()) {
+                return;
             }
+            let scale = this.interpolation.next(deltaTime);
             this.sprite.scale.x = scale;
             this.sprite.scale.y = scale;
         }

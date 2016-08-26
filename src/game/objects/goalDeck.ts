@@ -20,6 +20,8 @@ namespace FroggerJS.Game.Objects {
      */
     export class GoalDeck implements Renderable, Collidable {
 
+        private static BOUNDING_FACTOR = 0.4;
+
         private sprite: PIXI.Sprite;
         private bounding: Bounding;
         private availability: boolean;
@@ -35,8 +37,7 @@ namespace FroggerJS.Game.Objects {
             this.sprite.anchor.x = 0.5;
             this.sprite.anchor.y = 0.5;
 
-            const BOUNDING_FACTOR = 0.4;
-            this.bounding = new CircleBounding(this.sprite.position, this.sprite.width * BOUNDING_FACTOR);
+            this.bounding = new CircleBounding(this.sprite.position, this.sprite.width * GoalDeck.BOUNDING_FACTOR);
             this.availability = true;
         }
 

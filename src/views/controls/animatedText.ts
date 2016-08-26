@@ -1,7 +1,11 @@
 /// <reference path="../../graphics/updatable.ts" />
+/// <reference path="../../math/linearInterpolation.ts" />
 
 namespace FroggerJS.Views.Controls {
 
+    import Interpolation = FroggerJS.Math.Interpolation;
+    import InterpolationRepetition = FroggerJS.Math.InterpolationRepetition;
+    import LinearInterpolation = FroggerJS.Math.LinearInterpolation;
     import Updatable = FroggerJS.Graphics.Updatable;
 
     /**
@@ -9,11 +13,11 @@ namespace FroggerJS.Views.Controls {
      */
     export class AnimatedText extends PIXI.Text implements Updatable {
 
-        private static LABEL_ALPHA_FACTOR = 0.012;
+        private static LABEL_ALPHA_INCREMENT = 0.012;
         private static MAX_LABEL_ALPHA = 1;
         private static MIN_LABEL_ALPHA = 0.35;
 
-        private animationSign = 1;
+        private interpolation: Interpolation;
 
         /**
          * Initializes a new instance of the AnimatedText class.
@@ -23,6 +27,12 @@ namespace FroggerJS.Views.Controls {
          */
         public constructor(text: string, style?: any) {
             super(text, style);
+            this.interpolation = new LinearInterpolation({
+                minValue: AnimatedText.MIN_LABEL_ALPHA,
+                maxValue: AnimatedText.MAX_LABEL_ALPHA,
+                increment: AnimatedText.LABEL_ALPHA_INCREMENT,
+                repetition: InterpolationRepetition.Inverse
+            })
         }
 
         /**
@@ -31,18 +41,7 @@ namespace FroggerJS.Views.Controls {
          * @param deltaTime     The delta time to use.
          */
         public update(deltaTime: number): void {
-
-            let alphaToApply = this.alpha +
-                AnimatedText.LABEL_ALPHA_FACTOR * this.animationSign * deltaTime;
-
-            if (alphaToApply >= AnimatedText.MAX_LABEL_ALPHA) {
-                alphaToApply = AnimatedText.MAX_LABEL_ALPHA;
-                this.animationSign = -1;
-            } else if (alphaToApply <= AnimatedText.MIN_LABEL_ALPHA) {
-                alphaToApply = AnimatedText.MIN_LABEL_ALPHA;
-                this.animationSign = 1;
-            }
-            this.alpha = alphaToApply;
+            this.alpha = this.interpolation.next(deltaTime);
         }
     }
 }

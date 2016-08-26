@@ -2,6 +2,8 @@
 
 namespace FroggerJS.Physics {
 
+    declare var Math: Math;
+
     /**
      * Defines a circle bounding.
      */

@@ -8,6 +8,8 @@
 
 namespace FroggerJS.Game {
 
+    declare var Math: Math;
+    
     import AudioManager = FroggerJS.Audio.AudioManager;
     import Bounding = FroggerJS.Physics.Bounding;
     import CircleBounding = FroggerJS.Physics.CircleBounding;
@@ -41,6 +43,7 @@ namespace FroggerJS.Game {
      */
     export class Actor implements Renderable, Collidable {
 
+        private static BOUNDING_FACTOR = 0.3;
         private static JUMP_SOUND_NAME = "jump";
 
         private keyUpTexture: PIXI.Texture;
@@ -77,8 +80,7 @@ namespace FroggerJS.Game {
             this.sprite.anchor.x = 0.5;
             this.sprite.anchor.y = 0.5;
 
-            const BOUNDING_FACTOR = 0.3;
-            this.bounding = new CircleBounding(this.sprite.position, this.sprite.width * BOUNDING_FACTOR);
+            this.bounding = new CircleBounding(this.sprite.position, this.sprite.width * Actor.BOUNDING_FACTOR);
 
             this.startPosition();
             this.tileExploredPosition = this.tilePosition;
