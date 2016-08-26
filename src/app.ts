@@ -38,6 +38,8 @@ namespace FroggerJS {
                 { name: "arrow-keys-up",        file: "arrow-keys-up.png"           },
                 { name: "boat-red-left",        file: "boat-red-left.png"           },
                 { name: "boat-red-right",       file: "boat-red-right.png"          },
+                { name: "boat-white-left",      file: "boat-white-left.png"         },
+                { name: "boat-white-right",     file: "boat-white-right.png"        },
                 { name: "boat-yellow-left",     file: "boat-yellow-left.png"        },
                 { name: "boat-yellow-right",    file: "boat-yellow-right.png"       },
                 { name: "car-blue-left",        file: "car-blue-left.png"           },

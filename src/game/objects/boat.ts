@@ -17,7 +17,8 @@ namespace FroggerJS.Game.Objects {
         public static TYPE = "boat";
         private static availableColors = [
             "red",
-            "yellow"
+            "yellow",
+            "white"
         ];
 
         private sprite: PIXI.Sprite;
