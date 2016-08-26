@@ -1,5 +1,6 @@
 /// <reference path="state.ts" />
 /// <reference path="../audio/audioManager.ts" />
+/// <reference path="../game/gameData.ts" />
 /// <reference path="../graphics/imageLoader.ts" />
 /// <reference path="../graphics/scene.ts" />
 /// <reference path="../graphics/ticker.ts" />
@@ -11,6 +12,7 @@ namespace FroggerJS.States {
 
     import AudioManager = FroggerJS.Audio.AudioManager;
     import GameCompleteView = FroggerJS.Views.GameCompleteView;
+    import GameData = FroggerJS.Game.GameData;
     import ImageLoader = FroggerJS.Graphics.ImageLoader;
     import Logger = Utils.Logger;
     import Scene = FroggerJS.Graphics.Scene;
@@ -56,6 +58,7 @@ namespace FroggerJS.States {
 
             Logger.logMessage("Entered in 'End Game State'.");
 
+            this.gameCompleteView.setFinalScore(GameData.getScore());
             this.scene.addChild(this.gameCompleteView);
             this.ticker.register(this.gameCompleteView);
 
