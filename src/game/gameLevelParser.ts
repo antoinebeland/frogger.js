@@ -165,6 +165,8 @@ namespace FroggerJS.Game {
          * @param mobileElement.type            The type of the mobile.
          * @param mobileElement.orientation     The orientation of the mobile.
          * @param mobileElement.speed           The speed of the mobile.
+         * @param [mobileElement.repeated]      Indicates if the mobile must be repeated on the line.
+         *                                      The default value is TRUE.
          *
          * @param lineIndex                     The current line index.
          * @returns {Array}                     An array of mobiles for the specified line index.
@@ -173,6 +175,7 @@ namespace FroggerJS.Game {
 
             const MAX_MOBILE_DISTANCE_FACTOR = 2.5;
             let mobiles: Mobile[] = [];
+            let repeated = true;
 
             if (!mobileElement.hasOwnProperty("type")) {
                 throw new Error("Type property is missing.");
@@ -182,6 +185,9 @@ namespace FroggerJS.Game {
             }
             if (!mobileElement.hasOwnProperty("speed")) {
                 throw new Error("Speed property is missing.");
+            }
+            if (mobileElement.hasOwnProperty("repeated")) {
+                repeated = mobileElement.repeat;
             }
 
             let nextPosition = 0;
@@ -200,7 +206,7 @@ namespace FroggerJS.Game {
 
                 mobiles.push(mobileObject);
 
-            } while (nextPosition < Constants.WINDOW_WIDTH);
+            } while (repeated && nextPosition < Constants.WINDOW_WIDTH);
 
             return mobiles;
         }

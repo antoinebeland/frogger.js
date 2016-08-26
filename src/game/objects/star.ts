@@ -35,7 +35,7 @@ namespace FroggerJS.Game.Objects {
         public constructor(imageLoader: ImageLoader) {
             super();
 
-            this.sprite = new PIXI.Sprite(imageLoader.get("star"));
+            this.sprite = new PIXI.Sprite(imageLoader.get(Star.TYPE));
             this.sprite.anchor.x = 0.5;
             this.sprite.anchor.y = 0.5;
 

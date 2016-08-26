@@ -23,7 +23,7 @@ namespace FroggerJS {
                 { texture: "water", touchAllowed: false, mobile: { type: "boat", orientation: "right", speed: 1 } },
                 { texture: "water", touchAllowed: false, mobile: { type: "boat", orientation: "left", speed: 1.5 } },
                 { texture: "water", touchAllowed: false, mobile: { type: "boat", orientation: "right", speed: 1 } },
-                { texture: "grass-water-bottom", touchAllowed: true },
+                { texture: "grass-water-bottom", touchAllowed: true, bonus: "star" },
                 { texture: "road-top", touchAllowed: true, mobile: { type: "car", orientation: "left", speed: 1 } },
                 { texture: "road-middle-top", touchAllowed: true, mobile: { type: "car", orientation: "left", speed: 1.5 } },
                 { texture: "road-middle-bottom", touchAllowed: true, mobile: { type: "car", orientation: "right", speed: 1.5 } },

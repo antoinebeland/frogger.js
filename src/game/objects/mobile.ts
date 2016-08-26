@@ -18,7 +18,7 @@ namespace FroggerJS.Game.Objects {
 
         private speed: number;
         private speedDecimal = 0;
-        private orientation: Orientation;
+        protected orientation: Orientation;
 
         /**
          * Initializes a new instance of the Mobile class.
