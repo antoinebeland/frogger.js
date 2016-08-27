@@ -2,6 +2,7 @@
 
 namespace FroggerJS.Graphics {
 
+    declare var Math: Math;
     import Event = Utils.Event;
 
     /**
@@ -11,6 +12,16 @@ namespace FroggerJS.Graphics {
 
         private loader: PIXI.loaders.Loader;
         private baseResourcesPath : string;
+        private resourcesCount: number = 0;
+        private loadedResourcesCount: number = 0;
+
+        /**
+         * Occurred when the progress of the loader changed.
+         * The new progression percentage is specified with the event.
+         *
+         * @type {Utils.Event<string>}
+         */
+        public onProgressChanged = new Event<string>();
 
         /**
          * Occurred when the images loading is completed.
@@ -30,6 +41,12 @@ namespace FroggerJS.Graphics {
             this.baseResourcesPath = baseResourcesPath;
 
             let self = this;
+            this.loader.on('progress', function(e) {
+                ++self.loadedResourcesCount;
+                if (self.resourcesCount > 0) {
+                    self.onProgressChanged.invoke(Math.floor(self.loadedResourcesCount / self.resourcesCount * 100) + "%");
+                }
+            });
             this.loader.once("complete", function () {
                 self.onLoadingCompleted.invoke();
             });
@@ -47,6 +64,7 @@ namespace FroggerJS.Graphics {
                 throw new Error(`An image is already registered with the '${name}' identifier.`);
             }
             this.loader.add(name, `${this.baseResourcesPath}/${fileName}`);
+            ++this.resourcesCount;
         }
 
         /**

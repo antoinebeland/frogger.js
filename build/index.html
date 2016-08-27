@@ -3,22 +3,21 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-  <title>frogger.js</title>
-  <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-      background-color: black;
-    }
 
-    canvas {
-      display: block;
-      margin: 0 auto;
-    }
-  </style>
+  <title>frogger.js</title>
+  <link href="style.css" rel="stylesheet">
 </head>
 
 <body>
+<div id="loading-panel">
+  <div>
+    <p>Loading resources...</p>
+    <div class="progress">
+      <div class="progress-bar">
+      </div>
+    </div>
+  </div>
+</div>
 
 <script src="libs/pixi.min.js"></script>
 <script src="libs/howler.min.js"></script>

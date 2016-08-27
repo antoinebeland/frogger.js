@@ -114,7 +114,16 @@ namespace FroggerJS {
 
             let imageLoader = new ImageLoader("assets/sprites");
             imageLoader.registerMap(App.resources.sprites);
+
+            let progressBar = document.querySelector(".progress-bar") as HTMLElement;
+            imageLoader.onProgressChanged.register(function(percent: string) {
+                progressBar.style.width = percent;
+                progressBar.innerText = percent;
+            });
             imageLoader.onLoadingCompleted.register(function() {
+
+                // Removes the loading panel.
+                document.getElementById("loading-panel").style.display = "none";
 
                 Logger.logMessage("Resources loaded.", LogLevel.Info);
 
