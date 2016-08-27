@@ -29,6 +29,9 @@ namespace FroggerJS {
     import StateManager = FroggerJS.States.StateManager;
     import Ticker = FroggerJS.Graphics.Ticker;
 
+    /**
+     * Defines the main class of the application.
+     */
     export class App {
 
         private static resources = {
@@ -101,6 +104,9 @@ namespace FroggerJS {
             ]
         };
 
+        /**
+         * Initializes the application.
+         */
         public static initialize() {
 
             Logger.activeLogLevel = Constants.ACTIVE_LOG_LEVEL;
