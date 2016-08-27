@@ -1,0 +1,7 @@
+Sprite attributions
+-------------------
+cup.png		==>		Icons made by Freepik from www.flaticon.co is licensed by CC 3.0 BY.
+				Modifications by Antoine Béland
+
+arrows-keys	==>		Arrow Keys Vectors by vecteezy.
+heart/star	==>		Image from walesmd/uda-frogger on GitHub.

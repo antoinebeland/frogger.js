@@ -1,0 +1,49 @@
+body {
+  margin: 0;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+  color: white;
+  background-color: black;
+ }
+
+canvas {
+  display: block;
+  margin: 0 auto;
+}
+
+#loading-panel {
+  position: absolute;
+  right: 0;
+  bottom: 10px;
+  left: 0;
+  width: 100vw;
+  max-width: 130vh; /* 1560 / 1200* 100 = 130 */
+  margin: auto;
+  text-align: center;
+}
+
+#loading-panel > div {
+  padding: 30px;
+}
+
+#loading-panel p {
+  margin-bottom: 8px;
+  text-align: left;
+}
+
+.progress {
+  width: 100%;
+  height: 30px;
+  background-color: #3A3A3A;
+  border: solid 1px white;
+}
+
+.progress-bar {
+  width: 0;
+  height: 30px;
+  font-weight: bold;
+  line-height: 30px;
+  text-align: center;
+  background: #008BBE;
+  border-right: solid 1px white;
+}
