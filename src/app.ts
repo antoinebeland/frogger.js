@@ -16,6 +16,7 @@ namespace FroggerJS {
     declare var PIXI: any;
 
     import AudioManager = FroggerJS.Audio.AudioManager;
+    import Constants = FroggerJS.Constants;
     import GameCompleteState = FroggerJS.States.GameCompleteState;
     import GameDirectionsState = FroggerJS.States.GameDirectionsState;
     import GameLevelState = FroggerJS.States.GameLevelState;
@@ -102,7 +103,7 @@ namespace FroggerJS {
 
         public static initialize() {
 
-            Logger.activeLogLevel = LogLevel.Debug;
+            Logger.activeLogLevel = Constants.ACTIVE_LOG_LEVEL;
             PIXI.utils._saidHello = true;
 
             Logger.logMessage("Initialize Frogger.js...", LogLevel.Info);
@@ -110,7 +111,7 @@ namespace FroggerJS {
 
             let audioManager = new AudioManager("assets/sounds");
             audioManager.registerMap(App.resources.sounds);
-            audioManager.mute(FroggerJS.Constants.AUDIO_MUTED);
+            audioManager.mute(Constants.AUDIO_MUTED);
 
             let imageLoader = new ImageLoader("assets/sprites");
             imageLoader.registerMap(App.resources.sprites);
@@ -128,7 +129,7 @@ namespace FroggerJS {
                 Logger.logMessage("Resources loaded.", LogLevel.Info);
 
                 let ticker = new Ticker();
-                let scene = new Scene(FroggerJS.Constants.WINDOW_WIDTH, FroggerJS.Constants.WINDOW_HEIGHT);
+                let scene = new Scene(Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
 
                 let stateManager = new StateManager();
                 stateManager.register("mainMenu", new MainMenuState(scene, imageLoader, audioManager, stateManager));
