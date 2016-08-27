@@ -4,7 +4,7 @@ A frogger game implemented in TypeScript that uses the [pixi.js](https://github.
 ![Screenshot](https://raw.githubusercontent.com/antoinebeland/frogger.js/master/build/assets/screenshot.png)
 
 ## Getting Started
-The application will be available on my [personal website](http://www.antoinebeland.com) soon.
+The game is available on my [personal website](http://www.antoinebeland.com/frogger.js).
 If you want to use the application on your local machine, you must follow the next instructions.
 
 ### Prerequisites
