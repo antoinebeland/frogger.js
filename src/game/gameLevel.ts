@@ -244,6 +244,36 @@ namespace FroggerJS.Game {
                     }
                 }
 
+                // Checks if the actor is at the end line.
+                if (this.actor.getLinePosition() == 0) {
+                    for (let i = 0; i < this.goals.length; ++i) {
+                        let goalDeck = this.goals[i];
+
+                        // Checks if there is a collision with a goal deck and the goal deck is available.
+                        if (goalDeck.isAvailable() &&
+                            goalDeck.getBounding().isCollide(this.actor.getBounding())) {
+
+                            isCollide = true;
+                            goalDeck.occupy();
+                            let availableGoalsCount = this.goals.filter(function (goal) {
+                                return goal.isAvailable();
+                            }).length;
+
+                            // Centers the actor on the goal deck.
+                            this.actor.getDisplayObject().x = goalDeck.getDisplayObject().x;
+                            this.actor.getDisplayObject().y = goalDeck.getDisplayObject().y;
+
+                            // Checks if there is no other available goal decks (all the goal decks are occupied).
+                            if (availableGoalsCount == 0) {
+                                this.onNextLevel.invoke();
+                                return;
+                            } else {
+                                this.generateActor();
+                            }
+                        }
+                    }
+                }
+
                 /* Checks if there is a collision between the actor and the tile,
                    and if the collision is forbidden between the two. */
                 if (this.actor.getLinePosition() == i && !isCollide && !this.touchAllowedStatus[i]) {
@@ -260,33 +290,6 @@ namespace FroggerJS.Game {
                     if (bonus.isAvailable() && bonus.getBounding().isCollide(this.actor.getBounding())) {
                         bonus.apply();
                         this.audioManager.play(GameLevel.BONUS_SOUND_NAME);
-                    }
-                }
-            }
-
-            // Iterates over the goal decks.
-            for (let i = 0; i < this.goals.length; ++i) {
-                let goalDeck = this.goals[i];
-
-                // Checks if there is a collision with a goal deck and the goal deck is available.
-                if (this.actor.getLinePosition() == 0 && goalDeck.isAvailable() &&
-                    goalDeck.getBounding().isCollide(this.actor.getBounding())) {
-
-                    goalDeck.occupy();
-                    let availableGoalsCount = this.goals.filter(function (goal) {
-                        return goal.isAvailable();
-                    }).length;
-
-                    // Centers the actor on the goal deck.
-                    this.actor.getDisplayObject().x = goalDeck.getDisplayObject().x;
-                    this.actor.getDisplayObject().y = goalDeck.getDisplayObject().y;
-
-                    // Checks if there is no other available goal decks (all the goal decks are occupied).
-                    if (availableGoalsCount == 0) {
-                        this.onNextLevel.invoke();
-                        return;
-                    } else {
-                        this.generateActor();
                     }
                 }
             }
