@@ -1,7 +1,7 @@
 {
   "name": "frogger.js",
   "version": "1.0.0",
-  "description": "Frogger game implements in TypeScript.",
+  "description": "Frogger game implemented in TypeScript.",
   "main": "gulpfile.js",
   "repository": {
     "type": "git",
