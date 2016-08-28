@@ -2,7 +2,7 @@
 
 var constants = {
   BUILD_DIRECTORY: "build",
-  HEADER_LICENSE: '/*! Frogger.js | (c) Antoine Béland | MIT license */\n',
+  HEADER_LICENSE: '/*! frogger.js | (c) Antoine Béland | MIT License */\n',
   RELEASE_DIRECTORY: "release",
   SOURCES_DIRECTORY: "src",
   SERVER_PORT: 8080
