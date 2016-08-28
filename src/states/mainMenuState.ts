@@ -48,8 +48,6 @@ namespace FroggerJS.States {
                 this.stateManager.change("level1");
             }, this);
             this.mainMenuView.onDirectionsClicked.register(function () {
-
-                console.log("DIRECTIONS CLICKED");
                 this.stateManager.change("gameDirections");
             }, this);
         }

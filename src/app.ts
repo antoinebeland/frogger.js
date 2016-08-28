@@ -122,21 +122,16 @@ namespace FroggerJS {
             let imageLoader = new ImageLoader("assets/sprites");
             imageLoader.registerMap(App.resources.sprites);
 
-            let loadingText = document.getElementById("loading-text");
             let progressBar = document.querySelector(".progress-bar") as HTMLElement;
-
-            loadingText.innerText = "Loading resources...";
             imageLoader.onProgressChanged.register(function(percent: string) {
                 progressBar.style.width = percent;
                 progressBar.innerText = percent;
             });
             imageLoader.onLoadingCompleted.register(function() {
 
-                loadingText.innerText = "Resources loaded.";
-                Logger.logMessage("Resources loaded.", LogLevel.Info);
-
                 // Removes the loading panel.
                 document.getElementById("loading-panel").style.display = "none";
+                Logger.logMessage("Resources loaded.", LogLevel.Info);
 
                 let ticker = new Ticker();
                 let scene = new Scene(Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
