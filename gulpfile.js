@@ -45,7 +45,7 @@ gulp.task('build', function () {
 
 /**
  * Release Task
- * ----------
+ * ------------
  * Compiles the files of the 'src' directory to generate a minified file
  * in the 'build' folder without a map file.
  */
