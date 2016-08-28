@@ -1,6 +1,6 @@
 Sound attributions
 ------------------
-direction.wav	==>	Pinball Three by Mike Koenig (http://www.playonloop.com/2014-music-loops/pinball-three/)
+direction.wav	==>	Toy Ships by Mike Koenig (http://www.playonloop.com/2013-music-loops/toy-ships/)
 drop.mp3	==>	Mario Jumping by Mike Koenig (http://soundbible.com/1232-Water-Drop-Sound-High.html)
 game1.wav 	==> 	Test Your Skills (http://www.playonloop.com/2015-music-loops/test-your-skills/)
 game2.wav	==>	Cyber Factory (http://www.playonloop.com/2010-music-loops/cyber-factory/)
