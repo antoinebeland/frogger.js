@@ -69,8 +69,7 @@ namespace FroggerJS.Views.Controls {
                 .on('mouseup', onButtonUp)
                 .on('mouseupoutside', onButtonUp)
                 .on('touchstart', onButtonDown)
-                .on('touchend', onButtonUp)
-                .on('touchendoutside', onButtonUp);
+                .on('touchend', onTouchEnd);
 
             this.text = (style) ? new PIXI.Text(text, style) : new PIXI.Text(text);
             this.text.anchor.x = 0.5;
@@ -87,6 +86,14 @@ namespace FroggerJS.Views.Controls {
 
             function onButtonUp() {
                 if (this.isHovered && this.buttonPressed) {
+                    this.onClick.invoke();
+                }
+                this.buttonPressed = false;
+                this.texture = this.defaultTexture;
+            }
+
+            function onTouchEnd() {
+                if (this.buttonPressed) {
                     this.onClick.invoke();
                 }
                 this.buttonPressed = false;
