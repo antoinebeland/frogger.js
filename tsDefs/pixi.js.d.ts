@@ -586,6 +586,7 @@ declare module PIXI {
         forceFXAA?: boolean;
         roundPixels?: boolean;
         backgroundColor?: number;
+        autoResize?: boolean;
 
     }
     export class SystemRenderer extends utils.EventEmitter {

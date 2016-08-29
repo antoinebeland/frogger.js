@@ -33,9 +33,15 @@ namespace FroggerJS.Graphics {
             this.height = height;
 
             this.renderer = PIXI.autoDetectRenderer(width, height, {
-                resolution: window.devicePixelRatio
+                antialias: false,
+                transparent: false,
+                resolution: window.devicePixelRatio,
+                autoResize: true
             });
 
+            // Applies the style.
+            this.renderer.view.style.position = "absolute";
+            this.renderer.view.style.top = "0";
             this.resize();
             
             document.body.appendChild(this.renderer.view);
@@ -60,7 +66,10 @@ namespace FroggerJS.Graphics {
         private resize() {
             let ratio = Math.min(window.innerWidth / this.width, window.innerHeight / this.height);
             this.container.scale.x = this.container.scale.y = ratio;
-            this.renderer.resize(Math.ceil(this.width * ratio), Math.ceil(this.height * ratio));
+
+            let widthToApply = Math.ceil(this.width * ratio);
+            this.renderer.resize(widthToApply, Math.ceil(this.height * ratio));
+            this.renderer.view.style.left = `${(window.innerWidth - widthToApply) * 0.5}px`;
         }
     }
 }
