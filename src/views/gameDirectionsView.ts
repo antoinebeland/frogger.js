@@ -66,9 +66,9 @@ namespace FroggerJS.Views {
             const BORDER_BOTTOM = 85;
 
             const DIRECTIONS_STRING =
-                "HELP THE FROGS TO CROSS THE ROAD AND THE RIVER " +
-                "TO REACH THE DECKS THE OTHER SIDE.\n\n" +
-                "USE THE ARROW KEYS OF THE KEYBOARD TO MOVE.";
+                "HELP THE FROG TO CROSS THE ROAD AND THE RIVER " +
+                "TO REACH THE DECKS ON THE OTHER SIDE.\n\n" +
+                "USE THE ARROW KEYS OF THE KEYBOARD TO MOVE THE FROG.";
 
             const BUTTON_TEXT_STYLE = {font: "45px Arial", fill: "white"};
             const DIRECTIONS_TEXT_STYLE =
