@@ -45,6 +45,8 @@ namespace FroggerJS.Game {
 
         private static BOUNDING_FACTOR = 0.3;
         private static JUMP_SOUND_NAME = "jump";
+        private static SHIFTING = FroggerJS.Constants.TILE_SIZE;
+        private static HALF_SHIFTING = Actor.SHIFTING * 0.5;
 
         private keyUpTexture: PIXI.Texture;
         private keyDownTexture: PIXI.Texture;
@@ -123,27 +125,26 @@ namespace FroggerJS.Game {
              */
             this.onKeyUp = function (event: KeyboardEvent) {
 
-                const SHIFTING = FroggerJS.Constants.TILE_SIZE;
                 switch (event.keyCode) {
                     case ArrowKeyCode.Left:
-                        if (self.sprite.position.x - SHIFTING >= 0) {
-                            self.sprite.position.x -= SHIFTING;
+                        if (self.sprite.position.x - Actor.SHIFTING >= 0) {
+                            self.sprite.position.x -= Actor.HALF_SHIFTING;
                         }
                         break;
                     case ArrowKeyCode.Up:
-                        if (self.sprite.position.y - SHIFTING >= 0) {
-                            self.sprite.position.y -= SHIFTING;
+                        if (self.sprite.position.y - Actor.SHIFTING >= 0) {
+                            self.sprite.position.y -= Actor.SHIFTING;
                         }
                         break;
 
                     case ArrowKeyCode.Right:
-                        if (self.sprite.position.x + SHIFTING <= FroggerJS.Constants.WINDOW_WIDTH) {
-                            self.sprite.position.x += SHIFTING;
+                        if (self.sprite.position.x + Actor.SHIFTING <= FroggerJS.Constants.WINDOW_WIDTH) {
+                            self.sprite.position.x += Actor.HALF_SHIFTING;
                         }
                         break;
                     case ArrowKeyCode.Down:
-                        if (self.sprite.position.y + SHIFTING <= FroggerJS.Constants.WINDOW_HEIGHT) {
-                            self.sprite.position.y += SHIFTING;
+                        if (self.sprite.position.y + Actor.SHIFTING <= FroggerJS.Constants.WINDOW_HEIGHT) {
+                            self.sprite.position.y += Actor.SHIFTING;
                         }
                         break;
                 }
