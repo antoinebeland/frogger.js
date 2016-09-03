@@ -85,6 +85,12 @@ namespace FroggerJS {
                 { name: "panel-button-hovered", file: "panel-button-hovered.png"    },
                 { name: "panel-button-clicked", file: "panel-button-clicked.png"    },
                 { name: "star",                 file: "star.png"                    },
+                { name: "turtle-1-left",        file: "turtle-1-left.png"           },
+                { name: "turtle-1-right",       file: "turtle-1-right.png"          },
+                { name: "turtle-2-left",        file: "turtle-2-left.png"           },
+                { name: "turtle-2-right",       file: "turtle-2-right.png"          },
+                { name: "turtle-3-left",        file: "turtle-3-left.png"           },
+                { name: "turtle-3-right",       file: "turtle-3-right.png"          }
             ],
             sounds: [
                 { name: "bonus",        file: "bonus.wav"       },
@@ -152,7 +158,7 @@ namespace FroggerJS {
 
                     ++level;
                 }
-                stateManager.change("mainMenu");
+                stateManager.change("level6");
 
                 ticker.register(scene);
                 ticker.start();

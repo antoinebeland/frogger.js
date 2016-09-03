@@ -1,6 +1,7 @@
 /// <reference path="boat.ts" />
 /// <reference path="car.ts" />
 /// <reference path="snake.ts" />
+/// <reference path="turtle.ts" />
 /// <reference path="orientation.ts" />
 /// <reference path="../../graphics/imageLoader.ts" />
 
@@ -35,12 +36,14 @@ namespace FroggerJS.Game.Objects {
         public create(mobileName: string, orientation: Orientation, speed: number): Mobile {
 
             switch (mobileName.toLowerCase()) {
-                case Car.TYPE:
-                    return new Car(this.imageLoader, orientation, speed);
                 case Boat.TYPE:
                     return new Boat(this.imageLoader, orientation, speed);
+                case Car.TYPE:
+                    return new Car(this.imageLoader, orientation, speed);
                 case Snake.TYPE:
                     return new Snake(this.imageLoader, orientation, speed);
+                case Turtle.TYPE:
+                    return new Turtle(this.imageLoader, orientation, speed);
             }
             throw new Error("The mobile name doesn't exist.");
         }
