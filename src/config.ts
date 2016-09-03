@@ -52,8 +52,24 @@ namespace FroggerJS {
             ]
         },
         {
-            goalsNumber: 2,
+            goalsNumber: 3,
             soundtrack: "game3",
+            board: [
+                { texture: "grass-water-top", touchAllowed: true },
+                { texture: "water", touchAllowed: false, mobile: { type: "turtle", orientation: "right", speed: 1.25 } },
+                { texture: "water", touchAllowed: false, mobile: { type: "boat", orientation: "left", speed: 2.25 } },
+                { texture: "water", touchAllowed: false, mobile: { type: "boat", orientation: "right", speed: 1.5 } },
+                { texture: "grass-water-bottom", touchAllowed: true, bonus: "star" },
+                { texture: "road-top", touchAllowed: true, mobile: { type: "car", orientation: "left", speed: 1 } },
+                { texture: "road-middle-top", touchAllowed: true, mobile: { type: "car", orientation: "left", speed: 2.25 } },
+                { texture: "road-middle-bottom", touchAllowed: true, mobile: { type: "car", orientation: "right", speed: 2.25 } },
+                { texture: "road-bottom", touchAllowed: true, mobile: { type: "car", orientation: "right", speed: 1 } },
+                { texture: "grass", touchAllowed: true }
+            ]
+        },
+        {
+            goalsNumber: 3,
+            soundtrack: "game4",
             board: [
                 { texture: "grass-water-top", touchAllowed: true },
                 { texture: "water", touchAllowed: false, mobile: { type: "boat", orientation: "right", speed: 1.75 } },
@@ -61,7 +77,7 @@ namespace FroggerJS {
                 { texture: "water", touchAllowed: false, mobile: { type: "boat", orientation: "right", speed: 3 } },
                 { texture: "water", touchAllowed: false, mobile: { type: "boat", orientation: "left", speed: 2 } },
                 { texture: "water", touchAllowed: false, mobile: { type: "boat", orientation: "right", speed: 1.5 } },
-                { texture: "grass-water-bottom", touchAllowed: true, bonus: "star" },
+                { texture: "grass-water-bottom", touchAllowed: true, bonus: "heart" },
                 { texture: "road-top", touchAllowed: true, mobile: { type: "car", orientation: "left", speed: 2 } },
                 { texture: "road-bottom", touchAllowed: true, mobile: { type: "car", orientation: "right", speed: 1.5 } },
                 { texture: "grass", touchAllowed: true }
@@ -69,7 +85,7 @@ namespace FroggerJS {
         },
         {
             goalsNumber: 2,
-            soundtrack: "game4",
+            soundtrack: "game5",
             board: [
                 { texture: "water", touchAllowed: false },
                 { texture: "water", touchAllowed: false, mobile: { type: "boat", orientation: "left", speed: 1.5 } },
@@ -84,8 +100,8 @@ namespace FroggerJS {
             ]
         },
         {
-            goalsNumber: 1,
-            soundtrack: "game5",
+            goalsNumber: 2,
+            soundtrack: "game1",
             board: [
                 { texture: "water", touchAllowed: false },
                 { texture: "water", touchAllowed: false, mobile: { type: "boat", orientation: "right", speed: 2 } },
@@ -96,6 +112,70 @@ namespace FroggerJS {
                 { texture: "road-middle-top", touchAllowed: true, mobile: { type: "car", orientation: "left", speed: 2 } },
                 { texture: "road-middle-bottom", touchAllowed: true, mobile: { type: "car", orientation: "right", speed: 2.5 } },
                 { texture: "road-bottom", touchAllowed: true, mobile: { type: "car", orientation: "right", speed: 1 } },
+                { texture: "grass", touchAllowed: true }
+            ]
+        },
+        {
+            goalsNumber: 2,
+            soundtrack: "game2",
+            board: [
+                { texture: "water", touchAllowed: false },
+                { texture: "water", touchAllowed: false, mobile: { type: "boat", orientation: "right", speed: 3 } },
+                { texture: "water", touchAllowed: false, mobile: { type: "boat", orientation: "left", speed: 3 } },
+                { texture: "grass-water-bottom", touchAllowed: true, bonus: "heart" },
+                { texture: "road-top", touchAllowed: true, mobile: { type: "car", orientation: "left", speed: 2 } },
+                { texture: "road-bottom", touchAllowed: true, mobile: { type: "car", orientation: "right", speed: 2.25 } },
+                { texture: "grass-water-top", touchAllowed: true, mobile: { type: "snake", orientation: "right", speed: 2.5 } },
+                { texture: "water", touchAllowed: false, mobile: { type: "turtle", orientation: "left", speed: 2.5 } },
+                { texture: "water", touchAllowed: false, mobile: { type: "boat", orientation: "right", speed: 3 } },
+                { texture: "grass-water-bottom", touchAllowed: true }
+            ]
+        },
+        {
+            goalsNumber: 2,
+            soundtrack: "game3",
+            board: [
+                { texture: "water", touchAllowed: false },
+                { texture: "water", touchAllowed: false, mobile: { type: "boat", orientation: "right", speed: 2.25 } },
+                { texture: "water", touchAllowed: false, mobile: { type: "boat", orientation: "left", speed: 2.75 } },
+                { texture: "water", touchAllowed: false, mobile: { type: "turtle", orientation: "right", speed: 3 } },
+                { texture: "water", touchAllowed: false, mobile: { type: "boat", orientation: "left", speed: 2.5 } },
+                { texture: "water", touchAllowed: false, mobile: { type: "turtle", orientation: "right", speed: 2 } },
+                { texture: "grass-water-bottom", touchAllowed: true, bonus: "star", mobile: { type: "snake", orientation: "right", speed: 2.6, repeated: false } },
+                { texture: "road-top", touchAllowed: true, mobile: { type: "car", orientation: "left", speed: 2.5 } },
+                { texture: "road-bottom", touchAllowed: true, mobile: { type: "car", orientation: "right", speed: 3 } },
+                { texture: "grass", touchAllowed: true }
+            ]
+        },
+        {
+            goalsNumber: 2,
+            soundtrack: "game4",
+            board: [
+                { texture: "water", touchAllowed: false },
+                { texture: "water", touchAllowed: false, mobile: { type: "boat", orientation: "right", speed: 3.4 } },
+                { texture: "water", touchAllowed: false, mobile: { type: "turtle", orientation: "left", speed: 3 } },
+                { texture: "grass-water-bottom", touchAllowed: true, bonus: "star", mobile: { type: "snake", orientation: "right", speed: 2.75 } },
+                { texture: "road-top", touchAllowed: true, mobile: { type: "car", orientation: "left", speed: 2.25 } },
+                { texture: "road-bottom", touchAllowed: true, mobile: { type: "car", orientation: "right", speed: 2 } },
+                { texture: "grass-water-top", touchAllowed: true, bonus: "heart" },
+                { texture: "water", touchAllowed: false, mobile: { type: "turtle", orientation: "right", speed: 3 } },
+                { texture: "water", touchAllowed: false, mobile: { type: "boat", orientation: "left", speed: 3.25 } },
+                { texture: "grass-water-bottom", touchAllowed: true }
+            ]
+        },
+        {
+            goalsNumber: 1,
+            soundtrack: "game5",
+            board: [
+                { texture: "water", touchAllowed: false },
+                { texture: "water", touchAllowed: false, mobile: { type: "turtle", orientation: "left", speed: 3.25 } },
+                { texture: "water", touchAllowed: false, mobile: { type: "turtle", orientation: "left", speed: 4 } },
+                { texture: "water", touchAllowed: false, mobile: { type: "boat", orientation: "right", speed: 4.25 } },
+                { texture: "water", touchAllowed: false, mobile: { type: "boat", orientation: "left", speed: 3.6 } },
+                { texture: "water", touchAllowed: false, mobile: { type: "boat", orientation: "right", speed: 3.35 } },
+                { texture: "grass-water-bottom", touchAllowed: true, bonus: "heart", mobile: { type: "snake", orientation: "right", speed: 2.75 } },
+                { texture: "road-top", touchAllowed: true, mobile: { type: "car", orientation: "left", speed: 3.5 } },
+                { texture: "road-bottom", touchAllowed: true, mobile: { type: "car", orientation: "right", speed: 3.25 } },
                 { texture: "grass", touchAllowed: true }
             ]
         }

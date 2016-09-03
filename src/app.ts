@@ -158,7 +158,7 @@ namespace FroggerJS {
 
                     ++level;
                 }
-                stateManager.change("level6");
+                stateManager.change("level10");
 
                 ticker.register(scene);
                 ticker.start();
