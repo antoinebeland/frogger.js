@@ -129,11 +129,11 @@ namespace FroggerJS {
             imageLoader.registerMap(App.resources.sprites);
 
             let progressBar = document.querySelector(".progress-bar") as HTMLElement;
-            imageLoader.onProgressChanged.register(function(percent: string) {
+            imageLoader.onProgressChanged.register(function (percent: string) {
                 progressBar.style.width = percent;
                 progressBar.innerText = percent;
             });
-            imageLoader.onLoadingCompleted.register(function() {
+            imageLoader.onLoadingCompleted.register(function () {
 
                 // Removes the loading panel.
                 document.getElementById("loading-panel").style.display = "none";
