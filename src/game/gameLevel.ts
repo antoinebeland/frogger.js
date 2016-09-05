@@ -41,6 +41,7 @@ namespace FroggerJS.Game {
     export class GameLevel implements Updatable {
 
         private static BONUS_SOUND_NAME = "bonus";
+        private static DEAD_DELAY = 800;
         private static FALL_SOUND_NAME = "drop";
         private static HIT_SOUND_NAME = "hit";
         private static LIVES_BASE_TEXT = "\u2764 \u00D7";
@@ -358,7 +359,7 @@ namespace FroggerJS.Game {
                 let self = this;
                 setTimeout(function () {
                     self.actor.reset();
-                }, 800);
+                }, GameLevel.DEAD_DELAY);
             }
         }
 

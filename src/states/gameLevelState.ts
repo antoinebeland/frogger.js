@@ -23,6 +23,7 @@ namespace FroggerJS.States {
      */
     export class GameLevelState implements State {
 
+        private static DELAY = 250;
         private static NEXT_LEVEL_SOUND_NAME = "next-level";
 
         private scene: Scene;
@@ -89,8 +90,10 @@ namespace FroggerJS.States {
                 self.gameLevel.start();
             }
 
-            document.addEventListener("keydown", onKeyDown);
-            document.addEventListener("keyup", onKeyUp);
+            setTimeout(function () {
+                document.addEventListener("keydown", onKeyDown);
+                document.addEventListener("keyup", onKeyUp);
+            }, GameLevelState.DELAY);
 
             // Plays the sound only for the levels higher than 1.
             if (level > 1) {
