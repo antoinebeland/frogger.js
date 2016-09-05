@@ -52,8 +52,8 @@ namespace FroggerJS.Game {
         private audioManager: AudioManager;
         private board : Board;
         private labels: GameTextLabels;
-        private isStarted = false;
 
+        private isStarted = false;
         private actor: Actor;
         private mobiles: Mobile[][];
         private bonuses: Bonus[];
@@ -226,7 +226,7 @@ namespace FroggerJS.Game {
                     this.mobiles[i][j].update(deltaTime);
 
                     // Checks if the line position of the mobile is the same than the actor.
-                    if (this.actor.getLinePosition() == i) {
+                    if (!this.actor.isDead() && this.actor.getLinePosition() == i) {
                         let mobileObject = this.mobiles[i][j];
 
                         // Checks if there is a collision between the actor and the mobile.
@@ -242,6 +242,11 @@ namespace FroggerJS.Game {
                             }
                         }
                     }
+                }
+
+                // Checks if the actor is dead. If true, we ignore the next validations.
+                if (this.actor.isDead()) {
+                    continue;
                 }
 
                 // Checks if the actor is at the end line.
@@ -287,7 +292,9 @@ namespace FroggerJS.Game {
                 if (this.bonuses[i]) {
                     let bonus = this.bonuses[i];
                     bonus.update(deltaTime);
-                    if (bonus.isAvailable() && bonus.getBounding().isCollide(this.actor.getBounding())) {
+
+                    if (!this.actor.isDead() && bonus.isAvailable() &&
+                        bonus.getBounding().isCollide(this.actor.getBounding())) {
                         bonus.apply();
                         this.audioManager.play(GameLevel.BONUS_SOUND_NAME);
                     }
@@ -295,7 +302,7 @@ namespace FroggerJS.Game {
             }
 
             // Checks if the actor is inside the scene.
-            if(!this.board.getBounding().isCollide(this.actor.getBounding())) {
+            if(!this.actor.isDead() && !this.board.getBounding().isCollide(this.actor.getBounding())) {
                 this.audioManager.play(GameLevel.FALL_SOUND_NAME);
                 this.restart();
             }
@@ -339,14 +346,19 @@ namespace FroggerJS.Game {
          */
         private restart() {
 
-            this.actor.startPosition();
+            this.actor.kill();
 
             let availableLives = GameData.getAvailableLives() - 1;
             GameData.setAvailableLives(availableLives);
             Logger.logMessage(`One live lost. ${availableLives} live(s) remaining.`);
-            
+
             if (availableLives <= 0) {
                 this.onGameOver.invoke();
+            } else {
+                let self = this;
+                setTimeout(function () {
+                    self.actor.reset();
+                }, 800);
             }
         }
 

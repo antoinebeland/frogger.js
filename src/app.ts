@@ -57,6 +57,7 @@ namespace FroggerJS {
                 { name: "congrats",             file: "congrats.png"                },
                 { name: "cup",                  file: "cup.png"                     },
                 { name: "frog",                 file: "frog.png"                    },
+                { name: "frog-dead",            file: "frog-dead.png"               },
                 { name: "frog-extend",          file: "frog-extend.png"             },
                 { name: "goal",                 file: "goal.png"                    },
                 { name: "heart",                file: "heart.png"                   },

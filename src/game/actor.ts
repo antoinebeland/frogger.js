@@ -50,8 +50,11 @@ namespace FroggerJS.Game {
 
         private keyUpTexture: PIXI.Texture;
         private keyDownTexture: PIXI.Texture;
+        private deadTexture: PIXI.Texture;
+
         private sprite: PIXI.Sprite;
         private bounding: CircleBounding;
+        private dead : boolean = false;
 
         private tilePosition: number = undefined;
         private deltaPosition: number = undefined;
@@ -60,12 +63,12 @@ namespace FroggerJS.Game {
         /**
          * Occurred when a key is pressed.
          */
-        public onKeyDown: {(event: KeyboardEvent): void};
+        public onKeyDown: { (event: KeyboardEvent): void };
 
         /**
          * Occurred when a key is released.
          */
-        public onKeyUp: {(event: KeyboardEvent): void};
+        public onKeyUp: { (event: KeyboardEvent): void };
 
         /**
          * Initializes a new instance of the Actor class.
@@ -77,6 +80,7 @@ namespace FroggerJS.Game {
 
             this.keyUpTexture = imageLoader.get("frog");
             this.keyDownTexture = imageLoader.get("frog-extend");
+            this.deadTexture = imageLoader.get("frog-dead");
 
             this.sprite = new PIXI.Sprite(this.keyUpTexture);
             this.sprite.anchor.x = 0.5;
@@ -84,7 +88,7 @@ namespace FroggerJS.Game {
 
             this.bounding = new CircleBounding(this.sprite.position, this.sprite.width * Actor.BOUNDING_FACTOR);
 
-            this.startPosition();
+            this.reset();
             this.tileExploredPosition = this.tilePosition;
 
             let self = this;
@@ -96,6 +100,9 @@ namespace FroggerJS.Game {
              */
             this.onKeyDown = function (event: KeyboardEvent) {
 
+                if (self.dead) {
+                    return;
+                }
                 let rotation: number = undefined;
                 switch (event.keyCode) {
                     case ArrowKeyCode.Left:
@@ -125,6 +132,9 @@ namespace FroggerJS.Game {
              */
             this.onKeyUp = function (event: KeyboardEvent) {
 
+                if (self.dead) {
+                    return;
+                }
                 switch (event.keyCode) {
                     case ArrowKeyCode.Left:
                         if (self.sprite.position.x - Actor.SHIFTING >= 0) {
@@ -167,15 +177,36 @@ namespace FroggerJS.Game {
                 }
             };
         }
-        
+
         /**
-         * Sets the position of the actor at the start position.
+         * Indicates if the current actor is dead.
+         *
+         * @returns {boolean}   TRUE if the actor is dead. FALSE otherwise.
          */
-        public startPosition(): void {
+        public isDead(): boolean {
+            return this.dead;
+        }
+
+        /**
+         * Resets the actor at the start position and resurrects the actor.
+         */
+        public reset(): void {
+            this.dead = false;
             this.sprite.rotation = Rotation.Up;
+            this.sprite.texture = this.keyUpTexture;
             this.sprite.position.x = FroggerJS.Constants.WINDOW_WIDTH / 2;
             this.sprite.position.y = FroggerJS.Constants.WINDOW_HEIGHT - (this.sprite.height / 2);
+
             this.updateTilePosition();
+        }
+
+        /**
+         * Kills the current actor.
+         */
+        public kill(): void {
+            this.dead = true;
+            this.sprite.rotation = Rotation.Up;
+            this.sprite.texture = this.deadTexture;
         }
 
         /**
