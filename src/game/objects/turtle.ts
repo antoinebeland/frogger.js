@@ -96,7 +96,7 @@ namespace FroggerJS.Game.Objects {
 
         /**
          * Updates the turtle texture, the turtle alpha and the mobile position.
-         *s
+         *
          * @param deltaTime         The delta time to use.
          */
         public update(deltaTime: number): void {
